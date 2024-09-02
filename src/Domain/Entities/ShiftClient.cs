@@ -8,23 +8,19 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class NutritionalPlan
+    public class ShiftClient
     {
-        [Key, Column(Order = 0)]
-        [ForeignKey("TrainerId")]
-        public int TrainerId { get; set; }
-        public Trainer Trainer { get; set; }
+        
 
-        [Key, Column(Order = 1)]
+        [Key, Column(Order = 0)]
         [ForeignKey("ClientId")]
         public int ClientId { get; set; }
         public Client Client { get; set; }
 
-        [Required]
-        public string? Description { get; set; }
-        [Key, Column(Order = 2)]
+        [Key, Column(Order = 1)]
 
-        public int NumeroCorrelativo { get; set; }
-
+        [ForeignKey("ShiftId")]
+        public int ShiftId { get; set; }
+        public Shift Shift { get; set; }
     }
 }

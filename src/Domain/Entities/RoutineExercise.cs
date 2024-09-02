@@ -1,24 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Membership
+    public class RoutineExercise
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]
-        public string? Type { get; set; }
+        [ForeignKey("ExerciseId")]
+        public int ExerciseId { get; set; }
+        public Exercise Exercise { get; set; }
+
         [Required]
-        public double? Price { get; set; }
-        [Required]
-        public string? Description { get; set; }
+        [ForeignKey("RoutineId")]
+        public int RoutineId { get; set; }
+        public Routine Routine { get; set; }
     }
 }
