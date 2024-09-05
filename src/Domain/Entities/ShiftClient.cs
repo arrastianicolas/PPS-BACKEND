@@ -10,16 +10,13 @@ namespace Domain.Entities
 {
     public class ShiftClient
     {
-        
 
-        [Key, Column(Order = 0)]
-        [ForeignKey("ClientId")]
+
+        [ForeignKey("Client")]
         public int ClientId { get; set; }
         public Client Client { get; set; }
 
-        [Key, Column(Order = 1)]
-
-        [ForeignKey("ShiftId")]
+        [ForeignKey("Shift")]
         public int ShiftId { get; set; }
         public Shift Shift { get; set; }
     }

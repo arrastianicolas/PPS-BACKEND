@@ -10,26 +10,25 @@ namespace Domain.Entities
 {
     public class Shift
     {
-        [Key, Column(Order = 0)]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-        [Key, Column(Order = 1)]
-        [ForeignKey("TrainerId")]
+        [ForeignKey("Trainer")]
         public int TrainerId { get; set; }
-
         public Trainer Trainer { get; set; }
-        [Key, Column(Order = 2)]
-        [ForeignKey("LocationId")]
+        [Required]
+        [ForeignKey("Location")]
         public int LocationId { get; set; }
-
+        [Required]
         public Location Location { get; set; }
 
         [Required]
         [DataType(DataType.Time)]
-        
         public DateTime Hour { get; set; }
+
         [Required]
         [DataType(DataType.Date)]
         public DateTime Day { get; set; }
+
+        [Required]
+        public int PersonLimit { get; set; } = 30;
+
     }
 }

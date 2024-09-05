@@ -10,21 +10,20 @@ namespace Domain.Entities
 {
     public class NutritionalPlan
     {
-        [Key, Column(Order = 0)]
+        [Required]
         [ForeignKey("TrainerId")]
         public int TrainerId { get; set; }
         public Trainer Trainer { get; set; }
 
-        [Key, Column(Order = 1)]
+        [Required]
         [ForeignKey("ClientId")]
         public int ClientId { get; set; }
         public Client Client { get; set; }
 
         [Required]
         public string? Description { get; set; }
-        [Key, Column(Order = 2)]
 
-        public int NumeroCorrelativo { get; set; }
+        public int CorrelativeNumber { get; set; }
 
     }
 }

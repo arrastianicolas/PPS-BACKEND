@@ -10,9 +10,8 @@ namespace Domain.Entities
 {
     public class Routine
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        
+        public int CorrelativeNumber { get; set; }
         [Required]
         public string? Description { get; set; }
 
@@ -20,5 +19,9 @@ namespace Domain.Entities
         [ForeignKey("TrainerId")]
         public int TrainerId { get; set; }
         public Trainer Trainer { get; set; }
+        [Required]
+        [ForeignKey("ClientId")]
+        public int ClientId { get; set; }
+        public Client Client { get; set; }
     }
 }

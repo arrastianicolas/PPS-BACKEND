@@ -10,10 +10,7 @@ namespace Domain.Entities
 {
     public class RoutineExercise
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-
+        
         [Required]
         [ForeignKey("ExerciseId")]
         public int ExerciseId { get; set; }
@@ -23,5 +20,12 @@ namespace Domain.Entities
         [ForeignKey("RoutineId")]
         public int RoutineId { get; set; }
         public Routine Routine { get; set; }
+
+        [Required]
+        public string Series {  get; set; }
+        [Required]
+        public int BreakTime { get; set; }  //Tiempo en segundos
+        public int Status { get; set; } //hacer enums
+
     }
 }
