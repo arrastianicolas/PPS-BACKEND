@@ -5,94 +5,99 @@ namespace Infrastructure
 {
     public class ApplicationContext : DbContext
     {
-        public DbSet<User> Users { get; set; }
-        public DbSet<Admin> Admins { get; set; }
         public DbSet<Client> Clients { get; set; }
         public DbSet<Trainer> Trainers { get; set; }
-        public DbSet<Exercise> Exercise { get; set; }
-        public DbSet<Location> Locations { get; set; }
-        public DbSet<Membership> Memberships { get; set; }
         public DbSet<NutritionalPlan> NutritionalPlans { get; set; }
         public DbSet<Routine> Routines { get; set; }
-        public DbSet<RoutineExercise> RoutinesExercises { get; set; }
+        public DbSet<RoutineExercise> RoutineExercises { get; set; }
         public DbSet<Shift> Shifts { get; set; }
         public DbSet<ShiftClient> ShiftClients { get; set; }
+        public DbSet<Membership> Memberships { get; set; }
+        public DbSet<Location> Locations { get; set; }
+        public DbSet<Exercise> Exercises { get; set; }
+
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
-         : base(options)
+ : base(options)
         {
 
         }
-
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Client configuration
+            modelBuilder.Entity<Client>()
+                .HasOne(c => c.Membership)
+                .WithMany()
+                .HasForeignKey(c => c.MembershipId);
 
-            modelBuilder.Entity<User>().HasDiscriminator(u => u.Type);
-
+            // NutritionalPlan configuration - Composite Primary Key
+            modelBuilder.Entity<NutritionalPlan>()
+                .HasKey(np => new { np.TrainerId, np.ClientId, np.CorrelativeNumber });
 
             modelBuilder.Entity<NutritionalPlan>()
-        .HasKey(np => new { np.TrainerId, np.ClientId, np.CorrelativeNumber });
+                .HasOne(np => np.Trainer)
+                .WithMany()
+                .HasForeignKey(np => np.TrainerId);
+
+            modelBuilder.Entity<NutritionalPlan>()
+                .HasOne(np => np.Client)
+                .WithMany()
+                .HasForeignKey(np => np.ClientId);
+
+            // Routine configuration - Composite Primary Key
+            modelBuilder.Entity<Routine>()
+                .HasKey(r => new { r.TrainerId, r.ClientId, r.CorrelativeNumber });
+
+            modelBuilder.Entity<Routine>()
+                .HasOne(r => r.Trainer)
+                .WithMany()
+                .HasForeignKey(r => r.TrainerId);
+
+            modelBuilder.Entity<Routine>()
+                .HasOne(r => r.Client)
+                .WithMany()
+                .HasForeignKey(r => r.ClientId);
+
+            // RoutineExercise configuration - Composite Primary Key
+            modelBuilder.Entity<RoutineExercise>()
+                .HasKey(re => new { re.ExerciseId, re.TrainerId, re.ClientId, re.CorrelativeNumber });
+
+            modelBuilder.Entity<RoutineExercise>()
+                .HasOne(re => re.Exercise)
+                .WithMany()
+                .HasForeignKey(re => re.ExerciseId);
+
+            modelBuilder.Entity<RoutineExercise>()
+                .HasOne(re => re.Routine)
+                .WithMany()
+                .HasForeignKey(re => new { re.TrainerId, re.ClientId, re.CorrelativeNumber });
+
+            // Shift configuration - Composite Primary Key
+            modelBuilder.Entity<Shift>()
+                .HasKey(s => new { s.LocationId, s.Hour, s.Day });
 
             modelBuilder.Entity<Shift>()
-        .HasKey(s => new { s.LocationId, s.Hour, s.Day });
+                .HasOne(s => s.Trainer)
+                .WithMany()
+                .HasForeignKey(s => s.TrainerId);
 
-            modelBuilder.Entity<RoutineExercise>()
-        .HasKey(re => new { re.ExerciseId, re.RoutineId });
+            modelBuilder.Entity<Shift>()
+                .HasOne(s => s.Location)
+                .WithMany()
+                .HasForeignKey(s => s.LocationId);
+
+            // ShiftClient configuration - Composite Primary Key
+            modelBuilder.Entity<ShiftClient>()
+                .HasKey(sc => new { sc.ClientId, sc.LocationId, sc.Hour, sc.Day });
 
             modelBuilder.Entity<ShiftClient>()
-        .HasKey(sc => new { sc.ClientId, sc.ShiftId });
+                .HasOne(sc => sc.Client)
+                .WithMany()
+                .HasForeignKey(sc => sc.ClientId);
 
-            modelBuilder.Entity<Routine>()
-        .HasKey(r => new { r.TrainerId, r.ClientId, r.CorrelativeNumber });
-
-            modelBuilder.Entity<Client>()
-        .HasOne(b => b.Membership)
-        .WithMany()  
-        .HasForeignKey(b => b.MembershipId);
-            modelBuilder.Entity<Client>()
-        .HasOne(b => b.Membership)
-        .WithMany()
-        .HasForeignKey(b => b.MembershipId);
-            modelBuilder.Entity<NutritionalPlan>()
-       .HasOne(b => b.Trainer)
-       .WithMany()
-       .HasForeignKey(b => b.TrainerId);
-            modelBuilder.Entity<NutritionalPlan>()
-       .HasOne(b => b.Client)
-       .WithMany()
-       .HasForeignKey(b => b.ClientId);
             modelBuilder.Entity<ShiftClient>()
-       .HasOne(b => b.Client)
-       .WithMany()
-       .HasForeignKey(b => b.ClientId);
-            modelBuilder.Entity<ShiftClient>()
-       .HasOne(b => b.Shift)
-       .WithMany()
-       .HasForeignKey(b => b.ShiftId);
-            modelBuilder.Entity<Routine>()
-       .HasOne(b => b.Trainer)
-       .WithMany()
-       .HasForeignKey(b => b.TrainerId);
-            modelBuilder.Entity<Routine>()
-       .HasOne(b => b.Client)
-       .WithMany()
-       .HasForeignKey(b => b.ClientId);
-            modelBuilder.Entity<RoutineExercise>()
-       .HasOne(b => b.Exercise)
-       .WithMany()
-       .HasForeignKey(b => b.ExerciseId);
-            modelBuilder.Entity<RoutineExercise>()
-       .HasOne(b => b.Routine)
-       .WithMany()
-       .HasForeignKey(b => b.RoutineId);
-
-
-
-
-
-
-
-            base.OnModelCreating(modelBuilder);
+                .HasOne(sc => sc.Shift)
+                .WithMany()
+                .HasForeignKey(sc => new { sc.LocationId, sc.Hour, sc.Day });
         }
     }
 }

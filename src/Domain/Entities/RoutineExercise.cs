@@ -10,22 +10,25 @@ namespace Domain.Entities
 {
     public class RoutineExercise
     {
-        
-        [Required]
-        [ForeignKey("ExerciseId")]
+        [ForeignKey("Exercise")]
         public int ExerciseId { get; set; }
         public Exercise Exercise { get; set; }
 
-        [Required]
-        [ForeignKey("RoutineId")]
-        public int RoutineId { get; set; }
+        [ForeignKey("Routine")]
+        public int TrainerId { get; set; }
+
+        public int ClientId { get; set; }
+
+        public int CorrelativeNumber { get; set; }
         public Routine Routine { get; set; }
 
         [Required]
-        public string Series {  get; set; }
-        [Required]
-        public int BreakTime { get; set; }  //Tiempo en segundos
-        public int Status { get; set; } //hacer enums
+        public string Series { get; set; }
 
+        [Required]
+        public int BreakTime { get; set; }  // Tiempo en segundos
+
+        public int Status { get; set; } // Usar enums
     }
+
 }

@@ -15,8 +15,8 @@ namespace Domain.Entities
         [Required]
         [ForeignKey("MembershipId")]
         public int MembershipId { get; set; }
-        public int Document { get; set; }
         public Membership Membership { get; set; }
+        public int Document { get; set; }
         [Required]
         [Column(TypeName = "nvarchar(20)")]
         public string? Name { get; set; }
