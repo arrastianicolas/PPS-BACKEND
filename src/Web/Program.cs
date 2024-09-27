@@ -68,6 +68,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 #region Services
 builder.Services.AddScoped<ICustomAuthenticationService, AuthenticationService>();
+builder.Services.Configure<AuthenticacionServiceOptions>(
+    builder.Configuration.GetSection(AuthenticacionServiceOptions.AutenticacionService));
 #endregion
 var app = builder.Build();
 
