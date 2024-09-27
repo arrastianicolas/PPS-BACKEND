@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace Domain.Interfaces
 {
-    internal interface Interface1
+    public interface IBaseRepository<T> where T : class
     {
+        T? GetById<TId>(TId id);
+        List<T> Get();
+        T? Add(T entity);
+        T? Update(T entity);
+        T Remove(T entity);
     }
 }
