@@ -1,32 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Domain.Entities
+namespace Infrastructure.Models;
+
+public partial class Shift
 {
-    public class Shift
-    {
-        [ForeignKey("Trainer")]
-        public int TrainerId { get; set; }
-        public Trainer Trainer { get; set; }
+    public int Idshift { get; set; }
 
-        [ForeignKey("Location")]
-        public int LocationId { get; set; }
-        public Location Location { get; set; }
+    public DateTime Date { get; set; }
 
-       
-        [DataType(DataType.Time)]
-        public DateTime Hour { get; set; }
+    public int Idlocation { get; set; }
 
-        [DataType(DataType.Date)]
-        public DateTime Day { get; set; }
+    public string? Dnitrainer { get; set; }
 
-        [Required]
-        public int PersonLimit { get; set; } = 30;
-    }
+    public int? Peoplelimit { get; set; }
 
+    public virtual Trainer? DnitrainerNavigation { get; set; }
+
+    public virtual Location IdlocationNavigation { get; set; } = null!;
+
+    public virtual ICollection<Shiftsclient> Shiftsclients { get; set; } = new List<Shiftsclient>();
 }
