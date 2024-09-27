@@ -1,24 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Domain.Entities
+namespace Infrastructure.Models;
+
+public partial class Membership
 {
-    public class Membership
-    {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+    public string Type { get; set; } = null!;
 
-        [Required]
-        public string? Type { get; set; }
-        [Required]
-        public double? Price { get; set; }
-        [Required]
-        public string? Description { get; set; }
-    }
+    public float Price { get; set; }
+
+    public string Description { get; set; } = null!;
+
+    public virtual ICollection<Client> Clients { get; set; } = new List<Client>();
 }

@@ -1,22 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Domain.Entities
+namespace Infrastructure.Models;
+
+public partial class Location
 {
-    public class Location
-    {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+    public int Idlocation { get; set; }
 
-        [Required]
-        public string? Direction { get; set; }
-        [Required]
-        public string? NameLocation { get; set; }
-    }
+    public string Adress { get; set; } = null!;
+
+    public string Name { get; set; } = null!;
+
+    public virtual ICollection<Shift> Shifts { get; set; } = new List<Shift>();
 }

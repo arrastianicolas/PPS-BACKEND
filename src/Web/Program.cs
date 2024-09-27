@@ -9,10 +9,10 @@ builder.Services.AddControllers();
 // Register DbContext with MySQL configuration
 string connectionString = builder.Configuration["ConnectionStrings:DefaultConnection"]!;
 
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
+                     new MySqlServerVersion(new Version(8, 0, 33))));
 
-builder.Services.AddDbContext<ApplicationContext>(options =>
-    options.UseMySql(connectionString,
-        new MySqlServerVersion(new Version(8, 0, 0))));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

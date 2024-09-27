@@ -1,27 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Domain.Entities
+namespace Infrastructure.Models;
+
+public partial class Routine
 {
-    public class Routine
-    {
-        [ForeignKey("Trainer")]
-        public int TrainerId { get; set; }
-        public Trainer Trainer { get; set; }
-        [ForeignKey("Client")]
-        public int ClientId { get; set; }
-        public Client Client { get; set; }
+    public int Correlativenumber { get; set; }
 
-        [Key, Column(Order = 2)]
-        public int CorrelativeNumber { get; set; }
+    public string Dniclient { get; set; } = null!;
 
-        [Required]
-        public string? Description { get; set; }
-    }
+    public string Dnitrainer { get; set; } = null!;
 
+    public float Weight { get; set; }
+
+    public float Height { get; set; }
+
+    public string State { get; set; } = null!;
+
+    public string Description { get; set; } = null!;
+
+    public virtual Client DniclientNavigation { get; set; } = null!;
+
+    public virtual Trainer DnitrainerNavigation { get; set; } = null!;
 }

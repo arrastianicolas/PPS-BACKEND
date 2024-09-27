@@ -1,29 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Domain.Entities
+namespace Infrastructure.Models;
+
+public partial class Trainer
 {
-    public class Trainer : User
-    {
-        [Required]
-        public int FileNumber { get; set; }
-        [Required]
-        [Column(TypeName = "nvarchar(20)")]
-        public string? Name { get; set; }
-        [Required]
-        [Column(TypeName = "nvarchar(20)")]
-        public string? LastName { get; set; }
-        [Required]
-        [Column(TypeName = "nvarchar(20)")]
-        public string? FirstName { get; set; }
-        [Required]
-        public int? PhoneNumber { get; set; }
-        [Required]
-        public string? BirthDay { get; set; }
-    }
+    public string Dnitrainer { get; set; } = null!;
+
+    public DateOnly Birthdate { get; set; }
+
+    public string Phonenumber { get; set; } = null!;
+
+    public string Firstname { get; set; } = null!;
+
+    public string Lastname { get; set; } = null!;
+
+    public int Iduser { get; set; }
+
+    public virtual User IduserNavigation { get; set; } = null!;
+
+    public virtual ICollection<Routine> Routines { get; set; } = new List<Routine>();
+
+    public virtual ICollection<Shift> Shifts { get; set; } = new List<Shift>();
 }
