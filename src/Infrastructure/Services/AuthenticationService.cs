@@ -19,7 +19,7 @@ namespace Infrastructure.Services
         private readonly IUserRepository _userRepository;
         private readonly AuthenticacionServiceOptions _options;
 
-        public AuthenticationService(IUserRepository userRepository, IOptions<AutenticacionServiceOptions> options)
+        public AuthenticationService(IUserRepository userRepository, IOptions<AuthenticacionServiceOptions> options)
         {
             _userRepository = userRepository;
             _options = options.Value;
@@ -81,7 +81,7 @@ namespace Infrastructure.Services
         }
 
 
-        public class AutenticacionServiceOptions
+        public class AuthenticacionServiceOptions
         {
             public const string AutenticacionService = "AutenticacionService";
 
