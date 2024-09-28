@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Infrastructure.Models;
+namespace Infrastructure.TempModels;
 
 public partial class User
 {
