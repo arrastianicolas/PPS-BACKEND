@@ -1,7 +1,7 @@
 ﻿using Application.Interfaces;
-using Application.Models;
+using Application.Models.Requests;
 using Domain.Interfaces;
-using Infrastructure.Models;
+using Infrastructure.TempModels;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -51,7 +51,7 @@ namespace Infrastructure.Services
 
             if (user == null)
             {
-                throw new NotAllowedException("User authentication failed");
+                throw new Exception("User authentication failed");
             }
 
 

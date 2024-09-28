@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Scaffolding.Internal;
 
-namespace Infrastructure;
+namespace Infrastructure.TempModels;
 
 public partial class ApplicationDbContext : DbContext
 {
@@ -37,7 +36,6 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-  
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -138,7 +136,7 @@ public partial class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Routine>(entity =>
         {
-            entity.HasKey(e => new { e.Correlativenumber, e.Dniclient, e.Dnitrainer })
+            entity.HasKey(e => new { e.Correlativenumber, e.Dnitrainer, e.Dniclient })
                 .HasName("PRIMARY")
                 .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
 
@@ -148,15 +146,15 @@ public partial class ApplicationDbContext : DbContext
 
             entity.HasIndex(e => e.Dnitrainer, "dnitrainer_fk_routines_idx");
 
-            entity.Property(e => e.Correlativenumber)
-                .ValueGeneratedOnAdd()
-                .HasColumnName("correlativenumber");
-            entity.Property(e => e.Dniclient)
-                .HasMaxLength(8)
-                .HasColumnName("dniclient");
+            entity.HasIndex(e => new { e.Correlativenumber, e.Dnitrainer, e.Dniclient }, "idx_routine_composite_key");
+
+            entity.Property(e => e.Correlativenumber).HasColumnName("correlativenumber");
             entity.Property(e => e.Dnitrainer)
                 .HasMaxLength(8)
                 .HasColumnName("dnitrainer");
+            entity.Property(e => e.Dniclient)
+                .HasMaxLength(8)
+                .HasColumnName("dniclient");
             entity.Property(e => e.Description)
                 .HasMaxLength(45)
                 .HasColumnName("description");
@@ -178,32 +176,40 @@ public partial class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Routinesexercise>(entity =>
         {
-            entity.HasKey(e => new { e.Correlativenumber, e.Dniclient, e.Dnitrainer, e.Idexercise })
+            entity.HasKey(e => new { e.Correlativenumber, e.Idexercise, e.Dniclient, e.Dnitrainer })
                 .HasName("PRIMARY")
                 .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0, 0 });
 
             entity.ToTable("routinesexercises");
 
+            entity.HasIndex(e => e.Correlativenumber, "correlativenumber_fk_re_idx");
+
             entity.HasIndex(e => e.Dniclient, "dniclient_fk_re_idx");
 
             entity.HasIndex(e => e.Dnitrainer, "dnitrainer_fk_re_idx");
 
+            entity.HasIndex(e => new { e.Correlativenumber, e.Dnitrainer, e.Dniclient }, "fk_routine_exercise");
+
             entity.HasIndex(e => e.Idexercise, "idexercise_fk_re_idx");
 
             entity.Property(e => e.Correlativenumber).HasColumnName("correlativenumber");
+            entity.Property(e => e.Idexercise).HasColumnName("idexercise");
             entity.Property(e => e.Dniclient)
-                .HasMaxLength(45)
+                .HasMaxLength(8)
                 .HasColumnName("dniclient");
             entity.Property(e => e.Dnitrainer)
-                .HasMaxLength(45)
+                .HasMaxLength(8)
                 .HasColumnName("dnitrainer");
-            entity.Property(e => e.Idexercise).HasColumnName("idexercise");
             entity.Property(e => e.Breaktime).HasColumnName("breaktime");
             entity.Property(e => e.Serie).HasColumnName("serie");
 
             entity.HasOne(d => d.IdexerciseNavigation).WithMany(p => p.Routinesexercises)
                 .HasForeignKey(d => d.Idexercise)
                 .HasConstraintName("idexercise_fk_re");
+
+            entity.HasOne(d => d.Routine).WithMany(p => p.Routinesexercises)
+                .HasForeignKey(d => new { d.Correlativenumber, d.Dnitrainer, d.Dniclient })
+                .HasConstraintName("fk_routine_exercise");
         });
 
         modelBuilder.Entity<Shift>(entity =>

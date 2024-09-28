@@ -1,8 +1,10 @@
 using Application.Interfaces;
+using Application.Services;
 using Domain.Interfaces;
 using Infrastructure;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
+using Infrastructure.TempModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -16,11 +18,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 // Register DbContext with MySQL configuration
-string connectionString = builder.Configuration["ConnectionStrings:DefaultConnection"]!;
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
+    options.UseMySql(connectionString,
                      new MySqlServerVersion(new Version(8, 0, 33))));
+
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -45,6 +48,9 @@ builder.Services.AddSwaggerGen(setupAction =>
                     Id = "TrainingCenterBearer" } //Tiene que coincidir con el id seteado arriba en la definición
                 }, new List<string>() }
     });
+
+    
+
 });
 
 builder.Services.AddAuthentication("Bearer") //"Bearer" es el tipo de auntenticación que tenemos que elegir después en PostMan para pasarle el token
@@ -55,12 +61,13 @@ builder.Services.AddAuthentication("Bearer") //"Bearer" es el tipo de auntentica
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["AuthenticationService:Issuer"],
-            ValidAudience = builder.Configuration["AuthenticationService:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["AuthenticationService:SecretForKey"]))
+            ValidIssuer = builder.Configuration["AutenticacionService:Issuer"],
+            ValidAudience = builder.Configuration["AutenticacionService:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["AutenticacionService:SecretForKey"]))
         };
     }
 );
+
 
 #region Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -70,7 +77,19 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICustomAuthenticationService, AuthenticationService>();
 builder.Services.Configure<AuthenticacionServiceOptions>(
     builder.Configuration.GetSection(AuthenticacionServiceOptions.AutenticacionService));
+builder.Services.AddScoped<IUserService, UserService>();
 #endregion
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "Policy1",
+                      policy =>
+                      {
+                          policy.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                      });
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
