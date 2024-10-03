@@ -38,5 +38,14 @@ namespace Web.Controllers
             
             return NoContent();
         }
+        [HttpGet("[action]")]
+        public ActionResult<ClientUserDto> GetClientbyId()
+        {
+            int clientId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+
+            var user = _clientService.GetClientById(clientId);
+
+            return Ok(user);
+        }
     }
 }
