@@ -13,6 +13,7 @@ namespace Application.Models
         public string? Email { get; set; }
         
         public string? Type { get; set; }
+        
 
         public static UserDto Create(User user)
         {
@@ -21,7 +22,8 @@ namespace Application.Models
                 Id = user.Id,
                 Email = user.Email,
                 Type = user.Type,
-                
+               
+
             };
         }
 
