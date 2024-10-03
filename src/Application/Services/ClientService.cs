@@ -82,6 +82,26 @@ namespace Application.Services
             }
 
         }
+        public ClientUserDto GetClientById(int Iduser)
+        {
+            
+            var user = _userRepository.GetById(Iduser);
+            if (user == null)
+            {
+                throw new Exception("Usuario no encontrado");
+            }
+
+            
+            var clientUser = _clientRepository.GetClientByUserId(Iduser);
+            if (clientUser == null)
+            {
+                throw new Exception("Cliente no encontrado para el usuario especificado");
+            }
+
+            // Retorna el DTO combinado de usuario y cliente
+            return ClientUserDtoMapper.Create(clientUser, user);
+        }
+
 
     }
 }
