@@ -24,18 +24,11 @@ namespace Application.Services
             _membershipRepository = membershipRepository;
         }
 
-        public Client CreateClient(ClientRequest clientRequest, UserRequest userRequest)
+        public ClientDto CreateClient(ClientRequest clientRequest, UserRequest userRequest)
         {
-            // Verifica si el tipo de membresía existe en la base de datos
             var membership = _membershipRepository.Get()
                 .FirstOrDefault(m => m.Type == clientRequest.Typememberships);
 
-            if (membership == null)
-            {
-                throw new Exception("El tipo de membresía no existe.");
-            }
-
-            // Crea el usuario
             var user = new User
             {
                 Email = userRequest.Email!,
@@ -45,7 +38,6 @@ namespace Application.Services
 
             var createdUser = _userRepository.Add(user);
 
-            // Crea el cliente
             var client = new Client
             {
                 Dniclient = clientRequest.Dniclient,
@@ -53,13 +45,15 @@ namespace Application.Services
                 Lastname = clientRequest.Lastname,
                 Birthdate = clientRequest.Birthdate,
                 Phonenumber = clientRequest.Phonenumber,
-                Typememberships = membership.Type, // Asigna el tipo de membresía validado
+                Typememberships = membership.Type,
                 Startdatemembership = DateTime.Now,
                 Statusmembership = "Activa",
-                Iduser = createdUser.Id // Relaciona el usuario creado con el cliente
+                Iduser = createdUser.Id
             };
 
-            return _clientRepository.Add(client);
+            _clientRepository.Add(client);
+
+            return ClientDto.Create(client);
         }
     }
 }

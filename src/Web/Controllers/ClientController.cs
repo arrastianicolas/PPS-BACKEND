@@ -22,10 +22,11 @@ namespace Web.Controllers
         }
 
         [HttpPost("[action]")]
-        public ActionResult<Client> AddClient([FromBody] ClientUserRequest request)
+        public ActionResult<ClientDto> AddClient([FromBody] ClientUserRequest request)
         {
-            var client = _clientService.CreateClient(request.ClientRequest, request.UserRequest);
-            return Ok(client);
+            var clientDto = _clientService.CreateClient(request.ClientRequest, request.UserRequest);
+            return Ok(clientDto); 
         }
+
     }
 }

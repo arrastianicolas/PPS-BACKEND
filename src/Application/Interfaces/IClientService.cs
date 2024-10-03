@@ -1,4 +1,5 @@
-﻿using Application.Models.Requests;
+﻿using Application.Models;
+using Application.Models.Requests;
 using Infrastructure.TempModels;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,6 @@ namespace Application.Interfaces
 {
     public interface IClientService
     {
-        Client CreateClient(ClientRequest clientRequest, UserRequest userRequest);
+        ClientDto CreateClient(ClientRequest clientRequest, UserRequest userRequest);
     }
 }
