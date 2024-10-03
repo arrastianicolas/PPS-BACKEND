@@ -16,5 +16,9 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
+        public Client? GetClientByUserId(int userId)
+        {
+            return _context.Set<Client>().FirstOrDefault(c => c.Iduser == userId);
+        }
     }
 }

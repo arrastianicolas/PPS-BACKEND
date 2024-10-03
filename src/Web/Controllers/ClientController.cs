@@ -5,6 +5,7 @@ using Infrastructure.TempModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.CompilerServices;
+using System.Security.Claims;
 
 namespace Web.Controllers
 {
@@ -25,8 +26,17 @@ namespace Web.Controllers
         public ActionResult<ClientDto> AddClient([FromBody] ClientUserRequest request)
         {
             var clientDto = _clientService.CreateClient(request.ClientRequest, request.UserRequest);
-            return Ok(clientDto); 
+            return Ok(clientDto);
         }
 
+        [HttpPut("[action]")]
+        public ActionResult UpdateClient([FromBody] ClientUserRequest request) 
+        {
+            int clientId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+
+            _clientService.UpdateClient(clientId, request.ClientRequest, request.UserRequest);
+            
+            return NoContent();
+        }
     }
 }

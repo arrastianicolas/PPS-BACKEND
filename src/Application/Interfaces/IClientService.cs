@@ -12,5 +12,7 @@ namespace Application.Interfaces
     public interface IClientService
     {
         ClientDto CreateClient(ClientRequest clientRequest, UserRequest userRequest);
+
+        void UpdateClient(int Iduser, ClientRequest clientRequest, UserRequest userRequest);
     }
 }

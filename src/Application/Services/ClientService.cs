@@ -55,5 +55,33 @@ namespace Application.Services
 
             return ClientDto.Create(client);
         }
+        public void UpdateClient(int Iduser, ClientRequest clientRequest, UserRequest userRequest)
+        {
+            var user = _userRepository.GetById(Iduser);
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"No se encontró un usuario con el ID: {Iduser}");
+            }
+
+            user.Password = userRequest.Password;
+            user.Email = userRequest.Email;
+
+            var client = _clientRepository.GetClientByUserId(user.Id);
+            if (client != null)
+            {
+                client.Firstname = clientRequest.Firstname;
+                client.Lastname = clientRequest.Lastname;
+                client.Phonenumber = clientRequest.Phonenumber;
+                client.Birthdate = clientRequest.Birthdate;
+            }
+
+            _userRepository.Update(user);
+            if (client != null)
+            {
+                _clientRepository.Update(client);
+            }
+
+        }
+
     }
 }
