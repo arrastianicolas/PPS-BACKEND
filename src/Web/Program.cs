@@ -71,6 +71,8 @@ builder.Services.AddAuthentication("Bearer") //"Bearer" es el tipo de auntentica
 
 #region Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IClientRepository, ClientRepository>();
+builder.Services.AddScoped<IMembershipRepository, MembershipRepository>();
 #endregion
 
 #region Services
@@ -78,6 +80,7 @@ builder.Services.AddScoped<ICustomAuthenticationService, AuthenticationService>(
 builder.Services.Configure<AuthenticacionServiceOptions>(
     builder.Configuration.GetSection(AuthenticacionServiceOptions.AutenticacionService));
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IClientService, ClientService>();
 #endregion
 
 builder.Services.AddCors(options =>
