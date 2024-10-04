@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Infrastructure.TempModels;
 
@@ -19,5 +20,6 @@ public partial class Shift
 
     public virtual Location IdlocationNavigation { get; set; } = null!;
 
+    [JsonIgnore]
     public virtual ICollection<Shiftsclient> Shiftsclients { get; set; } = new List<Shiftsclient>();
 }
