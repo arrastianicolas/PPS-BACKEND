@@ -11,11 +11,6 @@ namespace Application.Services
 {
     public class MercadoPagoService : IMercadoPagoService
     {
-        public MercadoPagoService()
-        {
-            
-        }
-
         public async Task<Preference> CrearPreferenciaPago(PreferenceRequest preferenceRequest)
         {
             var client = new PreferenceClient();
