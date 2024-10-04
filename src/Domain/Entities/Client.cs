@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
+using System.Text.Json.Serialization;
 
 namespace Infrastructure.TempModels;
 
@@ -20,11 +20,10 @@ public partial class Client
     public string Lastname { get; set; } = null!;
     [JsonIgnore]
     public int Iduser { get; set; }
-
     public int Isactive { get; set; }
 
     public string Genre { get; set; } = null!;
-
+    [JsonIgnore]
     public virtual User IduserNavigation { get; set; } = null!;
 
     public virtual ICollection<Routine> Routines { get; set; } = new List<Routine>();

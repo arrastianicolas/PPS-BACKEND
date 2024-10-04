@@ -24,5 +24,6 @@ namespace Application.Models.Requests
         public string Firstname { get; set; } = null!;
 
         public string Lastname { get; set; } = null!;
+        public string Genre {  get; set; } = null!;
     }
 }

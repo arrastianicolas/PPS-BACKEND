@@ -10,5 +10,6 @@ namespace Domain.Interfaces
     public interface IClientRepository : IBaseRepository<Client>
     {
         Client? GetClientByUserId(int userId);
+        Client? GetByDni(string dni);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using Application.Models;
 using Application.Models.Requests;
+using Domain.Exceptions;
 using Domain.Interfaces;
 using Infrastructure.TempModels;
 using System;
@@ -30,9 +31,7 @@ namespace Application.Services
         public ClientDto CreateClient(ClientRequest clientRequest, UserRequest userRequest)
         {
 
-            //_mailService.Send($"¡Bienvenido a Training Center, {clientRequest.Firstname}!",
-            //    $"Hola {clientRequest.Firstname} {clientRequest.Lastname},\r\n\r\n¡Nos complace darte la bienvenida a Training Center! Estamos emocionados de que te unas a nuestra comunidad de entrenamiento y bienestar.\r\n\r\nEn Training Center, nos comprometemos a ayudarte a alcanzar tus metas, ya sea mejorar tu condición física, aumentar tu fuerza o simplemente mantener un estilo de vida saludable. No dudes en acercarte a cualquiera de nuestros entrenadores para recibir orientación personalizada.\r\n\r\nTu bienestar es nuestra prioridad, y estamos aquí para acompañarte en cada paso de tu camino hacia el éxito.\r\n\r\n¡Nos vemos en el gimnasio!\r\n\r\nAtentamente,\r\nEl equipo de Training Center",
-            //    userRequest.Email);
+
 
             var membership = _membershipRepository.Get()
                 .FirstOrDefault(m => m.Type == clientRequest.Typememberships);
@@ -55,7 +54,8 @@ namespace Application.Services
                 Phonenumber = clientRequest.Phonenumber,
                 Typememberships = membership.Type,
                 Startdatemembership = DateTime.Now,
-                Statusmembership = "Activa",
+                Genre = clientRequest.Genre,
+                Isactive = 1,
                 Iduser = createdUser.Id
             };
             _clientRepository.Add(client);
@@ -89,7 +89,7 @@ namespace Application.Services
             }
 
         }
-        public ClientUserDto GetClientById(int Iduser)
+        public ClientUserDto GetUserById(int Iduser)
         {
             
             var user = _userRepository.GetById(Iduser);
@@ -102,13 +102,24 @@ namespace Application.Services
             var clientUser = _clientRepository.GetClientByUserId(Iduser);
             if (clientUser == null)
             {
-                throw new Exception("Cliente no encontrado para el usuario especificado");
+                throw new Exception("No se encontro al cliente.");
             }
 
             // Retorna el DTO combinado de usuario y cliente
             return ClientUserDtoMapper.Create(clientUser, user);
         }
 
+        public void Delete(string clientDni)
+        {
+            var client = _clientRepository.GetByDni(clientDni);
+            if (client == null)
+            {
+                throw new NotFoundException("No se encontro al cliente.");
+            }
+            client.Isactive = 0;
+            _clientRepository.Update(client);
+            
+        }
 
     }
 }

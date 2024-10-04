@@ -20,5 +20,9 @@ namespace Infrastructure.Repositories
         {
             return _context.Set<Client>().FirstOrDefault(c => c.Iduser == userId);
         }
+        public Client? GetByDni (string dni)
+        {
+            return _context.Set<Client>().FirstOrDefault(c => c.Dniclient == dni);
+        }
     }
 }

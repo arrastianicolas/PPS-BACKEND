@@ -14,10 +14,13 @@ namespace Application.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        public UserService(IUserRepository userRepository)
+        private readonly IMailService _mailService;
+        public UserService(IUserRepository userRepository, IMailService mailService)
         {
             _userRepository = userRepository;
+            _mailService = mailService;
         }
+
         public  List<UserWithDetailsDto> Get()
         {
             var users =  _userRepository.Get();
@@ -26,6 +29,8 @@ namespace Application.Services
             {
                 return new List<UserWithDetailsDto>();
             }
+            _mailService.Send($"¡Bienvenido a Training Center, !",
+            $"Hola ,\r\n\r\n¡Nos complace darte la bienvenida a Training Center! Estamos emocionados de que te unas a nuestra comunidad de entrenamiento y bienestar.\r\n\r\nEn Training Center, nos comprometemos a ayudarte a alcanzar tus metas, ya sea mejorar tu condición física, aumentar tu fuerza o simplemente mantener un estilo de vida saludable. No dudes en acercarte a cualquiera de nuestros entrenadores para recibir orientación personalizada.\r\n\r\nTu bienestar es nuestra prioridad, y estamos aquí para acompañarte en cada paso de tu camino hacia el éxito.\r\n\r\n¡Nos vemos en el gimnasio!\r\n\r\nAtentamente,\r\nEl equipo de Training Center", "trainingcentergrupo2@gmail.com");
 
             return (List<UserWithDetailsDto>)users;
         }
