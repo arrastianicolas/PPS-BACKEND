@@ -41,6 +41,7 @@ namespace Web.Controllers
             return NoContent();
         }
         [HttpGet("[action]")]
+       
         public ActionResult<ClientUserDto> GetMyDetails()
         {
             int clientId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");

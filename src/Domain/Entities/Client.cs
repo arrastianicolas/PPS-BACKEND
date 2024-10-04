@@ -1,5 +1,5 @@
-﻿
-using System.Text.Json.Serialization;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Infrastructure.TempModels;
 
@@ -18,17 +18,20 @@ public partial class Client
     public string Firstname { get; set; } = null!;
 
     public string Lastname { get; set; } = null!;
-    [JsonIgnore]
+
     public int Iduser { get; set; }
+
     public int Isactive { get; set; }
 
     public string Genre { get; set; } = null!;
-    [JsonIgnore]
+
+    public DateTime Actualdatemembership { get; set; }
+
     public virtual User IduserNavigation { get; set; } = null!;
 
     public virtual ICollection<Routine> Routines { get; set; } = new List<Routine>();
 
     public virtual ICollection<Shiftsclient> Shiftsclients { get; set; } = new List<Shiftsclient>();
-    [JsonIgnore]
+
     public virtual Membership TypemembershipsNavigation { get; set; } = null!;
 }

@@ -1,6 +1,5 @@
 ﻿using Application.Models;
 using Domain.Interfaces;
-
 using Infrastructure.TempModels;
 using Microsoft.EntityFrameworkCore;
 using System;

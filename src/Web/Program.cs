@@ -4,7 +4,6 @@ using Domain.Interfaces;
 using Infrastructure;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
-using Infrastructure.TempModels;
 using MercadoPago.Config;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -96,6 +95,7 @@ builder.Services.Configure<AuthenticacionServiceOptions>(
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddTransient<IMailService, MailService>();
+builder.Services.AddTransient<IMembershipService, MembershipService>();
 #endregion
 
 builder.Services.AddCors(options =>
@@ -120,6 +120,7 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseHttpsRedirection();
+
 
 app.UseAuthentication();
 

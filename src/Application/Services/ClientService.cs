@@ -54,6 +54,7 @@ namespace Application.Services
                 Phonenumber = clientRequest.Phonenumber,
                 Typememberships = membership.Type,
                 Startdatemembership = DateTime.Now,
+                Actualdatemembership = DateTime.Now,   
                 Genre = clientRequest.Genre,
                 Isactive = 1,
                 Iduser = createdUser.Id
@@ -67,7 +68,7 @@ namespace Application.Services
             var user = _userRepository.GetById(Iduser);
             if (user == null)
             {
-                throw new KeyNotFoundException($"No se encontró un usuario con el ID: {Iduser}");
+                throw new NotFoundException($"No se encontró un usuario con el ID: {Iduser}");
             }
 
             user.Password = userRequest.Password;
@@ -95,14 +96,14 @@ namespace Application.Services
             var user = _userRepository.GetById(Iduser);
             if (user == null)
             {
-                throw new Exception("Usuario no encontrado");
+                throw new NotFoundException("Usuario no encontrado");
             }
 
             
             var clientUser = _clientRepository.GetClientByUserId(Iduser);
             if (clientUser == null)
             {
-                throw new Exception("No se encontro al cliente.");
+                throw new NotFoundException("No se encontro al cliente.");
             }
 
             // Retorna el DTO combinado de usuario y cliente
