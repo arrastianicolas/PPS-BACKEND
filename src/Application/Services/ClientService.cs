@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Application.Services
 {
@@ -16,16 +17,23 @@ namespace Application.Services
         private readonly IUserRepository _userRepository;
         private readonly IClientRepository _clientRepository;
         private readonly IMembershipRepository _membershipRepository;
+        private readonly IMailService _mailService;
 
-        public ClientService(IUserRepository userRepository, IClientRepository clientRepository, IMembershipRepository membershipRepository)
+        public ClientService(IUserRepository userRepository, IClientRepository clientRepository, IMembershipRepository membershipRepository, IMailService mailService)
         {
             _userRepository = userRepository;
             _clientRepository = clientRepository;
             _membershipRepository = membershipRepository;
+            _mailService = mailService;
         }
 
         public ClientDto CreateClient(ClientRequest clientRequest, UserRequest userRequest)
         {
+
+            //_mailService.Send($"¡Bienvenido a Training Center, {clientRequest.Firstname}!",
+            //    $"Hola {clientRequest.Firstname} {clientRequest.Lastname},\r\n\r\n¡Nos complace darte la bienvenida a Training Center! Estamos emocionados de que te unas a nuestra comunidad de entrenamiento y bienestar.\r\n\r\nEn Training Center, nos comprometemos a ayudarte a alcanzar tus metas, ya sea mejorar tu condición física, aumentar tu fuerza o simplemente mantener un estilo de vida saludable. No dudes en acercarte a cualquiera de nuestros entrenadores para recibir orientación personalizada.\r\n\r\nTu bienestar es nuestra prioridad, y estamos aquí para acompañarte en cada paso de tu camino hacia el éxito.\r\n\r\n¡Nos vemos en el gimnasio!\r\n\r\nAtentamente,\r\nEl equipo de Training Center",
+            //    userRequest.Email);
+
             var membership = _membershipRepository.Get()
                 .FirstOrDefault(m => m.Type == clientRequest.Typememberships);
 
@@ -50,7 +58,6 @@ namespace Application.Services
                 Statusmembership = "Activa",
                 Iduser = createdUser.Id
             };
-
             _clientRepository.Add(client);
 
             return ClientDto.Create(client);
