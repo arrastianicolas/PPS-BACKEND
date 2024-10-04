@@ -46,6 +46,7 @@ namespace Web.Controllers
             return NoContent();
         }
 
+        [HttpDelete("[action]")]
         public IActionResult Delete(string typeMembership)
         {
             try
@@ -59,5 +60,7 @@ namespace Web.Controllers
             }
 
         }
+
+    
     }
 }
