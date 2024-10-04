@@ -17,6 +17,8 @@ public partial class Trainer
 
     public int Iduser { get; set; }
 
+    public int Isactive { get; set; }
+
     public virtual User IduserNavigation { get; set; } = null!;
 
     public virtual ICollection<Routine> Routines { get; set; } = new List<Routine>();

@@ -60,7 +60,14 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Firstname)
                 .HasMaxLength(20)
                 .HasColumnName("firstname");
+            entity.Property(e => e.Genre)
+                .HasMaxLength(45)
+                .HasDefaultValueSql("'Sin especificar'")
+                .HasColumnName("genre");
             entity.Property(e => e.Iduser).HasColumnName("iduser");
+            entity.Property(e => e.Isactive)
+                .HasDefaultValueSql("'1'")
+                .HasColumnName("isactive");
             entity.Property(e => e.Lastname)
                 .HasMaxLength(20)
                 .HasColumnName("lastname");
@@ -70,12 +77,9 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Startdatemembership)
                 .HasColumnType("datetime")
                 .HasColumnName("startdatemembership");
-            entity.Property(e => e.Statusmembership)
-                .HasMaxLength(45)
-                .HasColumnName("statusmembership");
             entity.Property(e => e.Typememberships)
                 .HasMaxLength(20)
-                .HasDefaultValueSql("'standar'")
+                .HasDefaultValueSql("'Standar'")
                 .HasColumnName("typememberships");
 
             entity.HasOne(d => d.IduserNavigation).WithMany(p => p.Clients)
@@ -114,6 +118,9 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Adress)
                 .HasMaxLength(20)
                 .HasColumnName("adress");
+            entity.Property(e => e.Isactive)
+                .HasDefaultValueSql("'1'")
+                .HasColumnName("isactive");
             entity.Property(e => e.Name)
                 .HasMaxLength(20)
                 .HasColumnName("name");
@@ -159,9 +166,9 @@ public partial class ApplicationDbContext : DbContext
                 .HasMaxLength(45)
                 .HasColumnName("description");
             entity.Property(e => e.Height).HasColumnName("height");
-            entity.Property(e => e.State)
+            entity.Property(e => e.Status)
                 .HasMaxLength(15)
-                .HasColumnName("state");
+                .HasColumnName("status");
             entity.Property(e => e.Weight).HasColumnName("weight");
 
             entity.HasOne(d => d.DniclientNavigation).WithMany(p => p.Routines)
@@ -286,6 +293,9 @@ public partial class ApplicationDbContext : DbContext
                 .HasMaxLength(20)
                 .HasColumnName("firstname");
             entity.Property(e => e.Iduser).HasColumnName("iduser");
+            entity.Property(e => e.Isactive)
+                .HasDefaultValueSql("'1'")
+                .HasColumnName("isactive");
             entity.Property(e => e.Lastname)
                 .HasMaxLength(20)
                 .HasColumnName("lastname");

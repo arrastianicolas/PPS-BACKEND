@@ -13,7 +13,7 @@ public partial class Shift
 
     public string? Dnitrainer { get; set; }
 
-    public int? Peoplelimit { get; set; }
+    public int Peoplelimit { get; set; }
 
     public virtual Trainer? DnitrainerNavigation { get; set; }
 
