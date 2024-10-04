@@ -87,6 +87,7 @@ builder.Services.Configure<AuthenticacionServiceOptions>(
     builder.Configuration.GetSection(AuthenticacionServiceOptions.AutenticacionService));
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IClientService, ClientService>();
+builder.Services.AddTransient<IMailService, MailService>();
 #endregion
 
 builder.Services.AddCors(options =>
