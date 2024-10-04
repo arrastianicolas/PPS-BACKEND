@@ -18,7 +18,6 @@ namespace Application.Models
 
         public int Peoplelimit { get; set; }
 
-        public List<int> ShiftsClientsId { get; set; }
 
         public static ShiftDto Create(Shift shift)
         {
@@ -28,7 +27,6 @@ namespace Application.Models
                 Idlocation = shift.Idlocation,
                 Dnitrainer = shift.Dnitrainer,
                 Peoplelimit = shift.Peoplelimit,
-                ShiftsClientsId = shift.Shiftsclients.Select(p => p.Idshift).ToList()
             };
 
         }
