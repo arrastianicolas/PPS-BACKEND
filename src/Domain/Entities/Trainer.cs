@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Infrastructure.TempModels;
 
@@ -14,7 +15,7 @@ public partial class Trainer
     public string Firstname { get; set; } = null!;
 
     public string Lastname { get; set; } = null!;
-
+    [JsonIgnore]
     public int Iduser { get; set; }
 
     public virtual User IduserNavigation { get; set; } = null!;

@@ -1,4 +1,5 @@
-﻿using Domain.Interfaces;
+﻿using Application.Models;
+using Domain.Interfaces;
 
 using Infrastructure.TempModels;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,23 @@ namespace Infrastructure.Repositories
         {
             _context = context; 
         }
+        public IEnumerable<object> Get()
+        {
+            var users = _context.Users
+                .Select(user => new UserWithDetailsDto
+                {
+                    Client = _context.Clients
+                        .Include(c => c.IduserNavigation) // Incluir iduserNavigation
+                        .FirstOrDefault(c => c.Iduser == user.Id),
+                    Trainer = _context.Trainers
+                        .Include(t => t.IduserNavigation) // Incluir iduserNavigation
+                        .FirstOrDefault(t => t.Iduser == user.Id)
+                })
+                .ToList();
+            return users;
+        }
+
+
 
         public User GetByUserEmail(string email)
         {
