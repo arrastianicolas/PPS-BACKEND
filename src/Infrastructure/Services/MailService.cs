@@ -31,8 +31,8 @@ namespace Infrastructure.Services
         public void Send(string subject, string message, string mailTo)
         {
             var email = new MimeMessage();
-            email.From.Add(new MailboxAddress("Local Sender", _mailFrom));
-            email.To.Add(new MailboxAddress("Recipient", mailTo));
+            email.From.Add(new MailboxAddress("Training Center Oficial", _mailFrom));
+            email.To.Add(new MailboxAddress("", mailTo));
             email.Subject = subject;
 
             email.Body = new TextPart("plain")

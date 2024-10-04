@@ -1,6 +1,8 @@
 ﻿using Application.Interfaces;
 using Application.Models;
 using Application.Models.Requests;
+using Application.Services;
+using Domain.Exceptions;
 using Infrastructure.TempModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -39,13 +41,27 @@ namespace Web.Controllers
             return NoContent();
         }
         [HttpGet("[action]")]
-        public ActionResult<ClientUserDto> GetClientbyId()
+        public ActionResult<ClientUserDto> GetMyDetails()
         {
             int clientId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
 
-            var user = _clientService.GetClientById(clientId);
+            var user = _clientService.GetUserById(clientId);
 
             return Ok(user);
+        }
+        [HttpDelete("[action]")]
+        public IActionResult Delete(string clientDni)
+        {
+            try
+            {
+                _clientService.Delete(clientDni);
+                return NoContent();
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+           
         }
     }
 }

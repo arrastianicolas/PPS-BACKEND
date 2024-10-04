@@ -18,7 +18,8 @@ namespace Application.Models
         public string PhoneNumber { get; set; } = null!;
         public string TypeMembership { get; set; } = null!;
         public DateTime StartDateMembership { get; set; }
-        public string StatusMembership { get; set; } = null!;
+        public string Genre { get; set; } = null!;
+        public int Isactive { get; set; }
 
         // Método estático para mapear de Client a ClientDto
         public static ClientDto Create(Client client)
@@ -32,7 +33,8 @@ namespace Application.Models
                 PhoneNumber = client.Phonenumber,
                 TypeMembership = client.Typememberships,
                 StartDateMembership = client.Startdatemembership,
-                StatusMembership = client.Statusmembership
+                Isactive = client.Isactive,
+                Genre = client.Genre,
             };
 
         }
