@@ -11,5 +11,7 @@ public partial class Location
 
     public string Name { get; set; } = null!;
 
+    public int Isactive { get; set; }
+
     public virtual ICollection<Shift> Shifts { get; set; } = new List<Shift>();
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace Infrastructure.TempModels;
 
@@ -12,8 +11,6 @@ public partial class Client
 
     public DateTime Startdatemembership { get; set; }
 
-    public string Statusmembership { get; set; } = null!;
-
     public DateOnly Birthdate { get; set; }
 
     public string Phonenumber { get; set; } = null!;
@@ -23,6 +20,10 @@ public partial class Client
     public string Lastname { get; set; } = null!;
     [JsonIgnore]
     public int Iduser { get; set; }
+
+    public int Isactive { get; set; }
+
+    public string Genre { get; set; } = null!;
 
     public virtual User IduserNavigation { get; set; } = null!;
 
