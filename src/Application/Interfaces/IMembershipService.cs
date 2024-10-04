@@ -12,8 +12,8 @@ namespace Application.Interfaces
     {
         List<MembershipDto> Get();
         MembershipDto AddMembership(MembershipRequest membershipRequest);
-        
-        void Update(string typeMembership, MembershipRequest membershipRequest);
+
+        void Update(MembershipRequest membershipRequest);
         void Delete(string typeMembership);
     }
 }

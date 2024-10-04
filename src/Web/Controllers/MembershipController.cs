@@ -40,10 +40,18 @@ namespace Web.Controllers
 
         
         [HttpPut("[action]")]
-        public ActionResult Update(string typeMembership, [FromBody] MembershipRequest membershipRequest)
+        public ActionResult Update( [FromBody] MembershipRequest membershipRequest)
         {
-            _membershipService.Update(typeMembership, membershipRequest);
+            try
+            { 
+            _membershipService.Update(membershipRequest);
             return NoContent();
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+
         }
 
         [HttpDelete("[action]")]

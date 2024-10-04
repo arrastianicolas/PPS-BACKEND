@@ -53,9 +53,9 @@ namespace Application.Services
 
        }
 
-       public void Update(string typeMembership , MembershipRequest membershipRequest) 
+       public void Update(MembershipRequest membershipRequest) 
        {
-            var membership = _membershipRepository.GetByMembership(typeMembership);
+            var membership = _membershipRepository.GetByMembership(membershipRequest.Type);
 
             if (membership == null) 
             {
