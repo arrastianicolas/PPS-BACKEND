@@ -9,6 +9,8 @@ namespace Application.Models.Requests
 {
     public class MembershipRequest
     {
+        
+
         [Required]
         public string Type { get; set; } = null!;
         [Required]
