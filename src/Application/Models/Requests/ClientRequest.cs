@@ -15,8 +15,6 @@ namespace Application.Models.Requests
 
         public DateTime Startdatemembership { get; set; }
 
-        public string Statusmembership { get; set; } = null!;
-
         public DateOnly Birthdate { get; set; }
 
         public string Phonenumber { get; set; } = null!;

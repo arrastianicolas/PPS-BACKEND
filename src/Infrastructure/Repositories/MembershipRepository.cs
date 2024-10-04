@@ -15,5 +15,10 @@ namespace Infrastructure.Repositories
         {
             _context = context;
         }
+
+        public Membership? GetByMembership(string typeMembership)
+        {
+            return _context.Set<Membership>().FirstOrDefault(m => m.Type == typeMembership);
+        }
     }
 }
