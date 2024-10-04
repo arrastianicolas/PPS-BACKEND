@@ -18,18 +18,16 @@ namespace Application.Services
         {
             _userRepository = userRepository;
         }
-        public  List<UserDto> GetAllUsers()
+        public  List<UserWithDetailsDto> Get()
         {
             var users =  _userRepository.Get();
 
             if (users == null || !users.Any())
             {
-                return new List<UserDto>();
+                return new List<UserWithDetailsDto>();
             }
 
-            var userDtos = UserDto.CreateList(users);
-
-            return userDtos;
+            return (List<UserWithDetailsDto>)users;
         }
 
         public UserDto GetUserById(int id)

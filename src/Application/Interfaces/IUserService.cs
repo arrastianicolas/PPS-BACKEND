@@ -11,7 +11,8 @@ namespace Application.Interfaces
 {
     public interface IUserService
     {
-        List<UserDto> GetAllUsers();
+
+        List<UserWithDetailsDto> Get();
         UserDto GetUserById(int id);
         //User CreateUser(UserRequest user);
         //void DeleteUser(int id);

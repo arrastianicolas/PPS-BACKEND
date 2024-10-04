@@ -21,7 +21,7 @@ public partial class Client
     public string Firstname { get; set; } = null!;
 
     public string Lastname { get; set; } = null!;
-
+    [JsonIgnore]
     public int Iduser { get; set; }
 
     public virtual User IduserNavigation { get; set; } = null!;
@@ -29,6 +29,6 @@ public partial class Client
     public virtual ICollection<Routine> Routines { get; set; } = new List<Routine>();
 
     public virtual ICollection<Shiftsclient> Shiftsclients { get; set; } = new List<Shiftsclient>();
-
+    [JsonIgnore]
     public virtual Membership TypemembershipsNavigation { get; set; } = null!;
 }

@@ -9,11 +9,11 @@ namespace Web.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserService _sysAdminService;
+        private readonly IUserService _UserService;
 
         public UserController(IUserService sysAdminService)
         {
-            _sysAdminService = sysAdminService;
+            _UserService = sysAdminService;
         }
 
 
@@ -22,7 +22,7 @@ namespace Web.Controllers
         {
             try
             {
-                var user =  _sysAdminService.GetUserById(id);
+                var user = _UserService.GetUserById(id);
                 return Ok(user);
             }
             catch (Exception ex)
@@ -32,9 +32,9 @@ namespace Web.Controllers
         }
 
         [HttpGet("[action]")]
-        public ActionResult<List<UserDto>> GetAllUsers()
+        public ActionResult<List<UserDto>> Get()
         {
-            var userAll = _sysAdminService.GetAllUsers();
+            var userAll = _UserService.Get();
             return Ok(userAll);
         }
     }
