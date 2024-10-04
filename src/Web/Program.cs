@@ -5,6 +5,7 @@ using Infrastructure;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Infrastructure.TempModels;
+using MercadoPago.Config;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -59,6 +60,13 @@ builder.Services.AddSwaggerGen(setupAction =>
 
 });
 
+// Configurar MercadoPago Access Token
+var accessToken = builder.Configuration["MercadoPago:AccessToken"];
+MercadoPagoConfig.AccessToken = accessToken;
+
+// Registrar el servicio de MercadoPago
+builder.Services.AddSingleton<IMercadoPagoService, MercadoPagoService>();
+
 builder.Services.AddAuthentication("Bearer") //"Bearer" es el tipo de auntenticación que tenemos que elegir después en PostMan para pasarle el token
     .AddJwtBearer(options => //Acá definimos la configuración de la autenticación. le decimos qué cosas queremos comprobar. La fecha de expiración se valida por defecto.
     {
@@ -108,6 +116,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+
 
 app.UseHttpsRedirection();
 
