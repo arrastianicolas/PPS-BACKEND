@@ -2,6 +2,7 @@
 using Application.Models.Requests;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Web.Controllers
 {
@@ -29,23 +30,31 @@ namespace Web.Controllers
         public ActionResult<string> Autenticar(AuthenticationRequest authenticationRequest) //Enviamos como parámetro la clase que creamos arriba
 
         {
-            //Lo primero que hacemos es llamar a una función que valide los parámetros que enviamos.
             try
             {
                 string token = _customAuthenticationService.Autenticar(authenticationRequest);
 
                 var cookieOptions = new CookieOptions
                 {
-                    HttpOnly = true, // La cookie no es accesible desde JavaScript
-                    Secure = true,   // Solo se envía en conexiones HTTPS
-                    SameSite = SameSiteMode.Lax, // Previene ataques CSRF
-                    Expires = DateTime.UtcNow.AddHours(1) // La cookie expira en 1 hora
+                    HttpOnly = true, 
+                    Secure = true,   
+                    SameSite = SameSiteMode.None, 
+                    Expires = DateTime.UtcNow.AddHours(1) 
                 };
 
                 Response.Cookies.Append("jwtToken", token, cookieOptions);
 
-                // Devolvemos una respuesta exitosa
-                return Ok(new { message = "Authenticated", tokenExpires = cookieOptions.Expires, token
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                var userTypeClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "role"); 
+
+                var userType = userTypeClaim?.Value ?? "Unknown"; 
+
+                return Ok(new { message = "Authenticated", 
+                    tokenExpires = cookieOptions.Expires, 
+                    token,
+                    userType
                 });
             }
             catch (Exception ex)
@@ -54,5 +63,25 @@ namespace Web.Controllers
             }
 
         }
+        [HttpPost("Logout")]
+        public IActionResult Logout()
+        {
+            var jwtToken = Request.Cookies["jwtToken"];
+
+            if (jwtToken != null)
+            {
+                Response.Cookies.Append("jwtToken", "", new CookieOptions
+                {
+                    Expires = DateTimeOffset.UtcNow.AddDays(-1), 
+                    HttpOnly = true,  
+                    Secure = true,    
+                    SameSite = SameSiteMode.None, 
+                    Path = "/",  
+                });
+            }
+
+            return Ok(new { message = "Cierre de sesión exitoso" });
+        }
+
     }
 }
