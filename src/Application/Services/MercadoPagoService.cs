@@ -13,6 +13,7 @@ namespace Application.Services
     {
         public async Task<Preference> CrearPreferenciaPago(PreferenceRequest preferenceRequest)
         {
+
             var client = new PreferenceClient();
             var preference = await client.CreateAsync(preferenceRequest);
             return preference;

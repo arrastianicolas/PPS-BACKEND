@@ -80,5 +80,12 @@ namespace Application.Services
 
             _membershipRepository.Remove(membership);
         }
+        public MembershipDto GetByType(string type) 
+        {
+        
+            var membership = _membershipRepository.GetByMembership(type);
+            return MembershipDto.Create(membership);
+        }
+        
     }
 }

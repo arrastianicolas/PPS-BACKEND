@@ -15,5 +15,6 @@ namespace Application.Interfaces
 
         void Update(MembershipRequest membershipRequest);
         void Delete(string typeMembership);
+        MembershipDto GetByType(string type);
     }
 }

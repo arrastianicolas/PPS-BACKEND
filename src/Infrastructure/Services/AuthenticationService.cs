@@ -19,13 +19,15 @@ namespace Infrastructure.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IClientRepository _clientRepository;
+        private readonly ITrainerRepository _trainerRepository;
         private readonly AuthenticacionServiceOptions _options;
 
-        public AuthenticationService(IUserRepository userRepository, IOptions<AuthenticacionServiceOptions> options, IClientRepository clientRepository)
+        public AuthenticationService(IUserRepository userRepository, IOptions<AuthenticacionServiceOptions> options, IClientRepository clientRepository ,ITrainerRepository trainerRepository )
         {
             _userRepository = userRepository;
             _options = options.Value;
             _clientRepository = clientRepository;
+            _trainerRepository = trainerRepository;
         }
         private User? ValidateUser(AuthenticationRequest authenticationRequest)
         {
@@ -44,14 +46,14 @@ namespace Infrastructure.Services
                 return user;
             }
 
-            // Validar si el usuario es un Trainer y está activo
-            // var trainer = _trainerRepository.GetTrainerByUserId(user.Id); 
-            // if (trainer != null && trainer.Isactive == 1) 
-            //{ 
-            // return user; // Retorna si el usuario es un Trainer y está activo 
-            //} 
+            //Validar si el usuario es un Trainer y está activo
+            var trainer = _trainerRepository.GetTrainerByUserId(user.Id);
+            if (trainer != null && trainer.Isactive == 1)
+            {
+                return user; // Retorna si el usuario es un Trainer y está activo 
+            }
 
-            // Si no es ni Client ni Trainer activo, retornamos null
+            //Si no es ni Client ni Trainer activo, retornamos null
             return null; 
         }
 

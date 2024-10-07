@@ -7,6 +7,7 @@ namespace Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize(Roles = "Admin")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _UserService;
@@ -34,8 +35,15 @@ namespace Web.Controllers
         [HttpGet("[action]")]
         public ActionResult<List<UserDto>> Get()
         {
-            var userAll = _UserService.Get();
-            return Ok(userAll);
+            try
+            {
+                var userAll = _UserService.Get();
+                return Ok(userAll);
+            } 
+             catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
     }
 }
