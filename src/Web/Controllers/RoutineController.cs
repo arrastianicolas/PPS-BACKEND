@@ -31,9 +31,9 @@ namespace Web.Controllers
 
         {
             int clientId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
-            string userType = User.Claims.FirstOrDefault(c => c.Type == "Client")?.Value;
+            var userType = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
 
-            if (userType == null)
+            if (userType != "Client")
             {
                 return Forbid();
             }

@@ -29,6 +29,7 @@ namespace Application.Services
             {
                 Correlativenumber = routineClientRequest.Correlativenumber,
                 Dniclient = client.Dniclient,
+                Dnitrainer = "34765432", //Cambiar cuando esté hecho el modulo de turnos
                 //DniTrainer = routineClientRequest.DniTrainer;
                 Weight = routineClientRequest.Weight,
                 Height = routineClientRequest.Height,

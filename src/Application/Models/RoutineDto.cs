@@ -9,9 +9,9 @@ namespace Application.Models
 {
     public class RoutineDto
     {
-        public float Weight { get; set; }
+        public string Weight { get; set; }
 
-        public float Height { get; set; }
+        public string Height { get; set; }
 
         public string Status { get; set; } 
 
