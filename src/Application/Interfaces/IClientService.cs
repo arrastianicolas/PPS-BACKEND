@@ -16,5 +16,7 @@ namespace Application.Interfaces
         void UpdateClient(int Iduser, ClientRequest clientRequest, UserRequest userRequest);
         ClientUserDto GetUserById(int Iduser);
         void Delete(string clientDni);
+        ClientDto GetClientByDni(string dniClient);
+        void UpdatePago(string dniClient);
     }
 }
