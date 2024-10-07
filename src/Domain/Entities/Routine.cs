@@ -11,9 +11,9 @@ public partial class Routine
 
     public string Dnitrainer { get; set; } = null!;
 
-    public float Weight { get; set; }
+    public string Weight { get; set; } = null!;
 
-    public float Height { get; set; }
+    public string Height { get; set; } = null!;
 
     public string Status { get; set; } = null!;
 
