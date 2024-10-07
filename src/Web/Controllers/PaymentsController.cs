@@ -43,22 +43,26 @@ namespace Web.Controllers
             }
         }
             };
-
+            
             var preference = await _mercadoPagoService.CrearPreferenciaPago(preferenceRequest);
+           
             return Ok(new { init_point = preference.InitPoint });
         }
-        [HttpPost("mercado-pago-approved")]
-        public async Task<IActionResult> CrearClientePorPagoAprobado([FromBody] MercadoPagoNotificationRequest notification)
+        [HttpPost("mercado-pago-webhook")]
+        public async Task<IActionResult> RecibirNotificacionPago([FromBody] MercadoPagoNotificationRequest notification)
         {
-            // Verificar el estado del pago usando el PaymentId de la notificación
-            var paymentStatus = await _mercadoPagoService.VerificarEstadoPago(notification.PaymentId);
+            // El PaymentId debería venir en la notificación que envía Mercado Pago automáticamente
+            var paymentId = notification.PaymentId;
+
+            // Verificar el estado del pago en Mercado Pago usando el PaymentId recibido
+            var paymentStatus = await _mercadoPagoService.VerificarEstadoPago(paymentId);
 
             if (paymentStatus == "approved")
             {
                 try
                 {
-                    var newClient = _clientService.CreateClient(notification.ClientRequest , notification.UserRequest);
-
+                    // Si el pago fue aprobado, puedes proceder con la creación del cliente
+                    var newClient = _clientService.CreateClient(notification.ClientRequest, notification.UserRequest);
                     return Ok(new { Message = "Cliente creado con éxito", Cliente = newClient });
                 }
                 catch (Exception ex)
@@ -69,6 +73,7 @@ namespace Web.Controllers
 
             return BadRequest(new { Error = "El pago no fue aprobado" });
         }
+
 
         [HttpPost("update-membership")]
         public async Task<IActionResult> ActualizarMembresiaCliente([FromBody] MercadoPagoNotificationRequest notification)

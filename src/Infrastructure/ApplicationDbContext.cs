@@ -72,9 +72,7 @@ public partial class ApplicationDbContext : DbContext
                 .HasDefaultValueSql("'Sin especificar'")
                 .HasColumnName("genre");
             entity.Property(e => e.Iduser).HasColumnName("iduser");
-            entity.Property(e => e.Isactive)
-                .HasDefaultValueSql("'1'")
-                .HasColumnName("isactive");
+            entity.Property(e => e.Isactive).HasColumnName("isactive");
             entity.Property(e => e.Lastname)
                 .HasMaxLength(20)
                 .HasColumnName("lastname");
@@ -172,11 +170,15 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Description)
                 .HasMaxLength(45)
                 .HasColumnName("description");
-            entity.Property(e => e.Height).HasColumnName("height");
+            entity.Property(e => e.Height)
+                .HasMaxLength(6)
+                .HasColumnName("height");
             entity.Property(e => e.Status)
                 .HasMaxLength(15)
                 .HasColumnName("status");
-            entity.Property(e => e.Weight).HasColumnName("weight");
+            entity.Property(e => e.Weight)
+                .HasMaxLength(6)
+                .HasColumnName("weight");
 
             entity.HasOne(d => d.DniclientNavigation).WithMany(p => p.Routines)
                 .HasForeignKey(d => d.Dniclient)
