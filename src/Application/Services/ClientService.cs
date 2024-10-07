@@ -30,9 +30,23 @@ namespace Application.Services
 
         public ClientDto CreateClient(ClientRequest clientRequest, UserRequest userRequest)
         {
+            // Validación para verificar que no exista otro usuario con el mismo email
+            var existingUserWithSameEmail = _userRepository.GetByUserEmail(userRequest.Email);
 
+            if (existingUserWithSameEmail != null)
+            {
+                throw new Exception("Ya existe un usuario con el mismo correo electrónico.");
+            }
 
+            // Validación para verificar que no exista otro cliente con el mismo Dniclient
+            var existingClientWithSameDni = _clientRepository.GetByDni(clientRequest.Dniclient);
 
+            if (existingClientWithSameDni != null)
+            {
+                throw new Exception("Ya existe un cliente con el mismo DNI.");
+            }
+
+            // Obtener el tipo de membresía correspondiente
             var membership = _membershipRepository.Get()
                 .FirstOrDefault(m => m.Type == clientRequest.Typememberships);
 
@@ -54,21 +68,29 @@ namespace Application.Services
                 Phonenumber = clientRequest.Phonenumber,
                 Typememberships = membership.Type,
                 Startdatemembership = DateTime.Now,
-                Actualdatemembership = DateTime.Now,   
+                Actualdatemembership = DateTime.Now,
                 Genre = clientRequest.Genre,
                 Isactive = 1,
                 Iduser = createdUser.Id
             };
+
             _clientRepository.Add(client);
 
             return ClientDto.Create(client);
         }
+
         public void UpdateClient(int Iduser, ClientRequest clientRequest, UserRequest userRequest)
         {
             var user = _userRepository.GetById(Iduser);
             if (user == null)
             {
                 throw new NotFoundException($"No se encontró un usuario con el ID: {Iduser}");
+            }
+            var existingUserWithSameEmail = _userRepository.GetByUserEmail(userRequest.Email);
+
+            if (existingUserWithSameEmail != null)
+            {
+                throw new Exception("Ya existe un usuario con el mismo correo electrónico.");
             }
 
             user.Password = userRequest.Password;

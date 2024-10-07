@@ -18,6 +18,7 @@ namespace Application.Models
         public string PhoneNumber { get; set; } = null!;
         public string TypeMembership { get; set; } = null!;
         public DateTime StartDateMembership { get; set; }
+        public DateTime Actualdatemembership { get; set; }
         public string Genre { get; set; } = null!;
         public int Isactive { get; set; }
 
@@ -33,6 +34,7 @@ namespace Application.Models
                 PhoneNumber = client.Phonenumber,
                 TypeMembership = client.Typememberships,
                 StartDateMembership = client.Startdatemembership,
+                Actualdatemembership = client.Actualdatemembership,
                 Isactive = client.Isactive,
                 Genre = client.Genre,
             };
