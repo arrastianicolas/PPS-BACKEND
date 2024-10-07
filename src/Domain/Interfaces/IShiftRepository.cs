@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Interfaces
 {
-    public interface IMembershipRepository : IBaseRepository<Membership>
+    public interface IShiftRepository : IBaseRepository<Shift>
     {
-        Membership? GetByMembership(string typeMembership);
     }
 }

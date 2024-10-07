@@ -2,6 +2,7 @@
 using Application.Models.Requests;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Web.Controllers
 {
@@ -27,12 +28,34 @@ namespace Web.Controllers
         /// </remarks>
         [HttpPost("authenticate")] //Vamos a usar un POST ya que debemos enviar los datos para hacer el login
         public ActionResult<string> Autenticar(AuthenticationRequest authenticationRequest) //Enviamos como parámetro la clase que creamos arriba
+
         {
-            //Lo primero que hacemos es llamar a una función que valide los parámetros que enviamos.
             try
             {
                 string token = _customAuthenticationService.Autenticar(authenticationRequest);
-                return Ok(token);
+
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true, 
+                    Secure = true,   
+                    SameSite = SameSiteMode.None, 
+                    Expires = DateTime.UtcNow.AddHours(1) 
+                };
+
+                Response.Cookies.Append("jwtToken", token, cookieOptions);
+
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                var userTypeClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "role"); 
+
+                var userType = userTypeClaim?.Value ?? "Unknown"; 
+
+                return Ok(new { message = "Authenticated", 
+                    tokenExpires = cookieOptions.Expires, 
+                    token,
+                    userType
+                });
             }
             catch (Exception ex)
             {
@@ -40,5 +63,25 @@ namespace Web.Controllers
             }
 
         }
+        [HttpPost("Logout")]
+        public IActionResult Logout()
+        {
+            var jwtToken = Request.Cookies["jwtToken"];
+
+            if (jwtToken != null)
+            {
+                Response.Cookies.Append("jwtToken", "", new CookieOptions
+                {
+                    Expires = DateTimeOffset.UtcNow.AddDays(-1), 
+                    HttpOnly = true,  
+                    Secure = true,    
+                    SameSite = SameSiteMode.None, 
+                    Path = "/",  
+                });
+            }
+
+            return Ok(new { message = "Cierre de sesión exitoso" });
+        }
+
     }
 }

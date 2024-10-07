@@ -4,6 +4,7 @@ using Application.Models.Requests;
 using Application.Services;
 using Domain.Exceptions;
 using Infrastructure.TempModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.CompilerServices;
@@ -13,6 +14,7 @@ namespace Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize(Roles = "Client")]
     public class ClientController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -41,6 +43,7 @@ namespace Web.Controllers
             return NoContent();
         }
         [HttpGet("[action]")]
+       
         public ActionResult<ClientUserDto> GetMyDetails()
         {
             int clientId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");

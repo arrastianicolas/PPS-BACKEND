@@ -4,8 +4,8 @@ using Domain.Interfaces;
 using Infrastructure;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
-using Infrastructure.TempModels;
 using MercadoPago.Config;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -67,10 +67,10 @@ MercadoPagoConfig.AccessToken = accessToken;
 // Registrar el servicio de MercadoPago
 builder.Services.AddSingleton<IMercadoPagoService, MercadoPagoService>();
 
-builder.Services.AddAuthentication("Bearer") //"Bearer" es el tipo de auntenticación que tenemos que elegir después en PostMan para pasarle el token
-    .AddJwtBearer(options => //Acá definimos la configuración de la autenticación. le decimos qué cosas queremos comprobar. La fecha de expiración se valida por defecto.
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer(options =>
     {
-        options.TokenValidationParameters = new()
+        options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
             ValidateAudience = true,
@@ -79,14 +79,41 @@ builder.Services.AddAuthentication("Bearer") //"Bearer" es el tipo de auntentica
             ValidAudience = builder.Configuration["AutenticacionService:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["AutenticacionService:SecretForKey"]))
         };
-    }
-);
+        options.SaveToken = true; // Almacena el token en la propiedad de seguridad principal
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                // Obtiene el token desde una cookie si está presente
+                var token = context.Request.Cookies["jwtToken"];
+                if (!string.IsNullOrEmpty(token))
+                {
+                    context.Token = token;
+                    Console.WriteLine($"Token from cookie: {token}"); // Añadir logging
+                }
+                else
+                {
+                    Console.WriteLine("Token not found in cookie.");
+                }
+                return Task.CompletedTask;
+            }
+        };
+    })
+    .AddCookie(options =>
+    {
+        options.Cookie.Name = "jwtToken"; // Aquí defines el nombre de la cookie
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.None; // Para HTTPS
+        options.Cookie.SameSite = SameSiteMode.None; // Permite que las cookies funcionen cross-origin
+    });
 
 
 #region Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
+builder.Services.AddScoped<ITrainerRepository, TrainerRepository>();
 builder.Services.AddScoped<IMembershipRepository, MembershipRepository>();
+builder.Services.AddScoped<IShiftRepository, ShiftRepository>();
 #endregion
 
 #region Services
@@ -95,7 +122,10 @@ builder.Services.Configure<AuthenticacionServiceOptions>(
     builder.Configuration.GetSection(AuthenticacionServiceOptions.AutenticacionService));
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IClientService, ClientService>();
+builder.Services.AddScoped<IShiftService, ShiftService>();
+builder.Services.AddScoped<ITrainerService, TrainerService>();
 builder.Services.AddTransient<IMailService, MailService>();
+builder.Services.AddTransient<IMembershipService, MembershipService>();
 #endregion
 
 builder.Services.AddCors(options =>
@@ -103,9 +133,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: "Policy1",
                       policy =>
                       {
-                          policy.AllowAnyOrigin()
+                          policy.WithOrigins("http://localhost:5173")
                           .AllowAnyHeader()
-                          .AllowAnyMethod();
+                          .AllowAnyMethod()
+                          .AllowCredentials();
                       });
 });
 var app = builder.Build();
@@ -117,9 +148,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
-
 app.UseHttpsRedirection();
+
+app.UseCors("Policy1");
 
 app.UseAuthentication();
 

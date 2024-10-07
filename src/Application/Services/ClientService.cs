@@ -3,13 +3,16 @@ using Application.Models;
 using Application.Models.Requests;
 using Domain.Exceptions;
 using Domain.Interfaces;
+using Domain;
 using Infrastructure.TempModels;
+using MercadoPago.Resource.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using User = Infrastructure.TempModels.User;
 
 namespace Application.Services
 {
@@ -30,9 +33,23 @@ namespace Application.Services
 
         public ClientDto CreateClient(ClientRequest clientRequest, UserRequest userRequest)
         {
+            // Validación para verificar que no exista otro usuario con el mismo email
+            var existingUserWithSameEmail = _userRepository.GetByUserEmail(userRequest.Email);
 
+            if (existingUserWithSameEmail != null)
+            {
+                throw new Exception("Ya existe un usuario con el mismo correo electrónico.");
+            }
 
+            // Validación para verificar que no exista otro cliente con el mismo Dniclient
+            var existingClientWithSameDni = _clientRepository.GetByDni(clientRequest.Dniclient);
 
+            if (existingClientWithSameDni != null)
+            {
+                throw new Exception("Ya existe un cliente con el mismo DNI.");
+            }
+
+            // Obtener el tipo de membresía correspondiente
             var membership = _membershipRepository.Get()
                 .FirstOrDefault(m => m.Type == clientRequest.Typememberships);
 
@@ -53,21 +70,30 @@ namespace Application.Services
                 Birthdate = clientRequest.Birthdate,
                 Phonenumber = clientRequest.Phonenumber,
                 Typememberships = membership.Type,
-                Startdatemembership = DateTime.Now,
-                Genre = clientRequest.Genre,
                 Isactive = 1,
+                Startdatemembership = DateTime.Now,
+                Actualdatemembership = DateTime.Now,
+                Genre = clientRequest.Genre,
                 Iduser = createdUser.Id
             };
+
             _clientRepository.Add(client);
 
             return ClientDto.Create(client);
         }
+
         public void UpdateClient(int Iduser, ClientRequest clientRequest, UserRequest userRequest)
         {
             var user = _userRepository.GetById(Iduser);
             if (user == null)
             {
-                throw new KeyNotFoundException($"No se encontró un usuario con el ID: {Iduser}");
+                throw new NotFoundException($"No se encontró un usuario con el ID: {Iduser}");
+            }
+            var existingUserWithSameEmail = _userRepository.GetByUserEmail(userRequest.Email);
+
+            if (existingUserWithSameEmail != null)
+            {
+                throw new Exception("Ya existe un usuario con el mismo correo electrónico.");
             }
 
             user.Password = userRequest.Password;
@@ -95,14 +121,14 @@ namespace Application.Services
             var user = _userRepository.GetById(Iduser);
             if (user == null)
             {
-                throw new Exception("Usuario no encontrado");
+                throw new NotFoundException("Usuario no encontrado");
             }
 
             
             var clientUser = _clientRepository.GetClientByUserId(Iduser);
             if (clientUser == null)
             {
-                throw new Exception("No se encontro al cliente.");
+                throw new NotFoundException("No se encontro al cliente.");
             }
 
             // Retorna el DTO combinado de usuario y cliente
@@ -119,6 +145,31 @@ namespace Application.Services
             client.Isactive = 0;
             _clientRepository.Update(client);
             
+        }
+
+        public ClientDto GetClientByDni(string dniClient)
+        {
+
+      
+
+            var clientUser = _clientRepository.GetByDni(dniClient);
+            if (clientUser == null)
+            {
+                throw new NotFoundException("No se encontro al cliente.");
+            }
+
+            // Retorna el DTO combinado de usuario y cliente
+            return ClientDto.Create(clientUser);
+        }
+
+        public void UpdatePago(string dniClient)
+        {
+            var client = _clientRepository.GetByDni(dniClient);
+            client.Isactive = 1; // Activar la membresía
+            client.Startdatemembership = DateTime.Now;
+            client.Actualdatemembership = DateTime.Now;
+
+            _clientRepository.Update(client);
         }
 
     }

@@ -7,12 +7,15 @@ using System.Threading.Tasks;
 
 namespace Application.Models.Requests
 {
-    public class AuthenticationRequest
+    public class MembershipRequest
     {
-        [Required]
-        public string? Email { get; set; }
-        [Required]
-        public string? Password { get; set; }
         
+
+        [Required]
+        public string Type { get; set; } = null!;
+        [Required]
+        public float Price { get; set; }
+        [Required]
+        public string Description { get; set; } = null!;
     }
 }

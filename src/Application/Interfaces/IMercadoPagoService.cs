@@ -11,5 +11,6 @@ namespace Application.Interfaces
     public interface IMercadoPagoService
     {
         Task<Preference> CrearPreferenciaPago(PreferenceRequest preferenceRequest);
+        Task<string> VerificarEstadoPago(string paymentId);
     }
 }

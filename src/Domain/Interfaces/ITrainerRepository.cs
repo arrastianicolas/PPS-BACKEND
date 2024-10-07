@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace Domain.Interfaces
 {
-    public interface IMembershipRepository : IBaseRepository<Membership>
+    public interface ITrainerRepository : IBaseRepository<Trainer>
     {
-        Membership? GetByMembership(string typeMembership);
+        Trainer? GetTrainerByUserId(int userId);
+        Trainer? GetByDni(string dni);
     }
 }

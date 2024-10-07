@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Infrastructure.TempModels;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Scaffolding.Internal;
 
-namespace Infrastructure.TempModels;
+namespace Infrastructure;
 
 public partial class ApplicationDbContext : DbContext
 {
@@ -36,6 +37,9 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseMySql("server=localhost;database=trainingcenterdb;user=root;password=root", ServerVersion.Parse("8.0.39-mysql"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -56,6 +60,9 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Dniclient)
                 .HasMaxLength(8)
                 .HasColumnName("dniclient");
+            entity.Property(e => e.Actualdatemembership)
+                .HasColumnType("datetime")
+                .HasColumnName("actualdatemembership");
             entity.Property(e => e.Birthdate).HasColumnName("birthdate");
             entity.Property(e => e.Firstname)
                 .HasMaxLength(20)
@@ -65,9 +72,7 @@ public partial class ApplicationDbContext : DbContext
                 .HasDefaultValueSql("'Sin especificar'")
                 .HasColumnName("genre");
             entity.Property(e => e.Iduser).HasColumnName("iduser");
-            entity.Property(e => e.Isactive)
-                .HasDefaultValueSql("'1'")
-                .HasColumnName("isactive");
+            entity.Property(e => e.Isactive).HasColumnName("isactive");
             entity.Property(e => e.Lastname)
                 .HasMaxLength(20)
                 .HasColumnName("lastname");
@@ -165,11 +170,15 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Description)
                 .HasMaxLength(45)
                 .HasColumnName("description");
-            entity.Property(e => e.Height).HasColumnName("height");
+            entity.Property(e => e.Height)
+                .HasMaxLength(6)
+                .HasColumnName("height");
             entity.Property(e => e.Status)
                 .HasMaxLength(15)
                 .HasColumnName("status");
-            entity.Property(e => e.Weight).HasColumnName("weight");
+            entity.Property(e => e.Weight)
+                .HasMaxLength(6)
+                .HasColumnName("weight");
 
             entity.HasOne(d => d.DniclientNavigation).WithMany(p => p.Routines)
                 .HasForeignKey(d => d.Dniclient)
