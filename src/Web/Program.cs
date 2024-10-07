@@ -123,6 +123,7 @@ builder.Services.Configure<AuthenticacionServiceOptions>(
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IShiftService, ShiftService>();
+builder.Services.AddScoped<ITrainerService, TrainerService>();
 builder.Services.AddTransient<IMailService, MailService>();
 builder.Services.AddTransient<IMembershipService, MembershipService>();
 #endregion
