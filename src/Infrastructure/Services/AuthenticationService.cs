@@ -53,7 +53,14 @@ namespace Infrastructure.Services
                 return user; // Retorna si el usuario es un Trainer y está activo 
             }
 
-            //Si no es ni Client ni Trainer activo, retornamos null
+
+            var admin = _userRepository.GetById(user.Id);
+            if (admin != null)
+            {
+                return user;
+            }
+               
+            //Si no es ni Client/Trainer/Admin activo, retornamos null
             return null; 
         }
 
