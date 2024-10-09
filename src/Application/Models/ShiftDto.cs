@@ -10,6 +10,7 @@ namespace Application.Models
 {
     public class ShiftDto
     {
+        public int Idshift { get; set; }
 
         public DateTime Date { get; set; }
 
@@ -24,6 +25,7 @@ namespace Application.Models
         {
             return new ShiftDto
             {
+                Idshift = shift.Idshift,
                 Date = shift.Date,
                 Idlocation = shift.Idlocation,
                 Dnitrainer = shift.Dnitrainer,

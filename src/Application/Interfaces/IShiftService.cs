@@ -12,5 +12,6 @@ namespace Application.Interfaces
     {
         List<ShiftDto> GetAll();
         ShiftDto CreateShift(ShiftRequest shiftRequest);
+        void UpdateShift(int id, ShiftRequest shiftRequest);
     }
 }
