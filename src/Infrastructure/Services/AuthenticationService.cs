@@ -1,8 +1,9 @@
 ﻿using Application.Interfaces;
 using Application.Models.Requests;
+using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Repositories;
-using Infrastructure.TempModels;
+
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;

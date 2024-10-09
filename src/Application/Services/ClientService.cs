@@ -3,16 +3,12 @@ using Application.Models;
 using Application.Models.Requests;
 using Domain.Exceptions;
 using Domain.Interfaces;
-using Domain;
-using Infrastructure.TempModels;
+
+
 using MercadoPago.Resource.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using User = Infrastructure.TempModels.User;
+using Domain.Entities;
+using User = Domain.Entities.User;
+
 
 namespace Application.Services
 {

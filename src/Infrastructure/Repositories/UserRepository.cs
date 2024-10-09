@@ -1,6 +1,7 @@
 ﻿using Application.Models;
+using Domain.Entities;
 using Domain.Interfaces;
-using Infrastructure.TempModels;
+
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

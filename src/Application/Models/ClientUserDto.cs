@@ -1,5 +1,4 @@
-﻿using Infrastructure.TempModels;
-
+﻿using Domain.Entities;
 namespace Application.Models
 {
     public class ClientUserDto

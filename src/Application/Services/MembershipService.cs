@@ -7,8 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Infrastructure.TempModels;
+
 using Domain.Exceptions;
+using Domain.Entities;
 
 namespace Application.Services
 {
