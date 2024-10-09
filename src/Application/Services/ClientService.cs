@@ -157,12 +157,11 @@ namespace Application.Services
             // Retorna el DTO combinado de usuario y cliente
             return ClientDto.Create(clientUser);
         }
-
+        // servicio de updatePago (renovar membresia)
         public void UpdatePago(string dniClient)
         {
             var client = _clientRepository.GetByDni(dniClient);
             client.Isactive = 1; // Activar la membresía
-            client.Startdatemembership = DateTime.Now;
             client.Actualdatemembership = DateTime.Now;
 
             _clientRepository.Update(client);
