@@ -52,7 +52,7 @@ namespace Web.Controllers
         },
     },
                 // Aquí es donde agregamos la URL de notificación
-                NotificationUrl = "https://c528-190-194-91-229.ngrok-free.app/api/Payments/mercado-pago-approved"
+                NotificationUrl = "https://dc0f-190-194-91-229.ngrok-free.app/api/Payments/mercado-pago-approved"
             };
 
 
@@ -69,24 +69,42 @@ namespace Web.Controllers
 
             try
             {
-                var jsonString = JsonConvert.SerializeObject(request);
-                Console.WriteLine("Notificación recibida: " + jsonString);
+                // Validar que la notificación tenga datos
+                if (request?.Data?.Id == null)
+                {
+                    Console.WriteLine("Notificación recibida con datos vacíos");
+                    return Ok("Notificación recibida, pero sin datos suficientes");
+                }
+
+                // Verificar si ya procesamos este pago
+
+
+                // Obtener información del pago
                 var payment = await _mercadoPagoService.ObtenerPagoPorId(request.Data.Id);
-                if (payment.Status == "approved")
+                if (payment == null)
+                {
+                    // Si no puedes obtener el pago, devuelve un 200 OK para evitar reintentos}
+                    Console.WriteLine("no se encontro el pago conj ese Id");
+                    return Ok("No se encontró el pago con ese ID");
+                }
+                // Si el pago es aprobado, procesar el cliente
+
+                if (payment.Status == "approved" && payment.StatusDetail == "accredited")
                 {
 
-                    Console.WriteLine("EL PAGO FUE EXITOSO");
-                   
+                    Console.WriteLine($"Pago aprobado, procesando cliente... {payment.Status} {payment.StatusDetail}");
+
+                    return Ok(payment);
+
                 }
-                // Maneja el pago aprobado
-                return Ok();
+
+                return Ok($"Pago procesado correctamente {payment}");
             }
             catch (Exception ex)
             {
-                // Registrar el error y evitar bucles
                 Console.WriteLine($"Error: {ex.Message}");
-                return BadRequest("Error al procesar el pago.");
-            }
+                return Ok("Error al procesar el pago, pero evitando reintentos");
+            }   
 
         }
 

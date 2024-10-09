@@ -36,7 +36,7 @@ namespace Application.Services
                 Weight = routineClientRequest.Weight,
                 Height = routineClientRequest.Height,
                 Status = "En Progreso",
-                Description = routineClientRequest.Description
+                Description = routineClientRequest.Description,
                 Days = routineClientRequest.Days
             };
             _routineRepository.Add(routine);
