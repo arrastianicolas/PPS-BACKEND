@@ -67,85 +67,49 @@ namespace Web.Controllers
         {
 
 
-            try
-            {
-                // Validar que la notificación tenga datos
-                if (request?.Data?.Id == null)
-                {
-                    Console.WriteLine("Notificación recibida con datos vacíos");
-                    return Ok("Notificación recibida, pero sin datos suficientes");
-                }
-
-                // Verificar si ya procesamos este pago
-
-
-                // Obtener información del pago
-                var payment = await _mercadoPagoService.ObtenerPagoPorId(request.Data.Id);
-                if (payment == null)
-                {
-                    // Si no puedes obtener el pago, devuelve un 200 OK para evitar reintentos}
-                    Console.WriteLine("no se encontro el pago conj ese Id");
-                    return Ok("No se encontró el pago con ese ID");
-                }
-                // Si el pago es aprobado, procesar el cliente
-
-                if (payment.Status == "approved" && payment.StatusDetail == "accredited")
-                {
-
-                    Console.WriteLine($"Pago aprobado, procesando cliente... {payment.Status} {payment.StatusDetail}");
-
-                    return Ok(payment);
-
-                }
-
-                return Ok($"Pago procesado correctamente {payment}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-                return Ok("Error al procesar el pago, pero evitando reintentos");
-            }   
-
+            var payment = await _mercadoPagoService.ObtenerPagoPorId(request.Data.Id);
+            Console.WriteLine(payment.Status , payment.StatusDetail);  
+            return Ok(payment.Status); 
+            
         }
 
 
 
+            //[HttpPost("update-membership")]
+            //public async Task<IActionResult> ActualizarMembresiaCliente([FromBody] MercadoPagoNotificationRequest notification)
+            //{
+            //    // Obtener el DniClient desde los claims del usuario autenticado
+            //    var dniClient = User.Claims.FirstOrDefault(c => c.Type == "DniClient")?.Value;
 
-        //[HttpPost("update-membership")]
-        //public async Task<IActionResult> ActualizarMembresiaCliente([FromBody] MercadoPagoNotificationRequest notification)
-        //{
-        //    // Obtener el DniClient desde los claims del usuario autenticado
-        //    var dniClient = User.Claims.FirstOrDefault(c => c.Type == "DniClient")?.Value;
+            //    if (string.IsNullOrEmpty(dniClient))
+            //    {
+            //        return Unauthorized(new { Error = "No se encontró el DniClient en los claims" });
+            //    }
 
-        //    if (string.IsNullOrEmpty(dniClient))
-        //    {
-        //        return Unauthorized(new { Error = "No se encontró el DniClient en los claims" });
-        //    }
+            //    try
+            //    {
+            //        // Verificar el estado del pago usando el PaymentId de la notificación
+            //        var paymentStatus = await _mercadoPagoService.VerificarEstadoPago(notification.PaymentId);
 
-        //    try
-        //    {
-        //        // Verificar el estado del pago usando el PaymentId de la notificación
-        //        var paymentStatus = await _mercadoPagoService.VerificarEstadoPago(notification.PaymentId);
+            //        // Solo proceder si el estado del pago es 'completed'
+            //        if (paymentStatus == "completed") // Aquí puedes cambiar "completed" por el estado adecuado
+            //        {
+            //            // Actualizar la membresía del cliente
+            //            _clientService.UpdatePago(dniClient);
 
-        //        // Solo proceder si el estado del pago es 'completed'
-        //        if (paymentStatus == "completed") // Aquí puedes cambiar "completed" por el estado adecuado
-        //        {
-        //            // Actualizar la membresía del cliente
-        //            _clientService.UpdatePago(dniClient);
-
-        //            return Ok(new { Message = "Membresía actualizada con éxito" });
-        //        }
-        //        else
-        //        {
-        //            return BadRequest(new { Error = "El estado del pago no es válido para actualizar la membresía" });
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(new { Error = ex.Message });
-        //    }
-        //}
+            //            return Ok(new { Message = "Membresía actualizada con éxito" });
+            //        }
+            //        else
+            //        {
+            //            return BadRequest(new { Error = "El estado del pago no es válido para actualizar la membresía" });
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        return BadRequest(new { Error = ex.Message });
+            //    }
+            //}
 
 
-    }
+        }
 }
