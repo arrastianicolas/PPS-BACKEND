@@ -16,11 +16,13 @@ namespace Application.Services
     {
         private readonly IShiftRepository _shiftRepository;
         private readonly ITrainerRepository _trainerRepository;
+        private readonly ILocationRepository _locationRepository;
 
-        public ShiftService(IShiftRepository shiftRepository, ITrainerRepository trainerRepository)
+        public ShiftService(IShiftRepository shiftRepository, ITrainerRepository trainerRepository, ILocationRepository locationRepository)
         {
             _shiftRepository = shiftRepository;
             _trainerRepository = trainerRepository;
+            _locationRepository = locationRepository;
         }
 
         public List<ShiftDto> GetAll()
@@ -34,6 +36,11 @@ namespace Application.Services
             if (shiftRequest.Dnitrainer != null && _trainerRepository.GetByDni(shiftRequest.Dnitrainer) == null)
             {
                 throw new Exception("Trainer not found.");
+            }
+
+            if (_locationRepository.GetById(shiftRequest.Idlocation) == null)
+            {
+                throw new Exception("Location not found.");
             }
 
             var shift = new Shift
@@ -55,6 +62,11 @@ namespace Application.Services
             if (shiftRequest.Dnitrainer != null && _trainerRepository.GetByDni(shiftRequest.Dnitrainer) == null)
             {
                 throw new Exception("Trainer not found.");
+            }
+
+            if (_locationRepository.GetById(shiftRequest.Idlocation) == null)
+            {
+                throw new Exception("Location not found.");
             }
 
             shift.Date = shiftRequest.Date;
