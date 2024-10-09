@@ -1,4 +1,5 @@
-﻿using Infrastructure.TempModels;
+﻿using Domain.Entities;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;

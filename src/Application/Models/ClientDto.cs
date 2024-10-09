@@ -5,7 +5,8 @@
 //using System.Text;
 //using System.Threading.Tasks;
 
-using Infrastructure.TempModels;
+using Domain.Entities;
+
 
 namespace Application.Models
 {

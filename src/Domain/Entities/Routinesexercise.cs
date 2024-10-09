@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Infrastructure.TempModels;
+namespace Domain.Entities;
 
 public partial class Routinesexercise
 {
@@ -16,6 +16,8 @@ public partial class Routinesexercise
     public string Dniclient { get; set; } = null!;
 
     public string Dnitrainer { get; set; } = null!;
+
+    public int Day { get; set; }
 
     public virtual Exercise IdexerciseNavigation { get; set; } = null!;
 
