@@ -26,8 +26,29 @@ namespace Web.Controllers
         [HttpPost]
         public IActionResult AddShift([FromBody] ShiftRequest shiftRequest)
         {
-            var shiftDto = _shiftService.CreateShift(shiftRequest);
-            return Ok(shiftDto);
+            try
+            {
+                var shiftDto = _shiftService.CreateShift(shiftRequest);
+                return Ok(shiftDto);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateShift([FromRoute] int id, [FromBody] ShiftRequest shiftRequest)
+        {
+            try
+            {
+                _shiftService.UpdateShift(id, shiftRequest);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
     }
 }
