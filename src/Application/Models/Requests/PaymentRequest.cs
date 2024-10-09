@@ -9,6 +9,7 @@ namespace Application.Models.Requests
     public class PaymentRequest
     {
         public string Type { get; set; }
+     
         //public int Quantity { get; set; }
         //public float Price { get; set; }
     }
