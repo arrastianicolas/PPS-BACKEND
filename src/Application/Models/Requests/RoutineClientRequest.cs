@@ -8,10 +8,10 @@ namespace Application.Models.Requests
 {
     public class RoutineClientRequest
     {
-        public int Correlativenumber { get; set; }
         public string Weight { get; set; }
         public string Height { get; set; }
         public string Description { get; set; }
+        public int Days {  get; set; }
 
     }
 }

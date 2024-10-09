@@ -24,10 +24,11 @@ namespace Application.Services
         public RoutineDto Add(RoutineClientRequest routineClientRequest,int userId)
         {
             var client = _clientRepository.GetClientByUserId(userId);
+            var correlativeNumber = _routineRepository.GetNextCorrelativenumber(client.Dniclient);
 
             var routine = new Routine()
             {
-                Correlativenumber = routineClientRequest.Correlativenumber,
+                Correlativenumber = correlativeNumber,
                 Dniclient = client.Dniclient,
                 Dnitrainer = "34765432", //Cambiar cuando esté hecho el modulo de turnos
                 //DniTrainer = routineClientRequest.DniTrainer;
@@ -35,6 +36,7 @@ namespace Application.Services
                 Height = routineClientRequest.Height,
                 Status = "En Progreso",
                 Description = routineClientRequest.Description
+                Days = routineClientRequest.Days
             };
             _routineRepository.Add(routine);
             return RoutineDto.Create(routine);
