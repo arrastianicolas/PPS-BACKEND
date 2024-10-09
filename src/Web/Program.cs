@@ -120,6 +120,7 @@ builder.Services.AddScoped<ITrainerRepository, TrainerRepository>();
 builder.Services.AddScoped<IMembershipRepository, MembershipRepository>();
 builder.Services.AddScoped<IShiftRepository, ShiftRepository>();
 builder.Services.AddScoped<IRoutineRepository, RoutineRepository >();
+builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 #endregion
 
 #region Services
@@ -133,7 +134,7 @@ builder.Services.AddScoped<ITrainerService, TrainerService>();
 builder.Services.AddTransient<IMailService, MailService>();
 builder.Services.AddTransient<IMembershipService, MembershipService>();
 builder.Services.AddTransient<IRoutineService, RoutineService>();
-
+builder.Services.AddScoped<ILocationService, LocationService>();
 #endregion
 
 builder.Services.AddCors(options =>
