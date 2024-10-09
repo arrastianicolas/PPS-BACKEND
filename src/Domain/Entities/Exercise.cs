@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Infrastructure.TempModels;
+namespace Infrastructure.Entities;
 
 public partial class Exercise
 {

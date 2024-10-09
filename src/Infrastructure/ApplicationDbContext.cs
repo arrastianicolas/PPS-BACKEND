@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Infrastructure.TempModels;
+using Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Scaffolding.Internal;
 
@@ -167,6 +167,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Dniclient)
                 .HasMaxLength(8)
                 .HasColumnName("dniclient");
+            entity.Property(e => e.Days).HasColumnName("days");
             entity.Property(e => e.Description)
                 .HasMaxLength(45)
                 .HasColumnName("description");
@@ -217,6 +218,7 @@ public partial class ApplicationDbContext : DbContext
                 .HasMaxLength(8)
                 .HasColumnName("dnitrainer");
             entity.Property(e => e.Breaktime).HasColumnName("breaktime");
+            entity.Property(e => e.Day).HasColumnName("day");
             entity.Property(e => e.Serie).HasColumnName("serie");
 
             entity.HasOne(d => d.IdexerciseNavigation).WithMany(p => p.Routinesexercises)

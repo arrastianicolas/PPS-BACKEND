@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Infrastructure.TempModels;
+namespace Infrastructure.Entities;
 
 public partial class Routine
 {
@@ -18,6 +18,8 @@ public partial class Routine
     public string Status { get; set; } = null!;
 
     public string Description { get; set; } = null!;
+
+    public int Days { get; set; }
 
     public virtual Client DniclientNavigation { get; set; } = null!;
 
