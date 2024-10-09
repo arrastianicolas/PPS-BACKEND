@@ -10,5 +10,6 @@ namespace Domain.Interfaces
 {
     public interface IRoutineRepository : IBaseRepository<Routine>
     {
+        int GetNextCorrelativenumber(string dniClient);
     }
 }
