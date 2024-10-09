@@ -36,7 +36,7 @@ namespace Application.Services
             // Validación para verificar que no exista otro usuario con el mismo email
             var existingUserWithSameEmail = _userRepository.GetByUserEmail(userRequest.Email);
 
-            if (existingUserWithSameEmail != null)
+            if (existingUserWithSameEmail == null)
             {
                 throw new Exception("Ya existe un usuario con el mismo correo electrónico.");
             }

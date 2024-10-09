@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
 using static Infrastructure.Services.AuthenticationService;
@@ -65,7 +66,11 @@ var accessToken = builder.Configuration["MercadoPago:AccessToken"];
 MercadoPagoConfig.AccessToken = accessToken;
 
 // Registrar el servicio de MercadoPago
-builder.Services.AddSingleton<IMercadoPagoService, MercadoPagoService>();
+builder.Services.AddHttpClient<IMercadoPagoService, MercadoPagoService>(client =>
+{
+    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+});
+
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer(options =>

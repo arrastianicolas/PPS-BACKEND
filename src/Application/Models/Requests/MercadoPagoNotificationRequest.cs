@@ -8,8 +8,12 @@ namespace Application.Models.Requests
 {
     public class MercadoPagoNotificationRequest
     {
-        public string PaymentId { get; set; }
-        public ClientRequest ClientRequest { get; set; }
-        public UserRequest UserRequest { get; set; }    
+        public MercadoPagoData Data { get; set; }
+        
+    }
+
+    public class MercadoPagoData
+    {
+        public string Id { get; set; } // Este es el paymentId
     }
 }

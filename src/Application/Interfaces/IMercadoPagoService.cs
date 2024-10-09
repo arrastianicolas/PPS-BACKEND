@@ -1,4 +1,5 @@
 ﻿using MercadoPago.Client.Preference;
+using MercadoPago.Resource.Payment;
 using MercadoPago.Resource.Preference;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,6 @@ namespace Application.Interfaces
     public interface IMercadoPagoService
     {
         Task<Preference> CrearPreferenciaPago(PreferenceRequest preferenceRequest);
-        Task<string> VerificarEstadoPago(string paymentId);
+        Task<Payment> ObtenerPagoPorId(string paymentId);
     }
 }
