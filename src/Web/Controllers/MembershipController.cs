@@ -69,6 +69,13 @@ namespace Web.Controllers
 
         }
 
-    
+        [HttpGet("client-count")]
+        public ActionResult<List<object>> GetClientCountByMembership()
+        {
+            var membershipCounts = _membershipService.GetClientCountByMembership();
+            return Ok(membershipCounts);
+        }
+
+
     }
 }
