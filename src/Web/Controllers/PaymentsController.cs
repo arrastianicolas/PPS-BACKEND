@@ -18,13 +18,13 @@ namespace Web.Controllers
         private readonly IMercadoPagoService _mercadoPagoService;
         private readonly IMembershipService _membershipService;
         private readonly IClientService _clientService;
-       
+
         public PaymentsController(IMercadoPagoService mercadoPagoService, IMembershipService membershipService, IClientService clientService)
         {
             _mercadoPagoService = mercadoPagoService;
             _membershipService = membershipService;
             _clientService = clientService;
-            
+
 
         }
 
@@ -34,82 +34,34 @@ namespace Web.Controllers
             // Obtener la membresía seleccionada
             var membership = _membershipService.GetByType(request.Type);
 
-            if (membership == null)
-            {
-                return NotFound("Membresía no encontrada");
-            }
-            
-
+            // Crear la preferencia de pago con los detalles del producto/membresía
             var preferenceRequest = new PreferenceRequest
             {
                 Items = new List<PreferenceItemRequest>
-    {
-        new PreferenceItemRequest
         {
-            Title = $"Membresía: {membership.Type}",
-            Quantity = 1,
-            UnitPrice = (decimal?)membership.Price,  // Usar el precio de la membresía
+            new PreferenceItemRequest
+            {
+                Title = $"Membresía: {membership.Type}",
+                Quantity = 1,
+                UnitPrice = (decimal?)membership.Price, // Precio de la membresía
+                //PictureUrl = "https://www.google.com/imgres?q=training%20center&imgurl=https%3A%2F%2Flookaside.fbsbx.com%2Flookaside%2Fcrawler%2Fmedia%2F%3Fmedia_id%3D100063510893314&imgrefurl=https%3A%2F%2Fwww.facebook.com%2Ftrainingcenterrosario%2F%3Flocale%3Des_LA&docid=gXCR07NpMleQnM&tbnid=VdLaKjVvf1bEwM&vet=12ahUKEwjpy5jI0YSJAxXglZUCHfkFJGcQM3oECGUQAA..i&w=1080&h=1080&hcb=2&ved=2ahUKEwjpy5jI0YSJAxXglZUCHfkFJGcQM3oECGUQAA"
+            },
         },
-    },
-                // Aquí es donde agregamos la URL de notificación
-                NotificationUrl = "https://dc0f-190-194-91-229.ngrok-free.app/api/Payments/mercado-pago-approved"
+                BackUrls = new PreferenceBackUrlsRequest
+                {
+                    Success = "https://www.instagram.com/miguel_cabrera_3520/",   // URL a la que se redirige cuando el pago es aprobado
+                    Failure = "https://mi-sitio.com/pago-fallido",   // URL para pagos fallidos
+                    Pending = "https://mi-sitio.com/pago-pendiente"  // URL para pagos pendientes
+                },
+                AutoReturn = "approved" // Redirige automáticamente a la URL de éxito si el pago es aprobado
             };
 
-
+            // Llamada al servicio de MercadoPago para crear la preferencia
             var preference = await _mercadoPagoService.CrearPreferenciaPago(preferenceRequest);
-            
 
+            // Retornar el punto de inicialización de pago (init_point) para que el cliente lo use
             return Ok(new { init_point = preference.InitPoint });
         }
 
-        [HttpPost("mercado-pago-approved")]
-        public async Task<IActionResult> CrearClientePorPagoAprobado([FromBody] MercadoPagoNotificationRequest request)
-        {
-
-
-            var payment = await _mercadoPagoService.ObtenerPagoPorId(request.Data.Id);
-            Console.WriteLine(payment.Status , payment.StatusDetail);  
-            return Ok(payment.Status); 
-            
-        }
-
-
-
-            //[HttpPost("update-membership")]
-            //public async Task<IActionResult> ActualizarMembresiaCliente([FromBody] MercadoPagoNotificationRequest notification)
-            //{
-            //    // Obtener el DniClient desde los claims del usuario autenticado
-            //    var dniClient = User.Claims.FirstOrDefault(c => c.Type == "DniClient")?.Value;
-
-            //    if (string.IsNullOrEmpty(dniClient))
-            //    {
-            //        return Unauthorized(new { Error = "No se encontró el DniClient en los claims" });
-            //    }
-
-            //    try
-            //    {
-            //        // Verificar el estado del pago usando el PaymentId de la notificación
-            //        var paymentStatus = await _mercadoPagoService.VerificarEstadoPago(notification.PaymentId);
-
-            //        // Solo proceder si el estado del pago es 'completed'
-            //        if (paymentStatus == "completed") // Aquí puedes cambiar "completed" por el estado adecuado
-            //        {
-            //            // Actualizar la membresía del cliente
-            //            _clientService.UpdatePago(dniClient);
-
-            //            return Ok(new { Message = "Membresía actualizada con éxito" });
-            //        }
-            //        else
-            //        {
-            //            return BadRequest(new { Error = "El estado del pago no es válido para actualizar la membresía" });
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        return BadRequest(new { Error = ex.Message });
-            //    }
-            //}
-
-
-        }
+    }
 }
