@@ -11,5 +11,7 @@ namespace Domain.Interfaces
     public interface IMembershipRepository : IBaseRepository<Membership>
     {
         Membership? GetByMembership(string typeMembership);
+        List<object> GetClientCountByMembership();
+
     }
 }

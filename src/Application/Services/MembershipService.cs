@@ -87,6 +87,10 @@ namespace Application.Services
             var membership = _membershipRepository.GetByMembership(type);
             return MembershipDto.Create(membership);
         }
-        
+
+        public List<object> GetClientCountByMembership()
+        {
+            return _membershipRepository.GetClientCountByMembership();
+        }
     }
 }

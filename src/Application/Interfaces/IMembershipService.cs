@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Entities;
 
 namespace Application.Interfaces
 {
@@ -16,5 +17,7 @@ namespace Application.Interfaces
         void Update(MembershipRequest membershipRequest);
         void Delete(string typeMembership);
         MembershipDto GetByType(string type);
+        List<object> GetClientCountByMembership();
     }
+
 }
