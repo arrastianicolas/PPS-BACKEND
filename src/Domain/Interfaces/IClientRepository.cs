@@ -11,5 +11,6 @@ namespace Domain.Interfaces
     {
         Client? GetClientByUserId(int userId);
         Client? GetByDni(string dni);
+        IEnumerable<Client> GetAllActiveClients();
     }
 }

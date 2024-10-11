@@ -31,16 +31,14 @@ namespace Application.Services
         {
             // Validación para verificar que no exista otro usuario con el mismo email
             var existingUserWithSameEmail = _userRepository.GetByUserEmail(userRequest.Email);
-
-            if (existingUserWithSameEmail == null)
+            if (existingUserWithSameEmail != null) // Cambiado de null a !null
             {
                 throw new Exception("Ya existe un usuario con el mismo correo electrónico.");
             }
 
             // Validación para verificar que no exista otro cliente con el mismo Dniclient
             var existingClientWithSameDni = _clientRepository.GetByDni(clientRequest.Dniclient);
-
-            if (existingClientWithSameDni != null)
+            if (existingClientWithSameDni != null) // Cambiado de null a !null
             {
                 throw new Exception("Ya existe un cliente con el mismo DNI.");
             }
@@ -48,6 +46,12 @@ namespace Application.Services
             // Obtener el tipo de membresía correspondiente
             var membership = _membershipRepository.Get()
                 .FirstOrDefault(m => m.Type == clientRequest.Typememberships);
+            if (membership == null)
+            {
+                throw new Exception("No se encontró la membresía");
+            }
+
+
 
             var user = new User
             {

@@ -136,7 +136,7 @@ builder.Services.AddTransient<IMembershipService, MembershipService>();
 builder.Services.AddTransient<IRoutineService, RoutineService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 #endregion
-
+builder.Services.AddHostedService<MembershipCheckService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "Policy1",
