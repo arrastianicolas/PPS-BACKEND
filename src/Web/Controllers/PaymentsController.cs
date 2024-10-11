@@ -49,9 +49,9 @@ namespace Web.Controllers
         },
                 BackUrls = new PreferenceBackUrlsRequest
                 {
-                    Success = "https://www.instagram.com/miguel_cabrera_3520/",   // URL a la que se redirige cuando el pago es aprobado
-                    Failure = "https://mi-sitio.com/pago-fallido",   // URL para pagos fallidos
-                    Pending = "https://mi-sitio.com/pago-pendiente"  // URL para pagos pendientes
+                    Success = request.BackUrls?.Success,   // URL a la que se redirige cuando el pago es aprobado
+                    Failure = request.BackUrls?.Failure,   // URL para pagos fallidos
+                    Pending = request.BackUrls?.Pending,  // URL para pagos pendientes
                 },
                 AutoReturn = "approved" // Redirige automáticamente a la URL de éxito si el pago es aprobado
             };

@@ -9,8 +9,13 @@ namespace Application.Models.Requests
     public class PaymentRequest
     {
         public string Type { get; set; }
-     
-        //public int Quantity { get; set; }
-        //public float Price { get; set; }
+
+        public BackUrlsRequest BackUrls { get; set; }
+    }
+    public class BackUrlsRequest
+    {
+        public string Success { get; set; }
+        public string Failure { get; set; }
+        public string Pending { get; set; }
     }
 }
