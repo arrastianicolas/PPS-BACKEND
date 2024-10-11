@@ -29,9 +29,9 @@ namespace Application.Services
 
                     foreach (var client in clients)
                     {
-                        var minutesLefts = (client.Actualdatemembership.AddDays(30) - DateTime.Now).Days;
+                        var daysLefts = (client.Actualdatemembership.AddDays(30) - DateTime.Now).Days;
 
-                        if (minutesLefts == 7 && client.Isactive == 1)
+                        if (daysLefts == 7 && client.Isactive == 1)
                         {
                             _mailService.Send(
                                 $"Aviso: Su MEMBRESIA {client.Typememberships} del Training Center vencerá en 7 días",
@@ -40,7 +40,7 @@ namespace Application.Services
                             );
                         }
 
-                        if (minutesLefts <= 0 && client.Isactive == 1)
+                        if (daysLefts <= 0 && client.Isactive == 1)
                         {
                             // Desactivar membresía
                             client.Isactive = 0;
