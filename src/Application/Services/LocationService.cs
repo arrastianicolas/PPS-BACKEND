@@ -81,5 +81,26 @@ namespace Application.Services
             location.Shifts.Remove(shift);
             _locationRepository.Update(location);
         }
+
+
+
+        public void ChangeState(int locationId)
+        {
+            var location = _locationRepository.GetById(locationId) ?? throw new Exception("Location not found.");
+
+            location.Isactive = location.Isactive == 1 ? 0 : 1;
+
+            _locationRepository.Update(location);
+        }
+
+
+
+
+
+
+
+
+
+
     }
 }
