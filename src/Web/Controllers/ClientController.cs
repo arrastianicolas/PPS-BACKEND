@@ -26,12 +26,53 @@ namespace Web.Controllers
             _clientService = clientService;
         }
 
+        private static ClientUserRequest tempClientData;
+
         [HttpPost("[action]")]
-        public ActionResult<ClientDto> AddClient([FromBody] ClientUserRequest request)
+        public ActionResult<string> StoreClientUserData([FromBody] ClientUserRequest request)
         {
-            var clientDto = _clientService.CreateClient(request.ClientRequest, request.UserRequest);
+            if (string.IsNullOrWhiteSpace(request.ClientRequest.Dniclient))
+            {
+                return BadRequest();
+            }
+
+            tempClientData = request;
+
+            return Ok(request.ClientRequest.Dniclient); 
+        }
+
+        [HttpGet("[action]")]
+        public ActionResult<ClientUserRequest> GetClientUserData()
+        {
+            if (tempClientData == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(tempClientData); 
+        }
+
+
+        [HttpPost("[action]")]
+        public ActionResult<ClientDto> AddClient([FromBody] string clientDni)
+        {
+            if (tempClientData == null)
+            {
+                return NotFound();
+            }
+
+            if (tempClientData.ClientRequest.Dniclient != clientDni)
+            {
+                return BadRequest();
+            }
+
+            var clientDto = _clientService.CreateClient(tempClientData.ClientRequest, tempClientData.UserRequest);
+
+            tempClientData = null; 
+
             return Ok(clientDto);
         }
+
 
         [HttpPut("[action]")]
         public ActionResult UpdateClient([FromBody] ClientUserRequest request) 
