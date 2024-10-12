@@ -94,5 +94,22 @@ namespace Web.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+
+        [HttpPut("[action]/{locationId}")]
+        public IActionResult ChangeState([FromRoute] int locationId)
+        {
+            try
+            {
+                _locationService.ChangeState(locationId);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+
     }
 }

@@ -19,6 +19,9 @@ namespace Application.Interfaces
         void DeleteLocation(int id);
         void AddShift(int shiftId, int locationId);      
         void RemoveShift(int shiftId, int locationId);
-        
+        void ChangeState(int locationId);
+
+
+
     }
 }
