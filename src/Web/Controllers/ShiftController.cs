@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Application.Models.Requests;
 using Application.Interfaces;
+using Application.Services;
 
 namespace Web.Controllers
 {
@@ -50,5 +51,36 @@ namespace Web.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        [HttpPost("[action]/{locationId}")]
+        //[Authorize(Roles = "Admin")]
+        public IActionResult AddShift([FromBody] int shiftId, [FromRoute] int locationId)
+        {
+            try
+            {
+                _shiftService.AddShift(shiftId, locationId);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpDelete("[action]/{locationId}")]
+        //[Authorize(Roles = "Admin")]
+        public IActionResult RemoveShift([FromBody] int shiftId, [FromRoute] int locationId)
+        {
+            try
+            {
+                _shiftService.RemoveShift(shiftId, locationId);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
     }
 }

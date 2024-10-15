@@ -65,36 +65,6 @@ namespace Web.Controllers
             }
         }
 
-        [HttpPost("[action]/{locationId}")]
-        //[Authorize(Roles = "Admin")]
-        public IActionResult AddShift([FromBody] int shiftId, [FromRoute] int locationId)
-        {
-            try
-            {
-                _locationService.AddShift(shiftId, locationId);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
-        }
-
-        [HttpDelete("[action]/{locationId}")]
-        //[Authorize(Roles = "Admin")]
-        public IActionResult RemoveShift([FromBody] int shiftId, [FromRoute] int locationId)
-        {
-            try
-            {
-                _locationService.RemoveShift(shiftId, locationId);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
-        }
-
 
         [HttpPut("[action]/{locationId}")]
         public IActionResult ChangeState([FromRoute] int locationId)
