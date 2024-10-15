@@ -17,11 +17,7 @@ namespace Application.Interfaces
         LocationDto CreateLocation(LocationRequest locationRequest);
         void UpdateLocation(LocationRequest locationRequest, int id);
         void DeleteLocation(int id);
-        void AddShift(int shiftId, int locationId);      
-        void RemoveShift(int shiftId, int locationId);
         void ChangeState(int locationId);
-
-
 
     }
 }

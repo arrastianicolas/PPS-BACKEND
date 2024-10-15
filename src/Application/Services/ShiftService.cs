@@ -76,5 +76,25 @@ namespace Application.Services
 
             _shiftRepository.Update(shift);
         }
+
+        public void AddShift(int shiftId, int locationId)
+        {
+            var shift = _shiftRepository.GetById(shiftId) ?? throw new Exception("Shift not found.");
+            var location = _locationRepository.GetById(locationId) ?? throw new Exception("Location not found.");
+
+            location.Shifts.Add(shift);
+            _locationRepository.Update(location);
+        }
+
+        public void RemoveShift(int shiftId, int locationId)
+        {
+            var location = _locationRepository.GetById(locationId) ?? throw new Exception("Location not found.");
+            var shift = location.Shifts.FirstOrDefault(s => s.Idshift == shiftId) ?? throw new Exception("Shift not found.");
+
+            location.Shifts.Remove(shift);
+            _locationRepository.Update(location);
+        }
+
+
     }
 }
