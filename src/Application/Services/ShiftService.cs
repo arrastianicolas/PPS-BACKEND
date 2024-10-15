@@ -38,9 +38,11 @@ namespace Application.Services
                 throw new Exception("Trainer not found.");
             }
 
-            if (_locationRepository.GetById(shiftRequest.Idlocation) == null)
+            var location = _locationRepository.GetById(shiftRequest.Idlocation) ?? throw new Exception("Location not found.");
+
+            if (location.Isactive == 0)
             {
-                throw new Exception("Location not found.");
+                throw new Exception("Location is inactive. Cannot create shift.");
             }
 
             var shift = new Shift
@@ -64,10 +66,13 @@ namespace Application.Services
                 throw new Exception("Trainer not found.");
             }
 
-            if (_locationRepository.GetById(shiftRequest.Idlocation) == null)
+            var location = _locationRepository.GetById(shiftRequest.Idlocation) ?? throw new Exception("Location not found.");
+
+            if (location.Isactive == 0)
             {
-                throw new Exception("Location not found.");
+                throw new Exception("Location is inactive. Cannot update shift.");
             }
+
 
             shift.Date = shiftRequest.Date;
             shift.Idlocation = shiftRequest.Idlocation;
@@ -82,6 +87,11 @@ namespace Application.Services
             var shift = _shiftRepository.GetById(shiftId) ?? throw new Exception("Shift not found.");
             var location = _locationRepository.GetById(locationId) ?? throw new Exception("Location not found.");
 
+            if (location.Isactive == 0)
+            {
+                throw new Exception("Location is inactive. Cannot add shift.");
+            }
+
             location.Shifts.Add(shift);
             _locationRepository.Update(location);
         }
@@ -95,6 +105,6 @@ namespace Application.Services
             _locationRepository.Update(location);
         }
 
-
     }
 }
+
