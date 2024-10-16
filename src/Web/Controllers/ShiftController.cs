@@ -9,7 +9,6 @@ namespace Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Roles = "Admin")]
     public class ShiftController : ControllerBase
     {
         private readonly IShiftService _shiftService;
@@ -24,7 +23,9 @@ namespace Web.Controllers
             return Ok(_shiftService.GetAll());
         }
 
+       
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult AddShift([FromBody] ShiftRequest shiftRequest)
         {
             try
@@ -39,6 +40,7 @@ namespace Web.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult UpdateShift([FromRoute] int id, [FromBody] ShiftRequest shiftRequest)
         {
             try
@@ -53,7 +55,7 @@ namespace Web.Controllers
         }
 
         [HttpPost("[action]/{locationId}")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public IActionResult AddShift([FromBody] int shiftId, [FromRoute] int locationId)
         {
             try
@@ -66,6 +68,7 @@ namespace Web.Controllers
                 return NotFound(ex.Message);
             }
         }
+
 
         //[HttpDelete("[action]/{locationId}")]
         //[Authorize(Roles = "Admin")]
@@ -82,5 +85,7 @@ namespace Web.Controllers
         //    }
         //}
 
-    }
+       
+
+    
 }

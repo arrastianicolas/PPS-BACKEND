@@ -42,7 +42,7 @@ namespace Web.Controllers
         }
 
         [HttpGet("[action]")]
-        public ActionResult<ClientUserRequest> GetClientUserData()
+        public ActionResult<ClientUserRequest> GetStoredClientUserData()
         {
             if (tempClientData == null)
             {
