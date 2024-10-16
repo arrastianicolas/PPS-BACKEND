@@ -8,7 +8,6 @@ namespace Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Roles = "Admin")]
     public class LocationController : ControllerBase
     {
         private readonly ILocationService _locationService;
@@ -28,7 +27,7 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public IActionResult AddLocation([FromBody] LocationRequest locationRequest)
         {
             var locationDto = _locationService.CreateLocation(locationRequest);
@@ -36,7 +35,7 @@ namespace Web.Controllers
         }
 
         [HttpPut("{id}")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public IActionResult UpdateLocation([FromBody] LocationRequest locationRequest, [FromRoute] int id)
         {
             try
@@ -51,7 +50,7 @@ namespace Web.Controllers
         }
 
         [HttpDelete("{id}")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteLocation([FromRoute] int id)
         {
             try
@@ -67,6 +66,7 @@ namespace Web.Controllers
 
 
         [HttpPut("[action]/{locationId}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult ChangeState([FromRoute] int locationId)
         {
             try
