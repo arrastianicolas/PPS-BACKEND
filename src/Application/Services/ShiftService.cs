@@ -47,10 +47,12 @@ namespace Application.Services
 
             var shift = new Shift
             {
-                Date = shiftRequest.Date,
+                Dateday = shiftRequest.Dateday,
+                Hour = shiftRequest.Hour,
                 Idlocation = shiftRequest.Idlocation,
                 Dnitrainer = shiftRequest.Dnitrainer,
-                Peoplelimit = shiftRequest.Peoplelimit
+                Peoplelimit = shiftRequest.Peoplelimit,
+                Totaldays = shiftRequest.Totaldays,
             };
 
             _shiftRepository.Add(shift);
@@ -74,10 +76,12 @@ namespace Application.Services
             }
 
 
-            shift.Date = shiftRequest.Date;
+            shift.Dateday = shiftRequest.Dateday;
+            shift.Hour = shiftRequest.Hour;
             shift.Idlocation = shiftRequest.Idlocation;
             shift.Dnitrainer = shiftRequest.Dnitrainer;
             shift.Peoplelimit = shiftRequest.Peoplelimit;
+            shift.Totaldays = shiftRequest.Totaldays;
 
             _shiftRepository.Update(shift);
         }
@@ -96,14 +100,14 @@ namespace Application.Services
             _locationRepository.Update(location);
         }
 
-        public void RemoveShift(int shiftId, int locationId)
-        {
-            var location = _locationRepository.GetById(locationId) ?? throw new Exception("Location not found.");
-            var shift = location.Shifts.FirstOrDefault(s => s.Idshift == shiftId) ?? throw new Exception("Shift not found.");
+        //public void RemoveShift(int shiftId, int locationId)
+        //{
+        //    var location = _locationRepository.GetById(locationId) ?? throw new Exception("Location not found.");
+        //    var shift = location.Shifts.FirstOrDefault(s => s.Idshift == shiftId) ?? throw new Exception("Shift not found.");
 
-            location.Shifts.Remove(shift);
-            _locationRepository.Update(location);
-        }
+        //    location.Shifts.Remove(shift);
+        //    _locationRepository.Update(location);
+        //}
 
     }
 }

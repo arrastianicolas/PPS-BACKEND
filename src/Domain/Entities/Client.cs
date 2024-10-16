@@ -29,9 +29,11 @@ public partial class Client
 
     public virtual User IduserNavigation { get; set; } = null!;
 
+    public virtual ICollection<Nutritionalplan> Nutritionalplans { get; set; } = new List<Nutritionalplan>();
+
     public virtual ICollection<Routine> Routines { get; set; } = new List<Routine>();
 
-    public virtual ICollection<Shiftsclient> Shiftsclients { get; set; } = new List<Shiftsclient>();
-
     public virtual Membership TypemembershipsNavigation { get; set; } = null!;
+
+    public virtual ICollection<Shift> Shifts { get; set; } = new List<Shift>();
 }

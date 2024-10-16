@@ -1,6 +1,5 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
-
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

@@ -25,11 +25,11 @@ namespace Application.Services
         public RoutineDto Add(RoutineClientRequest routineClientRequest,int userId)
         {
             var client = _clientRepository.GetClientByUserId(userId);
-            var correlativeNumber = _routineRepository.GetNextCorrelativenumber(client.Dniclient);
+           
 
             var routine = new Routine()
             {
-                Correlativenumber = correlativeNumber,
+               
                 Dniclient = client.Dniclient,
                 Dnitrainer = "34765432", //Cambiar cuando esté hecho el modulo de turnos
                 //DniTrainer = routineClientRequest.DniTrainer;

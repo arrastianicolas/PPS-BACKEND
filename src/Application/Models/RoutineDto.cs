@@ -17,6 +17,7 @@ namespace Application.Models
         public string Status { get; set; } 
 
         public string Description { get; set; }
+        public int Days {  get; set; }
 
         public static RoutineDto Create(Routine routine)
         {
@@ -26,6 +27,8 @@ namespace Application.Models
                 Height = routine.Height,
                 Status = routine.Status,
                 Description = routine.Description,
+                Days = routine.Days,
+
             };
         }
     }

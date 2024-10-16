@@ -21,6 +21,8 @@ public partial class Trainer
 
     public virtual User IduserNavigation { get; set; } = null!;
 
+    public virtual ICollection<Nutritionalplan> Nutritionalplans { get; set; } = new List<Nutritionalplan>();
+
     public virtual ICollection<Routine> Routines { get; set; } = new List<Routine>();
 
     public virtual ICollection<Shift> Shifts { get; set; } = new List<Shift>();

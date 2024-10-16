@@ -5,7 +5,7 @@ namespace Domain.Entities;
 
 public partial class Routine
 {
-    public int Correlativenumber { get; set; }
+    public int Idroutine { get; set; }
 
     public string Dniclient { get; set; } = null!;
 

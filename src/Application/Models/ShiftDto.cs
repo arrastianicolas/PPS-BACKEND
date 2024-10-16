@@ -10,26 +10,29 @@ namespace Application.Models
 {
     public class ShiftDto
     {
-        public int Idshift { get; set; }
+        public string Dateday { get; set; } = null!;
 
-        public DateTime Date { get; set; }
+        public TimeOnly Hour { get; set; }
 
         public int Idlocation { get; set; }
 
-        public string Dnitrainer { get; set; }
+        public string? Dnitrainer { get; set; }
 
-        public int Peoplelimit { get; set; }
+        public int? Peoplelimit { get; set; }
+
+        public int Totaldays { get; set; }
 
 
         public static ShiftDto Create(Shift shift)
         {
             return new ShiftDto
             {
-                Idshift = shift.Idshift,
-                Date = shift.Date,
+                Dateday = shift.Dateday,
+                Hour = shift.Hour,
                 Idlocation = shift.Idlocation,
                 Dnitrainer = shift.Dnitrainer,
                 Peoplelimit = shift.Peoplelimit,
+                Totaldays = shift.Totaldays,
             };
 
         }
