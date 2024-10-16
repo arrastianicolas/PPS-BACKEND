@@ -15,6 +15,6 @@ namespace Application.Interfaces
         ShiftDto CreateShift(ShiftRequest shiftRequest);
         void UpdateShift(int id, ShiftRequest shiftRequest);
         void AddShift(int shiftId, int locationId);
-        void RemoveShift(int shiftId, int locationId);
+        //void RemoveShift(int shiftId, int locationId);
     }
 }

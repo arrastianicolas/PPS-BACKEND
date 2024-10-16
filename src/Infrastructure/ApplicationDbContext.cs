@@ -25,19 +25,17 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Membership> Memberships { get; set; }
 
+    public virtual DbSet<Nutritionalplan> Nutritionalplans { get; set; }
+
     public virtual DbSet<Routine> Routines { get; set; }
 
     public virtual DbSet<Routinesexercise> Routinesexercises { get; set; }
 
     public virtual DbSet<Shift> Shifts { get; set; }
 
-    public virtual DbSet<Shiftsclient> Shiftsclients { get; set; }
-
     public virtual DbSet<Trainer> Trainers { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
-
-   
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -70,7 +68,9 @@ public partial class ApplicationDbContext : DbContext
                 .HasDefaultValueSql("'Sin especificar'")
                 .HasColumnName("genre");
             entity.Property(e => e.Iduser).HasColumnName("iduser");
-            entity.Property(e => e.Isactive).HasColumnName("isactive");
+            entity.Property(e => e.Isactive)
+                .HasDefaultValueSql("'1'")
+                .HasColumnName("isactive");
             entity.Property(e => e.Lastname)
                 .HasMaxLength(20)
                 .HasColumnName("lastname");
@@ -119,13 +119,13 @@ public partial class ApplicationDbContext : DbContext
 
             entity.Property(e => e.Idlocation).HasColumnName("idlocation");
             entity.Property(e => e.Adress)
-                .HasMaxLength(20)
+                .HasMaxLength(120)
                 .HasColumnName("adress");
             entity.Property(e => e.Isactive)
                 .HasDefaultValueSql("'1'")
                 .HasColumnName("isactive");
             entity.Property(e => e.Name)
-                .HasMaxLength(20)
+                .HasMaxLength(120)
                 .HasColumnName("name");
         });
 
@@ -144,11 +144,58 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Price).HasColumnName("price");
         });
 
+        modelBuilder.Entity<Nutritionalplan>(entity =>
+        {
+            entity.HasKey(e => e.Idnutritionalplan).HasName("PRIMARY");
+
+            entity.ToTable("nutritionalplan");
+
+            entity.HasIndex(e => e.Dniclient, "dniclient_fk_np_idx");
+
+            entity.HasIndex(e => e.Dnitrainer, "dnitrainer_fk_np_idx");
+
+            entity.Property(e => e.Idnutritionalplan)
+                .ValueGeneratedNever()
+                .HasColumnName("idnutritionalplan");
+            entity.Property(e => e.Breakfast)
+                .HasMaxLength(200)
+                .HasColumnName("breakfast");
+            entity.Property(e => e.Brunch)
+                .HasMaxLength(200)
+                .HasColumnName("brunch");
+            entity.Property(e => e.Description)
+                .HasMaxLength(200)
+                .HasColumnName("description");
+            entity.Property(e => e.Dinner)
+                .HasMaxLength(200)
+                .HasColumnName("dinner");
+            entity.Property(e => e.Dniclient)
+                .HasMaxLength(8)
+                .HasColumnName("dniclient");
+            entity.Property(e => e.Dnitrainer)
+                .HasMaxLength(8)
+                .HasColumnName("dnitrainer");
+            entity.Property(e => e.Luch)
+                .HasMaxLength(200)
+                .HasColumnName("luch");
+            entity.Property(e => e.Snack)
+                .HasMaxLength(200)
+                .HasColumnName("snack");
+
+            entity.HasOne(d => d.DniclientNavigation).WithMany(p => p.Nutritionalplans)
+                .HasForeignKey(d => d.Dniclient)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("dniclient_fk_np");
+
+            entity.HasOne(d => d.DnitrainerNavigation).WithMany(p => p.Nutritionalplans)
+                .HasForeignKey(d => d.Dnitrainer)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("dnitrainer_fk_np");
+        });
+
         modelBuilder.Entity<Routine>(entity =>
         {
-            entity.HasKey(e => new { e.Correlativenumber, e.Dnitrainer, e.Dniclient })
-                .HasName("PRIMARY")
-                .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
+            entity.HasKey(e => e.Idroutine).HasName("PRIMARY");
 
             entity.ToTable("routines");
 
@@ -156,19 +203,17 @@ public partial class ApplicationDbContext : DbContext
 
             entity.HasIndex(e => e.Dnitrainer, "dnitrainer_fk_routines_idx");
 
-            entity.HasIndex(e => new { e.Correlativenumber, e.Dnitrainer, e.Dniclient }, "idx_routine_composite_key");
-
-            entity.Property(e => e.Correlativenumber).HasColumnName("correlativenumber");
-            entity.Property(e => e.Dnitrainer)
-                .HasMaxLength(8)
-                .HasColumnName("dnitrainer");
-            entity.Property(e => e.Dniclient)
-                .HasMaxLength(8)
-                .HasColumnName("dniclient");
+            entity.Property(e => e.Idroutine).HasColumnName("idroutine");
             entity.Property(e => e.Days).HasColumnName("days");
             entity.Property(e => e.Description)
                 .HasMaxLength(45)
                 .HasColumnName("description");
+            entity.Property(e => e.Dniclient)
+                .HasMaxLength(8)
+                .HasColumnName("dniclient");
+            entity.Property(e => e.Dnitrainer)
+                .HasMaxLength(8)
+                .HasColumnName("dnitrainer");
             entity.Property(e => e.Height)
                 .HasMaxLength(6)
                 .HasColumnName("height");
@@ -191,57 +236,53 @@ public partial class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Routinesexercise>(entity =>
         {
-            entity.HasKey(e => new { e.Correlativenumber, e.Idexercise, e.Dniclient, e.Dnitrainer })
+            entity.HasKey(e => new { e.Idroutine, e.Idexercise })
                 .HasName("PRIMARY")
-                .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0, 0 });
+                .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
-            entity.ToTable("routinesexercises");
+            entity.ToTable("routinesexercise");
 
-            entity.HasIndex(e => e.Correlativenumber, "correlativenumber_fk_re_idx");
+            entity.HasIndex(e => e.Idexercise, "exercise_fk_re_idx");
 
-            entity.HasIndex(e => e.Dniclient, "dniclient_fk_re_idx");
-
-            entity.HasIndex(e => e.Dnitrainer, "dnitrainer_fk_re_idx");
-
-            entity.HasIndex(e => new { e.Correlativenumber, e.Dnitrainer, e.Dniclient }, "fk_routine_exercise");
-
-            entity.HasIndex(e => e.Idexercise, "idexercise_fk_re_idx");
-
-            entity.Property(e => e.Correlativenumber).HasColumnName("correlativenumber");
+            entity.Property(e => e.Idroutine).HasColumnName("idroutine");
             entity.Property(e => e.Idexercise).HasColumnName("idexercise");
-            entity.Property(e => e.Dniclient)
-                .HasMaxLength(8)
-                .HasColumnName("dniclient");
-            entity.Property(e => e.Dnitrainer)
-                .HasMaxLength(8)
-                .HasColumnName("dnitrainer");
-            entity.Property(e => e.Breaktime).HasColumnName("breaktime");
-            entity.Property(e => e.Day).HasColumnName("day");
-            entity.Property(e => e.Serie).HasColumnName("serie");
+            entity.Property(e => e.Breaktime)
+                .HasColumnType("time")
+                .HasColumnName("breaktime");
+            entity.Property(e => e.Day)
+                .HasMaxLength(12)
+                .HasColumnName("day");
+            entity.Property(e => e.Series).HasColumnName("series");
 
             entity.HasOne(d => d.IdexerciseNavigation).WithMany(p => p.Routinesexercises)
                 .HasForeignKey(d => d.Idexercise)
-                .HasConstraintName("idexercise_fk_re");
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("exercise_fk_re");
 
-            entity.HasOne(d => d.Routine).WithMany(p => p.Routinesexercises)
-                .HasForeignKey(d => new { d.Correlativenumber, d.Dnitrainer, d.Dniclient })
-                .HasConstraintName("fk_routine_exercise");
+            entity.HasOne(d => d.IdroutineNavigation).WithMany(p => p.Routinesexercises)
+                .HasForeignKey(d => d.Idroutine)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("idroutine_fk_re");
         });
 
         modelBuilder.Entity<Shift>(entity =>
         {
-            entity.HasKey(e => e.Idshift).HasName("PRIMARY");
+            entity.HasKey(e => new { e.Dateday, e.Hour })
+                .HasName("PRIMARY")
+                .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
-            entity.ToTable("shifts");
+            entity.ToTable("shift");
 
-            entity.HasIndex(e => e.Dnitrainer, "dnitrainer_idx");
+            entity.HasIndex(e => e.Dnitrainer, "dnitrainer_fk_shift_idx");
 
-            entity.HasIndex(e => e.Idlocation, "idlocation_idx");
+            entity.HasIndex(e => e.Idlocation, "idlocation_fk_shift_idx");
 
-            entity.Property(e => e.Idshift).HasColumnName("idshift");
-            entity.Property(e => e.Date)
-                .HasColumnType("datetime")
-                .HasColumnName("date");
+            entity.Property(e => e.Dateday)
+                .HasMaxLength(12)
+                .HasColumnName("dateday");
+            entity.Property(e => e.Hour)
+                .HasColumnType("time")
+                .HasColumnName("hour");
             entity.Property(e => e.Dnitrainer)
                 .HasMaxLength(8)
                 .HasColumnName("dnitrainer");
@@ -249,41 +290,44 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Peoplelimit)
                 .HasDefaultValueSql("'30'")
                 .HasColumnName("peoplelimit");
+            entity.Property(e => e.Totaldays).HasColumnName("totaldays");
 
             entity.HasOne(d => d.DnitrainerNavigation).WithMany(p => p.Shifts)
                 .HasForeignKey(d => d.Dnitrainer)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("dnitrainer");
+                .HasConstraintName("dnitrainer_fk_shift");
 
             entity.HasOne(d => d.IdlocationNavigation).WithMany(p => p.Shifts)
                 .HasForeignKey(d => d.Idlocation)
-                .HasConstraintName("idlocation");
-        });
-
-        modelBuilder.Entity<Shiftsclient>(entity =>
-        {
-            entity.HasKey(e => new { e.Dniclient, e.Idshift, e.Date })
-                .HasName("PRIMARY")
-                .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
-
-            entity.ToTable("shiftsclients");
-
-            entity.HasIndex(e => e.Idshift, "idshift_idx");
-
-            entity.Property(e => e.Dniclient)
-                .HasMaxLength(8)
-                .HasColumnName("dniclient");
-            entity.Property(e => e.Idshift).HasColumnName("idshift");
-            entity.Property(e => e.Date).HasColumnName("date");
-
-            entity.HasOne(d => d.DniclientNavigation).WithMany(p => p.Shiftsclients)
-                .HasForeignKey(d => d.Dniclient)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("dniclient_fk");
+                .HasConstraintName("idlocation_fk_shift");
 
-            entity.HasOne(d => d.IdshiftNavigation).WithMany(p => p.Shiftsclients)
-                .HasForeignKey(d => d.Idshift)
-                .HasConstraintName("idshift_fk");
+            entity.HasMany(d => d.Dniclients).WithMany(p => p.Shifts)
+                .UsingEntity<Dictionary<string, object>>(
+                    "Shiftclient",
+                    r => r.HasOne<Client>().WithMany()
+                        .HasForeignKey("Dniclient")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("dniclient_fk_shiftclient"),
+                    l => l.HasOne<Shift>().WithMany()
+                        .HasForeignKey("Dateday", "Hour")
+                        .HasConstraintName("datehour_fk_shiftclient"),
+                    j =>
+                    {
+                        j.HasKey("Dateday", "Hour", "Dniclient")
+                            .HasName("PRIMARY")
+                            .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
+                        j.ToTable("shiftclient");
+                        j.HasIndex(new[] { "Dniclient" }, "dniclient_fk_shiftclient_idx");
+                        j.IndexerProperty<string>("Dateday")
+                            .HasMaxLength(12)
+                            .HasColumnName("dateday");
+                        j.IndexerProperty<TimeOnly>("Hour")
+                            .HasColumnType("time")
+                            .HasColumnName("hour");
+                        j.IndexerProperty<string>("Dniclient")
+                            .HasMaxLength(8)
+                            .HasColumnName("dniclient");
+                    });
         });
 
         modelBuilder.Entity<Trainer>(entity =>

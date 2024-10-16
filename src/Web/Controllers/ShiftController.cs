@@ -67,20 +67,20 @@ namespace Web.Controllers
             }
         }
 
-        [HttpDelete("[action]/{locationId}")]
+        //[HttpDelete("[action]/{locationId}")]
         //[Authorize(Roles = "Admin")]
-        public IActionResult RemoveShift([FromBody] int shiftId, [FromRoute] int locationId)
-        {
-            try
-            {
-                _shiftService.RemoveShift(shiftId, locationId);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
-        }
+        //public IActionResult RemoveShift([FromBody] int shiftId, [FromRoute] int locationId)
+        //{
+        //    try
+        //    {
+        //        _shiftService.RemoveShift(shiftId, locationId);
+        //        return NoContent();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return NotFound(ex.Message);
+        //    }
+        //}
 
     }
 }

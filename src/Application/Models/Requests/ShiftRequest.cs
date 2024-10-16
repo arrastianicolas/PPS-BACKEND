@@ -9,13 +9,19 @@ namespace Application.Models.Requests
 {
     public class ShiftRequest
     {
-        public DateTime Date { get; set; }
+
+
+        public string Dateday { get; set; } = null!;
+
+        public TimeOnly Hour { get; set; }
 
         public int Idlocation { get; set; }
 
         public string? Dnitrainer { get; set; }
 
-        public int Peoplelimit { get; set; }
+        public int? Peoplelimit { get; set; }
+
+        public int Totaldays { get; set; }
 
     }
 }

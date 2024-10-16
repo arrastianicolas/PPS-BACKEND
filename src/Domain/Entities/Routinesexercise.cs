@@ -5,21 +5,17 @@ namespace Domain.Entities;
 
 public partial class Routinesexercise
 {
-    public int Correlativenumber { get; set; }
+    public int Idroutine { get; set; }
 
     public int Idexercise { get; set; }
 
-    public DateOnly Breaktime { get; set; }
+    public TimeOnly Breaktime { get; set; }
 
-    public int Serie { get; set; }
+    public int Series { get; set; }
 
-    public string Dniclient { get; set; } = null!;
-
-    public string Dnitrainer { get; set; } = null!;
-
-    public int Day { get; set; }
+    public string Day { get; set; } = null!;
 
     public virtual Exercise IdexerciseNavigation { get; set; } = null!;
 
-    public virtual Routine Routine { get; set; } = null!;
+    public virtual Routine IdroutineNavigation { get; set; } = null!;
 }
