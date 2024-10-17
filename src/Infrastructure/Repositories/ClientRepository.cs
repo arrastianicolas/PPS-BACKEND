@@ -33,5 +33,19 @@ namespace Infrastructure.Repositories
                 .Where(c => c.Isactive == 1) // Filtra solo los clientes activos
                 .ToList();
         }
+        public IEnumerable<object> GetNewClientsCountPerMonth()
+        {
+            return _context.Set<Client>()
+                .GroupBy(c => new { c.Startdatemembership.Year, c.Startdatemembership.Month })
+                .Select(g => new
+                {
+                    Year = g.Key.Year,
+                    Month = g.Key.Month,
+                    Count = g.Count()
+                })
+                .OrderByDescending(x => x.Year)
+                .ThenByDescending(x => x.Month)
+                .ToList();
+        }
     }
 }
