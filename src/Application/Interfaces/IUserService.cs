@@ -14,6 +14,8 @@ namespace Application.Interfaces
 
         List<UserWithDetailsDto> Get();
         UserDto GetUserById(int id);
+        string? RequestResetPassword(string email);
+        void ResetPassword(ResetPasswordRequest request);
         //User CreateUser(UserRequest user);
         //void DeleteUser(int id);
         //void UpdateUser(int id, UserRequest updatedUser);

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Exceptions;
 
 namespace Application.Services
 {
@@ -15,6 +16,7 @@ namespace Application.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IMailService _mailService;
+        
         public UserService(IUserRepository userRepository, IMailService mailService)
         {
             _userRepository = userRepository;
@@ -47,6 +49,36 @@ namespace Application.Services
             var userDto = UserDto.Create(user);
 
             return userDto;
+        }
+
+        public string? RequestResetPassword(string email)
+        {
+            var user = _userRepository.GetByUserEmail(email) ?? throw new NotFoundException("Email is not valid");
+
+            var random = new Random();
+            var code = random.Next(100000, 999999).ToString();
+            
+
+            _mailService.Send(
+                "Solicitud de restablecimiento de contraseña",
+                $"¿Restablecer tu contraseña?\r\n\r\nSi solicitaste un restablecimiento de contraseña, usa el código de confirmación que aparece a continuación para completar el proceso. Si no solicitaste esto, puedes ignorar este correo electrónico\r\n\r\n{code}.",
+                user.Email
+                );
+
+            return code;
+        }
+
+        public void ResetPassword(ResetPasswordRequest request)
+        {
+            var user = _userRepository.GetByUserEmail(request.Email) ?? throw new NotFoundException("User not found");
+            user.Password = request.NewPassword;
+            _userRepository.Update(user);
+
+            _mailService.Send(
+             "Contraseña restablecida con éxito",
+             $"Hola,\r\n\r\nTe confirmamos que tu contraseña ha sido restablecida correctamente.\r\nSi no realizaste esta acción, por favor contacta con nuestro equipo de soporte inmediatamente.\r\n\r\nGracias por utilizar nuestros servicios.\r\nAtentamente,\r\nTraining Center.",
+             user.Email
+             );
         }
 
         //public User CreateUser(UserRequest user)
@@ -85,7 +117,7 @@ namespace Application.Services
         //    {
         //        newUser = new SysAdmin
         //        {
-                    
+
         //            Email = user.Email,
         //            Password = user.Password,
         //            Type = user.Type,
