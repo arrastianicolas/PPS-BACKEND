@@ -18,12 +18,12 @@ namespace Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll() 
+        public IActionResult GetAll()
         {
             return Ok(_shiftService.GetAll());
         }
 
-       
+
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public IActionResult AddShift([FromBody] ShiftRequest shiftRequest)
@@ -85,7 +85,8 @@ namespace Web.Controllers
         //    }
         //}
 
-       
 
-    
+
+
+    }
 }

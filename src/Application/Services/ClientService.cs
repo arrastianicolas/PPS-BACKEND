@@ -170,6 +170,11 @@ namespace Application.Services
 
             _clientRepository.Update(client);
         }
-
+        public IEnumerable<object> GetNewClientsCountPerMonth()
+        {
+            return _clientRepository.GetNewClientsCountPerMonth();
+        }
     }
+
 }
+

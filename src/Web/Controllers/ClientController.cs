@@ -107,5 +107,19 @@ namespace Web.Controllers
             }
            
         }
+
+        [HttpGet("[action]")]
+        public ActionResult<IEnumerable<object>> GetNewClientsPerMonth()
+        {
+            try
+            {
+                var result = _clientService.GetNewClientsCountPerMonth();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
     }
 }
