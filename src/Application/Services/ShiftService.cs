@@ -2,6 +2,7 @@
 using Application.Models;
 using Application.Models.Requests;
 using Domain.Entities;
+using Domain.Exceptions;
 using Domain.Interfaces;
 
 using System;
@@ -17,12 +18,17 @@ namespace Application.Services
         private readonly IShiftRepository _shiftRepository;
         private readonly ITrainerRepository _trainerRepository;
         private readonly ILocationRepository _locationRepository;
-
-        public ShiftService(IShiftRepository shiftRepository, ITrainerRepository trainerRepository, ILocationRepository locationRepository)
+        private readonly IShiftClientRepository _shiftClientRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IClientRepository _clientRepository;
+        public ShiftService(IShiftRepository shiftRepository, ITrainerRepository trainerRepository, ILocationRepository locationRepository, IShiftClientRepository shiftClientRepository, IUserRepository userRepository, IClientRepository clientRepository)
         {
             _shiftRepository = shiftRepository;
             _trainerRepository = trainerRepository;
             _locationRepository = locationRepository;
+            _shiftClientRepository = shiftClientRepository;
+            _userRepository = userRepository;
+            _clientRepository = clientRepository;
         }
 
         public List<ShiftDto> GetAll()
@@ -108,6 +114,52 @@ namespace Application.Services
         //    location.Shifts.Remove(shift);
         //    _locationRepository.Update(location);
         //}
+        public void ReserveShift(int shiftId, int Iduser)
+        {
+            //Para sacar de las claims al client
+            var user = _userRepository.GetById(Iduser);
+            if (user == null)
+            {
+                throw new NotFoundException("Usuario no encontrado");
+            }
+
+            var dniclient = _clientRepository.GetClientByUserId(Iduser);
+            // Obtener el turno por ID
+            var shift = _shiftRepository.GetById(shiftId);
+            if (shift == null)
+            {
+                throw new Exception("No se encontró el turno.");
+            }
+
+            // Convertir el Dateday (string) a DateTime para la validación
+            if (!DateTime.TryParse(shift.Dateday, out DateTime shiftDate))
+            {
+                throw new Exception("La fecha del turno no es válida.");
+            }
+
+            // Validar que la fecha del turno no sea en el pasado
+            if (shiftDate < DateTime.Now.Date)
+            {
+                throw new Exception("No se puede reservar un turno en el pasado.");
+            }
+
+            // Validar que el cliente no haya reservado otro turno en el mismo día
+            var existingReservation = _shiftClientRepository
+                .GetByClientAndDate(dniclient.Dniclient, shiftDate);
+            if (existingReservation != null)
+            {
+                throw new Exception("Ya has reservado un turno para este día.");
+            }
+
+            // Registrar la reserva
+            var shiftClient = new Shiftclient
+            {
+                Dniclient = dniclient.Dniclient,
+                Idshift = shiftId
+            };
+
+            _shiftClientRepository.Add(shiftClient);
+        }
 
     }
 }
