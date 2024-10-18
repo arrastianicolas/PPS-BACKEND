@@ -5,6 +5,8 @@ namespace Domain.Entities;
 
 public partial class Shift
 {
+    public int Idshift { get; set; }
+
     public string Dateday { get; set; } = null!;
 
     public TimeOnly Hour { get; set; }
@@ -21,5 +23,5 @@ public partial class Shift
 
     public virtual Location IdlocationNavigation { get; set; } = null!;
 
-    public virtual ICollection<Client> Dniclients { get; set; } = new List<Client>();
+    public virtual Shiftclient? Shiftclient { get; set; }
 }

@@ -33,7 +33,7 @@ public partial class Client
 
     public virtual ICollection<Routine> Routines { get; set; } = new List<Routine>();
 
-    public virtual Membership TypemembershipsNavigation { get; set; } = null!;
+    public virtual ICollection<Shiftclient> Shiftclients { get; set; } = new List<Shiftclient>();
 
-    public virtual ICollection<Shift> Shifts { get; set; } = new List<Shift>();
+    public virtual Membership TypemembershipsNavigation { get; set; } = null!;
 }
