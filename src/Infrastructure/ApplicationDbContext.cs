@@ -33,10 +33,13 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Shift> Shifts { get; set; }
 
+    public virtual DbSet<Shiftclient> Shiftclients { get; set; }
+
     public virtual DbSet<Trainer> Trainers { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
+   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -267,9 +270,7 @@ public partial class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Shift>(entity =>
         {
-            entity.HasKey(e => new { e.Dateday, e.Hour })
-                .HasName("PRIMARY")
-                .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+            entity.HasKey(e => e.Idshift).HasName("PRIMARY");
 
             entity.ToTable("shift");
 
@@ -277,15 +278,18 @@ public partial class ApplicationDbContext : DbContext
 
             entity.HasIndex(e => e.Idlocation, "idlocation_fk_shift_idx");
 
+            entity.Property(e => e.Idshift)
+                .ValueGeneratedNever()
+                .HasColumnName("idshift");
             entity.Property(e => e.Dateday)
                 .HasMaxLength(12)
                 .HasColumnName("dateday");
-            entity.Property(e => e.Hour)
-                .HasColumnType("time")
-                .HasColumnName("hour");
             entity.Property(e => e.Dnitrainer)
                 .HasMaxLength(8)
                 .HasColumnName("dnitrainer");
+            entity.Property(e => e.Hour)
+                .HasColumnType("time")
+                .HasColumnName("hour");
             entity.Property(e => e.Idlocation).HasColumnName("idlocation");
             entity.Property(e => e.Peoplelimit)
                 .HasDefaultValueSql("'30'")
@@ -300,34 +304,31 @@ public partial class ApplicationDbContext : DbContext
                 .HasForeignKey(d => d.Idlocation)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("idlocation_fk_shift");
+        });
 
-            entity.HasMany(d => d.Dniclients).WithMany(p => p.Shifts)
-                .UsingEntity<Dictionary<string, object>>(
-                    "Shiftclient",
-                    r => r.HasOne<Client>().WithMany()
-                        .HasForeignKey("Dniclient")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("dniclient_fk_shiftclient"),
-                    l => l.HasOne<Shift>().WithMany()
-                        .HasForeignKey("Dateday", "Hour")
-                        .HasConstraintName("datehour_fk_shiftclient"),
-                    j =>
-                    {
-                        j.HasKey("Dateday", "Hour", "Dniclient")
-                            .HasName("PRIMARY")
-                            .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
-                        j.ToTable("shiftclient");
-                        j.HasIndex(new[] { "Dniclient" }, "dniclient_fk_shiftclient_idx");
-                        j.IndexerProperty<string>("Dateday")
-                            .HasMaxLength(12)
-                            .HasColumnName("dateday");
-                        j.IndexerProperty<TimeOnly>("Hour")
-                            .HasColumnType("time")
-                            .HasColumnName("hour");
-                        j.IndexerProperty<string>("Dniclient")
-                            .HasMaxLength(8)
-                            .HasColumnName("dniclient");
-                    });
+        modelBuilder.Entity<Shiftclient>(entity =>
+        {
+            entity.HasKey(e => e.Idshift).HasName("PRIMARY");
+
+            entity.ToTable("shiftclient");
+
+            entity.HasIndex(e => e.Dniclient, "dniclient_fk_shiftclient_idx");
+
+            entity.Property(e => e.Idshift)
+                .ValueGeneratedNever()
+                .HasColumnName("idshift");
+            entity.Property(e => e.Dniclient)
+                .HasMaxLength(8)
+                .HasColumnName("dniclient");
+
+            entity.HasOne(d => d.DniclientNavigation).WithMany(p => p.Shiftclients)
+                .HasForeignKey(d => d.Dniclient)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("dniclient_fk_shiftclient");
+
+            entity.HasOne(d => d.IdshiftNavigation).WithOne(p => p.Shiftclient)
+                .HasForeignKey<Shiftclient>(d => d.Idshift)
+                .HasConstraintName("idshift_fk_shiftclient");
         });
 
         modelBuilder.Entity<Trainer>(entity =>
