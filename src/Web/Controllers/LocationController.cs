@@ -17,7 +17,7 @@ namespace Web.Controllers
             _locationService = locationService;
         }
 
-        [HttpGet]
+        [HttpGet("[action]")]
         public IActionResult GetAll([FromQuery] bool? actives)
         {
             if (actives.HasValue)            
@@ -26,7 +26,7 @@ namespace Web.Controllers
             return Ok(_locationService.GetAll());
         }
 
-        [HttpPost]
+        [HttpPost("[action]")]
         [Authorize(Roles = "Admin")]
         public IActionResult AddLocation([FromBody] LocationRequest locationRequest)
         {
@@ -34,7 +34,7 @@ namespace Web.Controllers
             return Ok(locationDto);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("[action]/{id}")]
         [Authorize(Roles = "Admin")]
         public IActionResult UpdateLocation([FromBody] LocationRequest locationRequest, [FromRoute] int id)
         {
@@ -49,7 +49,7 @@ namespace Web.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("[action]/{id}")]
         [Authorize(Roles = "Admin")]
         public IActionResult DeleteLocation([FromRoute] int id)
         {
