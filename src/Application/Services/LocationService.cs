@@ -72,5 +72,10 @@ namespace Application.Services
             _locationRepository.Update(location);
         }
 
+        public async Task<List<object>> GetClientsCountByLocationAsync()
+        {
+            return await _locationRepository.GetClientsCountByLocationAsync();
+        }
+
     }
 }
