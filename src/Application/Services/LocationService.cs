@@ -38,7 +38,8 @@ namespace Application.Services
             var location = new Location()
             {
                 Adress = locationRequest.Adress,
-                Name = locationRequest.Name
+                Name = locationRequest.Name,
+                Isactive = locationRequest.Isactive,
             };
 
             _locationRepository.Add(location);
