@@ -14,5 +14,7 @@ namespace Application.Models.Requests
 
         public string Name { get; set; }
 
+        public int Isactive { get; set; }
+
     }
 }
