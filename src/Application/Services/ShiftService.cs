@@ -58,7 +58,8 @@ namespace Application.Services
                 Idlocation = shiftRequest.Idlocation,
                 Dnitrainer = shiftRequest.Dnitrainer,
                 Peoplelimit = shiftRequest.Peoplelimit,
-                Totaldays = shiftRequest.Totaldays,
+                Actualpeople = 0,
+                IsActive = 1,
             };
 
             _shiftRepository.Add(shift);
@@ -87,7 +88,8 @@ namespace Application.Services
             shift.Idlocation = shiftRequest.Idlocation;
             shift.Dnitrainer = shiftRequest.Dnitrainer;
             shift.Peoplelimit = shiftRequest.Peoplelimit;
-            shift.Totaldays = shiftRequest.Totaldays;
+            shift.Actualpeople = shiftRequest.Actualpeople;
+            shift.IsActive = shiftRequest.isActive;
 
             _shiftRepository.Update(shift);
         }

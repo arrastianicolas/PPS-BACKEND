@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 namespace Domain.Entities;
-
 public partial class Client
 {
     public string Dniclient { get; set; } = null!;
