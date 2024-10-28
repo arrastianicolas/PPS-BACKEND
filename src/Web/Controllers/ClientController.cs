@@ -121,5 +121,34 @@ namespace Web.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpGet("[action]")]
+        public IActionResult GetAllClients()
+        {
+            try
+            {
+                var clients = _clientService.GetAllClients();
+                return Ok(clients);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut("[action]/{clientDni}")]
+        [Authorize(Roles = "Admin")]
+        public IActionResult ChangeState([FromRoute] string clientDni)
+        {
+            try
+            {
+                _clientService.ChangeStateClient(clientDni);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
     }
 }

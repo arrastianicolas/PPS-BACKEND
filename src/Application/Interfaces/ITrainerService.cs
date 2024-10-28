@@ -10,5 +10,8 @@ namespace Application.Interfaces
     public interface ITrainerService
     {
         TrainerUserDto GetUserById(int Iduser);
+        IEnumerable<TrainerUserDto> GetAllTrainers();
+        void Delete(string trainerDni);
+        void ChangeStateTrainer(string trainerDni);
     }
 }

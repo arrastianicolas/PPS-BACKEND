@@ -147,6 +147,15 @@ namespace Application.Services
             
         }
 
+        public void ChangeStateClient(string clientDni)
+        {
+            var client = _clientRepository.GetByDni(clientDni) ?? throw new Exception("Client not found.");
+
+            client.Isactive = client.Isactive == 1 ? 0 : 1;
+
+            _clientRepository.Update(client);
+        }
+
         public ClientDto GetClientByDni(string dniClient)
         {
 
@@ -173,6 +182,32 @@ namespace Application.Services
         public IEnumerable<object> GetNewClientsCountPerMonth()
         {
             return _clientRepository.GetNewClientsCountPerMonth();
+        }
+
+        public IEnumerable<ClientUserDto> GetAllClients()
+        {
+            var clients = _clientRepository.Get();
+
+            if (clients == null || !clients.Any())
+            {
+                throw new NotFoundException("No se encontraron clientes.");
+            }
+
+            var clientsUserDtos = new List<ClientUserDto>();
+
+            foreach (var client in clients)
+            {
+                var user = _userRepository.GetById(client.Iduser);
+
+                if (user == null)
+                {
+                    throw new NotFoundException("Usuario no encontrado");
+                }
+                var clientUserDto = ClientUserDtoMapper.Create(client, user);
+                clientsUserDtos.Add(clientUserDto);
+            }
+
+            return clientsUserDtos;
         }
     }
 
