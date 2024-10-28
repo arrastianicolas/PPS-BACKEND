@@ -15,13 +15,15 @@ public partial class Nutritionalplan
 
     public string? Breakfast { get; set; }
 
-    public string? Luch { get; set; }
+    public string? Lunch { get; set; }
 
     public string? Dinner { get; set; }
 
     public string? Brunch { get; set; }
 
     public string? Snack { get; set; }
+
+    public int IsActive { get; set; }
 
     public virtual Client DniclientNavigation { get; set; } = null!;
 

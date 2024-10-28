@@ -177,9 +177,12 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Dnitrainer)
                 .HasMaxLength(8)
                 .HasColumnName("dnitrainer");
-            entity.Property(e => e.Luch)
+            entity.Property(e => e.IsActive)
+                .HasDefaultValueSql("'1'")
+                .HasColumnName("isActive");
+            entity.Property(e => e.Lunch)
                 .HasMaxLength(200)
-                .HasColumnName("luch");
+                .HasColumnName("lunch");
             entity.Property(e => e.Snack)
                 .HasMaxLength(200)
                 .HasColumnName("snack");

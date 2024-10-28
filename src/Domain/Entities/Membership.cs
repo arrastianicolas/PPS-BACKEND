@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
+
 namespace Domain.Entities;
+
 public partial class Membership
 {
     public string Type { get; set; } = null!;
