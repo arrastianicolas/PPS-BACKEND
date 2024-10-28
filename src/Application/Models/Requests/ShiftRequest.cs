@@ -21,7 +21,8 @@ namespace Application.Models.Requests
 
         public int? Peoplelimit { get; set; }
 
-        public int Totaldays { get; set; }
+        public int Actualpeople { get; set; }
+        public int isActive { get; set; }
 
     }
 }

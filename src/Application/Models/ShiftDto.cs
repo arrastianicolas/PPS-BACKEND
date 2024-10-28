@@ -20,7 +20,9 @@ namespace Application.Models
 
         public int? Peoplelimit { get; set; }
 
-        public int Totaldays { get; set; }
+        public int? Actualpeople { get; set; }
+
+        public int? isActive { get; set; }
 
 
         public static ShiftDto Create(Shift shift)
@@ -32,7 +34,8 @@ namespace Application.Models
                 Idlocation = shift.Idlocation,
                 Dnitrainer = shift.Dnitrainer,
                 Peoplelimit = shift.Peoplelimit,
-                Totaldays = shift.Totaldays,
+                Actualpeople = shift.Actualpeople,
+                isActive = shift.IsActive,
             };
 
         }

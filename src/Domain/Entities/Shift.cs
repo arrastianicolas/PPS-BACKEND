@@ -17,7 +17,9 @@ public partial class Shift
 
     public int? Peoplelimit { get; set; }
 
-    public int Totaldays { get; set; }
+    public int? Actualpeople { get; set; }
+
+    public int IsActive { get; set; }
 
     public virtual Trainer? DnitrainerNavigation { get; set; }
 
