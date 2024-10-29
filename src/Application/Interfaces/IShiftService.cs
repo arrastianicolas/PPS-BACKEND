@@ -18,5 +18,6 @@ namespace Application.Interfaces
         //void RemoveShift(int shiftId, int locationId);
         void ReserveShift(int shiftId, int Iduser);
         List<ShiftDto> AssignTrainerToShifts(AssignTrainerRequest request);
+        List<ShiftDto> GetShiftsByLocationAndDate(ShiftLocationDayRequest request);
     }
 }

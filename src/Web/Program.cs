@@ -141,6 +141,7 @@ builder.Services.AddScoped<INutritionalPlanService, NutritionalPlanService>();
 
 #endregion
 builder.Services.AddHostedService<MembershipCheckService>();
+builder.Services.AddHostedService<ShiftResetService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "Policy1",

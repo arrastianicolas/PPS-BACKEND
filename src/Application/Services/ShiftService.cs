@@ -127,7 +127,7 @@ namespace Application.Services
                 throw new NotFoundException("Usuario no encontrado");
             }
 
-            var dniclient = _clientRepository.GetClientByUserId(Iduser);
+            var client = _clientRepository.GetClientByUserId(Iduser);
             // Obtener el turno por ID
             var shift = _shiftRepository.GetById(shiftId);
             if (shift == null)
@@ -135,21 +135,21 @@ namespace Application.Services
                 throw new Exception("No se encontró el turno.");
             }
 
-            // Convertir el Dateday (string) a DateTime para la validación
-            if (!DateTime.TryParse(shift.Dateday, out DateTime shiftDate))
-            {
-                throw new Exception("La fecha del turno no es válida.");
-            }
+
+
+            // Obtiene la hora actual como un TimeOnly
+            var now = TimeOnly.FromDateTime(DateTime.Now);
 
             // Validar que la fecha del turno no sea en el pasado
-            if (shiftDate < DateTime.Now.Date)
+            if (shift.Hour < now)
             {
                 throw new Exception("No se puede reservar un turno en el pasado.");
             }
 
+
             // Validar que el cliente no haya reservado otro turno en el mismo día
             var existingReservation = _shiftClientRepository
-                .GetByClientAndDate(dniclient.Dniclient, shiftDate);
+                .GetByClientAndDate(client.Dniclient);
             if (existingReservation != null)
             {
                 throw new Exception("Ya has reservado un turno para este día.");
@@ -162,7 +162,7 @@ namespace Application.Services
 
             var shiftClient = new Shiftclient
             {
-                Dniclient = dniclient.Dniclient,
+                Dniclient = client.Dniclient,
                 Idshift = shiftId
             };
 
@@ -216,7 +216,24 @@ namespace Application.Services
             return assignedShifts;  // Devolver los turnos asignados actualizados
         }
 
+        public List<ShiftDto> GetShiftsByLocationAndDate(ShiftLocationDayRequest request)
+        {
+            // Obtener todos los turnos
+            var shifts = _shiftRepository.Get();
 
+            // Filtrar los turnos por la ubicación y la fecha
+            var filteredShifts = shifts
+                .Where(s => s.Idlocation == request.locationId && s.Dateday == request.day)
+                .Select(ShiftDto.Create)
+                .ToList();
+
+            if (!filteredShifts.Any())
+            {
+                throw new NotFoundException("No shifts found for the specified location and date.");
+            }
+
+            return filteredShifts;
+        }
     }
 }
 
