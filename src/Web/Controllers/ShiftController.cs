@@ -111,14 +111,28 @@ namespace Web.Controllers
             try
             {
                 var updatedShift = _shiftService.AssignTrainerToShifts(request);
-                return Ok(updatedShift);  // Devuelve el turno actualizado
+                return Ok(updatedShift); 
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);  // Devuelve el mensaje de error en caso de que algo falle
+                return BadRequest(ex.Message);  
             }
         }
 
+        [HttpGet("[action]")]
+        [Authorize(Roles = "Admin")]
+        public ActionResult<List<ShiftDto>> GetShiftsByLocationAndDate([FromQuery] ShiftLocationDayRequest request)
+        {
+            try
+            {
+                var shiftDayLocation = _shiftService.GetShiftsByLocationAndDate(request);
+                return Ok(shiftDayLocation);  
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);  
+            }
+        }
 
     }
 }
