@@ -1,5 +1,7 @@
 ﻿using Application.Interfaces;
 using Application.Models;
+using Application.Models.Requests;
+using Domain.Entities;
 using Domain.Exceptions;
 using Domain.Interfaces;
 using System;
@@ -68,6 +70,46 @@ namespace Application.Services
 
             return trainerUserDtos;
         }
+
+        public TrainerUserDto CreateTrainer(TrainerRequest trainerRequest, UserRequest userRequest)
+        {
+            var existingUserWithSameEmail = _userRepository.GetByUserEmail(userRequest.Email);
+            if (existingUserWithSameEmail != null)
+            {
+                throw new Exception("Ya existe un usuario con el mismo correo electrónico.");
+            }
+
+            var existingTrainerWithSameDni = _trainerRepository.GetByDni(trainerRequest.Dnitrainer);
+            if (existingTrainerWithSameDni != null)
+            {
+                throw new Exception("Ya existe un trainer con el mismo DNI.");
+            }
+
+            var user = new User
+            {
+                Email = userRequest.Email!,
+                Password = userRequest.Password!,
+                Type = "Trainer"
+            };
+
+            var createdUser = _userRepository.Add(user);
+
+            var trainer = new Trainer
+            {
+                Dnitrainer = trainerRequest.Dnitrainer,
+                Birthdate = trainerRequest.Birthdate,
+                Phonenumber = trainerRequest.Phonenumber,
+                Firstname = trainerRequest.Firstname,
+                Lastname = trainerRequest.Lastname,
+                Isactive = 1,
+                Iduser = createdUser.Id
+            };
+
+            _trainerRepository.Add(trainer);
+
+            return TrainerUserDtoMapper.Create(trainer, createdUser);
+        }
+
 
         public void Delete(string trainerDni)
         {

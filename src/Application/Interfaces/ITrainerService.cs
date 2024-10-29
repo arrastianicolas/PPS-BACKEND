@@ -1,4 +1,5 @@
 ﻿using Application.Models;
+using Application.Models.Requests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,6 @@ namespace Application.Interfaces
         IEnumerable<TrainerUserDto> GetAllTrainers();
         void Delete(string trainerDni);
         void ChangeStateTrainer(string trainerDni);
+        TrainerUserDto CreateTrainer(TrainerRequest trainerRequest, UserRequest userRequest);
     }
 }
