@@ -21,7 +21,8 @@ namespace Application.Services
         private readonly IShiftClientRepository _shiftClientRepository;
         private readonly IUserRepository _userRepository;
         private readonly IClientRepository _clientRepository;
-        public ShiftService(IShiftRepository shiftRepository, ITrainerRepository trainerRepository, ILocationRepository locationRepository, IShiftClientRepository shiftClientRepository, IUserRepository userRepository, IClientRepository clientRepository)
+        private readonly IMailService _mailService;
+        public ShiftService(IShiftRepository shiftRepository, ITrainerRepository trainerRepository, ILocationRepository locationRepository, IShiftClientRepository shiftClientRepository, IUserRepository userRepository, IClientRepository clientRepository, IMailService mailService)
         {
             _shiftRepository = shiftRepository;
             _trainerRepository = trainerRepository;
@@ -29,6 +30,7 @@ namespace Application.Services
             _shiftClientRepository = shiftClientRepository;
             _userRepository = userRepository;
             _clientRepository = clientRepository;
+            _mailService = mailService; 
         }
 
         public List<ShiftDto> GetAll()
@@ -154,6 +156,10 @@ namespace Application.Services
             }
 
             // Registrar la reserva
+            shift.Actualpeople = shift.Actualpeople ?? 0;
+            shift.Actualpeople++;
+            _shiftRepository.Update(shift);
+
             var shiftClient = new Shiftclient
             {
                 Dniclient = dniclient.Dniclient,
@@ -162,6 +168,54 @@ namespace Application.Services
 
             _shiftClientRepository.Add(shiftClient);
         }
+
+        public List<ShiftDto> AssignTrainerToShifts(AssignTrainerRequest request)
+        {
+            var assignedShifts = new List<ShiftDto>();
+            var trainer = _trainerRepository.GetByDni(request.Dnitrainer);
+
+            foreach (var shiftId in request.ShiftIds)
+            {
+                // Buscar el turno por su ID
+                var shift = _shiftRepository.GetById(shiftId);
+                if (shift == null)
+                {
+                    throw new Exception($"Shift with ID {shiftId} not found.");
+                }
+
+                // Verificar si ya tiene un dnitrainer asignado
+                if (shift.Dnitrainer != null)
+                {
+                    throw new Exception($"Shift with ID {shiftId} already has a trainer assigned.");
+                }
+
+                // Validar que el dnitrainer no esté asignado a otro turno en el mismo horario
+                var overlappingShift = _shiftRepository.GetShiftsByTrainerAndDate(trainer.Dnitrainer, shift.Hour);
+                if (overlappingShift != null)
+                {
+                    throw new Exception($"Trainer {request.Dnitrainer} is already assigned to another shift at {shift.Hour}.");
+                }
+
+                // Asignar el nuevo trainer
+                shift.Dnitrainer = request.Dnitrainer;
+                _shiftRepository.Update(shift);  // Actualizar el turno con el nuevo trainer
+                assignedShifts.Add(ShiftDto.Create(shift));
+            }
+            var user = _userRepository.GetById(trainer.Iduser);
+            // Consolidar los turnos asignados en un solo correo
+            if (assignedShifts.Any())
+            {
+                var shiftsInfo = string.Join(", ", assignedShifts.Select(s => $"{s.Dateday} a las {s.Hour}"));
+                _mailService.Send(
+                    $"Usted Tiene una nueva asignacion {trainer.Firstname} {trainer.Lastname} del Training Center",
+                    $"Hola {trainer.Firstname}, usted fue asignado a los turnos en las siguientes fechas y horarios: {shiftsInfo}.",
+                    user.Email ?? throw new Exception("Trainer email not found")
+                );
+            }
+
+            return assignedShifts;  // Devolver los turnos asignados actualizados
+        }
+
 
     }
 }
