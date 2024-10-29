@@ -8,8 +8,6 @@ namespace Application.Models.Requests
 {
     public class NutritionalPlanRequest
     {
-        public string DniClient { get; set; }
-        public string DniTrainer { get; set; }
         public string Description { get; set; }
         public string? Breakfast { get; set; }
         public string? Lunch { get; set; }
