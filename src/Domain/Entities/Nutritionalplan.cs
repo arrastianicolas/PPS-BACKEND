@@ -11,6 +11,7 @@ public partial class Nutritionalplan
 
     public string Dnitrainer { get; set; } = null!;
 
+    // falta estado status para filtrar por pendientes y description sea not null en bd(?
     public string Description { get; set; } = null!;
 
     public string? Breakfast { get; set; }
