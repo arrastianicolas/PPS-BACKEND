@@ -138,6 +138,7 @@ builder.Services.AddTransient<IRoutineService, RoutineService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 #endregion
 builder.Services.AddHostedService<MembershipCheckService>();
+builder.Services.AddHostedService<ShiftResetService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "Policy1",

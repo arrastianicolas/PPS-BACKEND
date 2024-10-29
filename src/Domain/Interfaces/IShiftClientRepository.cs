@@ -9,7 +9,8 @@ namespace Domain.Interfaces
 {
     public interface IShiftClientRepository : IBaseRepository<Shiftclient>
     {
-        Shiftclient GetByClientAndDate(string dniClient, DateTime date);
+        Shiftclient GetByClientAndDate(string dniClient);
         void Add(Shiftclient shiftsClient);
+        void DeleteAll();
     }
 }
