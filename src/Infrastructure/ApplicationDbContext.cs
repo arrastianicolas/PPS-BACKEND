@@ -39,7 +39,6 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -178,9 +177,12 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Dnitrainer)
                 .HasMaxLength(8)
                 .HasColumnName("dnitrainer");
-            entity.Property(e => e.Luch)
+            entity.Property(e => e.IsActive)
+                .HasDefaultValueSql("'1'")
+                .HasColumnName("isActive");
+            entity.Property(e => e.Lunch)
                 .HasMaxLength(200)
-                .HasColumnName("luch");
+                .HasColumnName("lunch");
             entity.Property(e => e.Snack)
                 .HasMaxLength(200)
                 .HasColumnName("snack");
@@ -281,6 +283,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Idshift)
                 .ValueGeneratedNever()
                 .HasColumnName("idshift");
+            entity.Property(e => e.Actualpeople).HasColumnName("actualpeople");
             entity.Property(e => e.Dateday)
                 .HasMaxLength(12)
                 .HasColumnName("dateday");
@@ -291,10 +294,12 @@ public partial class ApplicationDbContext : DbContext
                 .HasColumnType("time")
                 .HasColumnName("hour");
             entity.Property(e => e.Idlocation).HasColumnName("idlocation");
+            entity.Property(e => e.IsActive)
+                .HasDefaultValueSql("'1'")
+                .HasColumnName("isActive");
             entity.Property(e => e.Peoplelimit)
                 .HasDefaultValueSql("'30'")
                 .HasColumnName("peoplelimit");
-            entity.Property(e => e.Totaldays).HasColumnName("totaldays");
 
             entity.HasOne(d => d.DnitrainerNavigation).WithMany(p => p.Shifts)
                 .HasForeignKey(d => d.Dnitrainer)

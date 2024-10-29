@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Domain.Entities;
 
+namespace Domain.Entities;
 public partial class Shift
 {
     public int Idshift { get; set; }
@@ -17,7 +17,9 @@ public partial class Shift
 
     public int? Peoplelimit { get; set; }
 
-    public int Totaldays { get; set; }
+    public int? Actualpeople { get; set; }
+
+    public int IsActive { get; set; }
 
     public virtual Trainer? DnitrainerNavigation { get; set; }
 

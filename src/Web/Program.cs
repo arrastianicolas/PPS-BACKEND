@@ -119,6 +119,7 @@ builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<ITrainerRepository, TrainerRepository>();
 builder.Services.AddScoped<IMembershipRepository, MembershipRepository>();
 builder.Services.AddScoped<IShiftRepository, ShiftRepository>();
+builder.Services.AddScoped<IShiftClientRepository, ShiftClientRepository>();
 builder.Services.AddScoped<IRoutineRepository, RoutineRepository >();
 builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 builder.Services.AddScoped<INutritionalPlanRepository, NutritionalPlanRepository>();

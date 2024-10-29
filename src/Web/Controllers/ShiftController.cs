@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Authorization;
 using Application.Models.Requests;
 using Application.Interfaces;
 using Application.Services;
+using Domain.Entities;
+using System.Security.Claims;
+using Application.Models;
 
 namespace Web.Controllers
 {
@@ -84,8 +87,37 @@ namespace Web.Controllers
         //        return NotFound(ex.Message);
         //    }
         //}
+        [HttpPost("[action]")]
+        [Authorize(Roles = "Client")]
+        public ActionResult ReserveShift([FromBody] int shiftId) 
+        {
+            int clientId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
 
+            try
+            {
+                _shiftService.ReserveShift(shiftId, clientId);
+                return Ok("Turno Reservado Correctamente");
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
+        }
+        [HttpPost("[action]")]
+        [Authorize(Roles = "Admin")]
+        public ActionResult<List<ShiftDto>> AssignTrainerToShift([FromBody] AssignTrainerRequest request)
+        {
+            try
+            {
+                var updatedShift = _shiftService.AssignTrainerToShifts(request);
+                return Ok(updatedShift);  // Devuelve el turno actualizado
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);  // Devuelve el mensaje de error en caso de que algo falle
+            }
+        }
 
 
     }

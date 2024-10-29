@@ -18,6 +18,8 @@ namespace Application.Interfaces
         void UpdateLocation(LocationRequest locationRequest, int id);
         void DeleteLocation(int id);
         void ChangeState(int locationId);
+        Task<List<object>> GetClientsCountByLocationAsync();
+
 
     }
 }

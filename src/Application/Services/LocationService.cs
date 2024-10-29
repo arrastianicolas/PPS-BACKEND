@@ -38,7 +38,8 @@ namespace Application.Services
             var location = new Location()
             {
                 Adress = locationRequest.Adress,
-                Name = locationRequest.Name
+                Name = locationRequest.Name,
+                Isactive = locationRequest.Isactive,
             };
 
             _locationRepository.Add(location);
@@ -70,6 +71,11 @@ namespace Application.Services
             location.Isactive = location.Isactive == 1 ? 0 : 1;
 
             _locationRepository.Update(location);
+        }
+
+        public async Task<List<object>> GetClientsCountByLocationAsync()
+        {
+            return await _locationRepository.GetClientsCountByLocationAsync();
         }
 
     }

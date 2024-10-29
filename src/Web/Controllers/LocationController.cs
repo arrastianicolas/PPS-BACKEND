@@ -3,6 +3,7 @@ using Application.Models.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Web.Controllers
 {
@@ -77,6 +78,20 @@ namespace Web.Controllers
             catch (Exception ex)
             {
                 return NotFound(ex.Message);
+            }
+        }
+
+        [HttpGet("locations/clients-count")]
+        public async Task<IActionResult> GetClientsCountByLocation()
+        {
+            try
+            {
+                var clientsCountByLocation = await _locationService.GetClientsCountByLocationAsync();
+                return Ok(clientsCountByLocation);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error retrieving data: {ex.Message}");
             }
         }
 

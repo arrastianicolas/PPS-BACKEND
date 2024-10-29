@@ -20,5 +20,9 @@ namespace Application.Interfaces
         void UpdatePago(string dniClient);
         IEnumerable<object> GetNewClientsCountPerMonth();
 
+        IEnumerable<ClientUserDto> GetAllClients();
+
+        void ChangeStateClient(string clientDni);
+
     }
 }

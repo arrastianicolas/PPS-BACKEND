@@ -11,5 +11,7 @@ namespace Domain.Interfaces
     {
         List<Location> GetActives();
         Location? GetById(int id);
+        Task<List<object>> GetClientsCountByLocationAsync();
+
     }
 }
