@@ -8,12 +8,8 @@ using System.Threading.Tasks;
 
 namespace Domain.Interfaces
 {
-    public interface INutritionalPlanRepository
+    public interface INutritionalPlanRepository : IBaseRepository<Nutritionalplan>
     {
-        List<Nutritionalplan> GetAll();
-        Nutritionalplan? GetById(int id);
-        Nutritionalplan Add(Nutritionalplan nutritionalPlan);
-        Nutritionalplan Update(Nutritionalplan nutritionalPlan);
-        void Delete(int id);
+       
     }
 }

@@ -23,7 +23,7 @@ namespace Application.Services
 
         public List<NutritionalPlanDto> GetAll()
         {
-            var plans = _nutritionalPlanRepository.GetAll();
+            var plans = _nutritionalPlanRepository.Get();
             return plans.Select(NutritionalPlanDto.Create).ToList();
         }
 
@@ -35,7 +35,7 @@ namespace Application.Services
                 Dnitrainer = request.DniTrainer,
                 Description = request.Description,
                 Breakfast = request.Breakfast,
-                Luch = request.Lunch,
+                Lunch = request.Lunch,
                 Dinner = request.Dinner,
                 Brunch = request.Brunch,
                 Snack = request.Snack
@@ -52,7 +52,7 @@ namespace Application.Services
             plan.Dnitrainer = request.DniTrainer;
             plan.Description = request.Description;
             plan.Breakfast = request.Breakfast;
-            plan.Luch = request.Lunch;
+            plan.Lunch = request.Lunch;
             plan.Dinner = request.Dinner;
             plan.Brunch = request.Brunch;
             plan.Snack = request.Snack;
@@ -63,7 +63,8 @@ namespace Application.Services
         public void Delete(int id)
         {
             var plan = _nutritionalPlanRepository.GetById(id) ?? throw new Exception("Plan not found.");
-            _nutritionalPlanRepository.Delete(id);
+            plan.IsActive = 0;            
+            _nutritionalPlanRepository.Update(plan);
         }
     }
 }

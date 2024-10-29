@@ -28,7 +28,7 @@ namespace Application.Models
                 DniTrainer = nutritionalPlan.Dnitrainer,
                 Description = nutritionalPlan.Description,
                 Breakfast = nutritionalPlan.Breakfast,
-                Lunch = nutritionalPlan.Luch,
+                Lunch = nutritionalPlan.Lunch,
                 Dinner = nutritionalPlan.Dinner,
                 Brunch = nutritionalPlan.Brunch,
                 Snack = nutritionalPlan.Snack

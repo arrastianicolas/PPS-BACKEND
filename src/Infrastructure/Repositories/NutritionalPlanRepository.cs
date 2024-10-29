@@ -15,17 +15,14 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
-        public List<Nutritionalplan> GetAll()
-        {
-            return _context.Set<Nutritionalplan>()
-                           .Include(np => np.DniclientNavigation)
-                           .Include(np => np.DnitrainerNavigation)
-                           .ToList();
-        }
+ 
 
         public override List<Nutritionalplan> Get()
         {
-            return GetAll();
+            return _context.Nutritionalplans
+                            .Include(np => np.DniclientNavigation)
+                            .Include(np => np.DnitrainerNavigation)
+                            .ToList();
         }
 
         public Nutritionalplan? GetById(int id)
