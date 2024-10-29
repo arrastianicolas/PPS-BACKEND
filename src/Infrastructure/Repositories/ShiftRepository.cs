@@ -15,7 +15,12 @@ namespace Infrastructure.Repositories
         {
             _context = context;
         }
+        public Shift? GetShiftsByTrainerAndDate(string dnitrainer, TimeOnly date)
+        {
+            
+            return _context.Shifts
+                .FirstOrDefault(s => s.Dnitrainer == dnitrainer && s.Hour == date);
+        }
 
-       
     }
 }
