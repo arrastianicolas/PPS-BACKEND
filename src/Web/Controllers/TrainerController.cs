@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.Models;
+using Application.Models.Requests;
 using Application.Services;
 using Domain.Exceptions;
 using Microsoft.AspNetCore.Authorization;
@@ -43,6 +44,21 @@ namespace Web.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
+
+        [HttpPost("[action]")]
+        public IActionResult AddTrainer([FromBody] TrainerUserRequest request)
+        {
+            try
+            {
+                var trainerUserDto = _trainerService.CreateTrainer(request.TrainerRequest, request.UserRequest);
+                return Ok(trainerUserDto);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
 
 
         [HttpPut("[action]/{trainerDni}")]
