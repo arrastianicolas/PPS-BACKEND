@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using Application.Models.Requests;
 using Domain.Entities;
+using Domain.Exceptions;
 using Domain.Interfaces;
 using Infrastructure.Repositories;
 
@@ -40,15 +41,28 @@ namespace Infrastructure.Services
             if (user == null) return null;
 
             if (user.Email != authenticationRequest.Email || user.Password != authenticationRequest.Password) return null;
-
+            
             var client = _clientRepository.GetClientByUserId(user.Id);
+            
+            if (client != null && client.Isactive == 0)
+            {
+                throw new NotFoundException();
+            }
+
             if (client != null && client.Isactive == 1)
             {
                 return user;
             }
 
-            //Validar si el usuario es un Trainer y está activo
+
+
             var trainer = _trainerRepository.GetTrainerByUserId(user.Id);
+
+            if (trainer != null && trainer.Isactive == 0)
+            {
+                throw new NotFoundException();
+            }
+
             if (trainer != null && trainer.Isactive == 1)
             {
                 return user; // Retorna si el usuario es un Trainer y está activo 
