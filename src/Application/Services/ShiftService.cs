@@ -190,11 +190,11 @@ namespace Application.Services
                 }
 
                 // Validar que el dnitrainer no esté asignado a otro turno en el mismo horario
-                var overlappingShift = _shiftRepository.GetShiftsByTrainerAndDate(trainer.Dnitrainer, shift.Hour);
-                if (overlappingShift != null)
-                {
-                    throw new Exception($"Trainer {request.Dnitrainer} is already assigned to another shift at {shift.Hour}.");
-                }
+                //var overlappingShift = _shiftRepository.GetShiftsByTrainerAndDate(trainer.Dnitrainer, shift.Hour);
+                //if (overlappingShift != null)
+                //{
+                //    throw new Exception($"Trainer {request.Dnitrainer} is already assigned to another shift at {shift.Hour}.");
+                //}
 
                 // Asignar el nuevo trainer
                 shift.Dnitrainer = request.Dnitrainer;
