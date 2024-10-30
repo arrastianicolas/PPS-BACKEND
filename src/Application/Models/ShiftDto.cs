@@ -10,6 +10,7 @@ namespace Application.Models
 {
     public class ShiftDto
     {
+        public int Idshift { get; set; }
         public string Dateday { get; set; } = null!;
 
         public TimeOnly Hour { get; set; }
@@ -29,6 +30,7 @@ namespace Application.Models
         {
             return new ShiftDto
             {
+                Idshift = shift.Idshift,
                 Dateday = shift.Dateday,
                 Hour = shift.Hour,
                 Idlocation = shift.Idlocation,
