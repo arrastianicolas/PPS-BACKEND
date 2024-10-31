@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Xml.Linq;
 
 namespace Domain.Entities;
+
 public partial class Shift
 {
     public int Idshift { get; set; }
