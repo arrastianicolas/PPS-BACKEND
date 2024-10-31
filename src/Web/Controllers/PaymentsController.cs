@@ -62,6 +62,40 @@ namespace Web.Controllers
             // Retornar el punto de inicialización de pago (init_point) para que el cliente lo use
             return Ok(new { init_point = preference.InitPoint });
         }
+        
+        [HttpPost("update-preference")]
+        public async Task<IActionResult> UpdatePago([FromBody] PaymentRequest request)
+        {
+            var membership = _membershipService.GetByType(request.Type);
 
+            if (membership == null)
+            {
+                return BadRequest("La membresía seleccionada no es válida.");
+            }
+
+            var preferenceRequest = new PreferenceRequest
+            {
+                Items = new List<PreferenceItemRequest>
+                {
+                    new PreferenceItemRequest
+                    {
+                        Title = $"Membresía: {membership.Type}",
+                        Quantity = 1,
+                        UnitPrice = (decimal?)membership.Price,
+                    },
+                },
+                BackUrls = new PreferenceBackUrlsRequest
+                {
+                    Success = request.BackUrls?.Success,
+                    Failure = request.BackUrls?.Failure,
+                    Pending = request.BackUrls?.Pending,
+                },
+                AutoReturn = "approved"
+            };
+
+            var updatedPreference = await _mercadoPagoService.CrearPreferenciaPago(preferenceRequest);
+
+            return Ok(new { init_point = updatedPreference.InitPoint });
+        }
     }
 }
