@@ -62,11 +62,12 @@ namespace Web.Controllers
             // Retornar el punto de inicialización de pago (init_point) para que el cliente lo use
             return Ok(new { init_point = preference.InitPoint });
         }
-        
+
         [HttpPost("update-preference")]
         public async Task<IActionResult> UpdatePago([FromBody] PaymentRequest request)
         {
             var membership = _membershipService.GetByType(request.Type);
+
 
             if (membership == null)
             {
@@ -97,5 +98,6 @@ namespace Web.Controllers
 
             return Ok(new { init_point = updatedPreference.InitPoint });
         }
+        
     }
 }
