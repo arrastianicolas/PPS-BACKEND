@@ -4,6 +4,7 @@ using Application.Models.Requests;
 using Domain.Entities;
 using Domain.Exceptions;
 using Domain.Interfaces;
+using MercadoPago.Resource.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,10 +37,18 @@ namespace Application.Services
             return plans.Select(NutritionalPlanDto.Create).ToList();
         }
 
-        public List<NutritionalPlanDto> GetByClientDni(int clientId)
+        public List<NutritionalPlanDto> GetByDni(int userId)
         {
-            var client = _clientRepository.GetClientByUserId(clientId) ?? throw new NotFoundException("Client not found");
-            var plans = _nutritionalPlanRepository.GetByClientDni(client.Dniclient);
+
+            var client = _clientRepository.GetClientByUserId(userId);
+            var trainer = client == null ? _trainerRepository.GetTrainerByUserId(userId) : null;
+            var plans = new List<Nutritionalplan>();
+
+            if (trainer != null)            
+                plans = _nutritionalPlanRepository.GetByDni(trainer.Dnitrainer);            
+            else            
+                plans = _nutritionalPlanRepository.GetByDni(client.Dniclient);
+                   
             return plans.Select(NutritionalPlanDto.Create).ToList();
         }
 
@@ -47,7 +56,7 @@ namespace Application.Services
         {
             var client = _clientRepository.GetClientByUserId(clientId) ?? throw new NotFoundException("Client not found");
             
-            string trainerDni = "12345678"; // obtener trainer
+            string trainerDni = "45656111"; // obtener trainer
             var trainer = _trainerRepository.GetByDni(trainerDni) ?? throw new NotFoundException("Trainer not found");
             var trainerEmail = _userRepository.GetById(trainer.Iduser)?.Email;
 
@@ -92,7 +101,7 @@ namespace Application.Services
             } else
             {                
                // Si hay otro plan activo se desactiva para solo dejar activo el nuevo
-               var clientPlans = _nutritionalPlanRepository.GetByClientDni(plan.Dniclient);
+               var clientPlans = _nutritionalPlanRepository.GetByDni(plan.Dniclient);
                var clientPlanActive = clientPlans.FirstOrDefault(p => p.IsActive == 1);
                if(clientPlanActive != null)
                 {

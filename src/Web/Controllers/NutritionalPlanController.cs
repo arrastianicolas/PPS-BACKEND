@@ -24,6 +24,7 @@ namespace Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult GetAll()
         {
             var plans = _nutritionalPlanService.GetAll();
@@ -35,24 +36,23 @@ namespace Web.Controllers
         {
             try
             {
-                int clientId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "") ;
-                return Ok(_nutritionalPlanService.GetByClientDni(clientId));
+                var userType = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+                return Ok(_nutritionalPlanService.GetByDni(userId));
             }
             catch (NotFoundException ex)
             {
                 return NotFound(ex.Message);
-            }       
-        }
+            }
+        }        
 
         [HttpPost]
+        [Authorize(Roles = "Client")]
         public IActionResult Create([FromBody] NutritionalPlanClientRequest request )
         {
             try
             {
                 int clientId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
-                var userType = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-                if (userType != "Client") return Forbid();
-
                 var createdPlan = _nutritionalPlanService.Create(clientId, request);
                 return Ok(createdPlan);
             }            
@@ -67,6 +67,7 @@ namespace Web.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Trainer")]
         public IActionResult Update(int id, NutritionalPlanTrainerRequest request)
         {
             try
@@ -81,6 +82,7 @@ namespace Web.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Trainer")]
         public IActionResult Delete(int id)
         {
             try

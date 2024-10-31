@@ -25,12 +25,12 @@ namespace Infrastructure.Repositories
                             .ToList();
         }
 
-        public List<Nutritionalplan> GetByClientDni(string dni)
+        public List<Nutritionalplan> GetByDni(string dni)
         {
             return _context.Set<Nutritionalplan>()
                            .Include(np => np.DniclientNavigation)
                            .Include(np => np.DnitrainerNavigation)
-                           .Where(np => np.Dniclient == dni)
+                           .Where(np => np.Dniclient == dni || np.Dnitrainer == dni)
                            .ToList();
         }
 
