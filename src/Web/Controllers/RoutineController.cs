@@ -27,16 +27,12 @@ namespace Web.Controllers
         //}
 
         [HttpPost]
+        [Authorize(Roles = "Client")]
         public ActionResult<RoutineDto> Add([FromBody] RoutineClientRequest routineClientRequest)
 
         {
             int clientId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
-            var userType = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-
-            if (userType != "Client")
-            {
-                return Forbid();
-            }
+            
 
             var routineDto = _routineService.Add(routineClientRequest, clientId);
             return Ok(routineDto);
