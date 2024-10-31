@@ -98,6 +98,7 @@ namespace Web.Controllers
 
             return Ok(new { init_point = updatedPreference.InitPoint });
         }
-        
+
+
     }
 }
