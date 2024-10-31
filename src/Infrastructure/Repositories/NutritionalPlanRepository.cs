@@ -34,14 +34,5 @@ namespace Infrastructure.Repositories
                            .ToList();
         }
 
-        public void Delete(int id)
-        {
-            var nutritionalPlan = GetById(id);
-            if (nutritionalPlan != null)
-            {
-                _context.Set<Nutritionalplan>().Remove(nutritionalPlan);
-                _context.SaveChanges();
-            }
-        }
     }
 }

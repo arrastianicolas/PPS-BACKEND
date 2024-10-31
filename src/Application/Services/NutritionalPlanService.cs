@@ -65,8 +65,7 @@ namespace Application.Services
                           .Where(sc => sc.Dniclient == client.Dniclient) // Filtra por cliente
                           .OrderByDescending(sc => sc.Idshift) // Ordena por Idshift
                           .FirstOrDefault()?.Idshift; // Obtiene el último
-            var lastShift = _shiftRepository.GetById(lastShiftId);
-            Console.WriteLine($"Last shift found: Idshift = {lastShiftId} | DniTrainer = {lastShift?.Idshift}");
+            var lastShift = _shiftRepository.GetById(lastShiftId);        
             if (lastShift == null) throw new NotFoundException("No shifts found for the client");
             var trainer = _trainerRepository.GetByDni(lastShift.Dnitrainer) ?? throw new NotFoundException("Trainer not found");
             var trainerEmail = _userRepository.GetById(trainer.Iduser)?.Email;
@@ -76,10 +75,9 @@ namespace Application.Services
                 Dniclient = client.Dniclient,
                 Dnitrainer = trainer.Dnitrainer,                
                 Description = request.Description,
-                IsPending = 1,
                 Weight = request.Weight,
                 Height = request.Height,
-                IsActive = 0
+                Status = "Pending"
                 
             };
 
@@ -103,24 +101,24 @@ namespace Application.Services
             plan.Dinner = request.Dinner;
             plan.Brunch = request.Brunch;
             plan.Snack = request.Snack;
-            plan.IsPending = 0;
-            if (request.isActive == 0)
+            
+            if (request.Status.Equals("Denied", StringComparison.OrdinalIgnoreCase))
             {
-                plan.IsActive = 0;
+                plan.Status = "Denied";
                 string message = $"Hola {client.Firstname},\n\nLamentamos informarte que tu solicitud de plan nutricional ha sido rechazada." + (request.Message != null ? $"\n\nMotivo del rechazo:\n{request.Message}" : "") + "\n\nSi tienes alguna pregunta o necesitas más detalles, por favor, contacta a tu entrenador.";
                _mailService.Send($"Plan nutricional rechazado", message, clientEmail);
             } else
             {                
                // Si hay otro plan activo se desactiva para solo dejar activo el nuevo
                var clientPlans = _nutritionalPlanRepository.GetByDni(plan.Dniclient);
-               var clientPlanActive = clientPlans.FirstOrDefault(p => p.IsActive == 1);
+               var clientPlanActive = clientPlans.FirstOrDefault(p => p.Status == "Enabled");
                if(clientPlanActive != null)
                 {
-                    clientPlanActive.IsActive = 0;
+                    clientPlanActive.Status = "Disabled";
                     _nutritionalPlanRepository.Update(clientPlanActive);
                 }
 
-                plan.IsActive = 1;
+                plan.Status = "Enabled";
 
                 _mailService.Send($"Plan nutricional aceptado",
                   $"Hola {client.Firstname},\n\nTu plan nutricional ha sido aceptado y está disponible en tu panel.\n\nPor favor, ingresa al sistema para revisarlo y comenzar a seguirlo.",
@@ -132,7 +130,7 @@ namespace Application.Services
         public void Delete(int id)
         {
             var plan = _nutritionalPlanRepository.GetById(id) ?? throw new NotFoundException("Plan not found.");
-            plan.IsActive = 0;            
+            plan.Status = "Disabled";            
             _nutritionalPlanRepository.Update(plan);
         }
     }
