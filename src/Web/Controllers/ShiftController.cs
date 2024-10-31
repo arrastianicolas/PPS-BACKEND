@@ -133,6 +133,14 @@ namespace Web.Controllers
                 return BadRequest(ex.Message);  
             }
         }
+        [HttpGet("[action]")]
 
+        public ActionResult<ShiftMydetailsDto> GetMyShiftDetails()
+        {
+            int clientId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+
+            var shift = _shiftService.GetMyShiftDetails(clientId);
+            return Ok(shift);
+        }
     }
 }

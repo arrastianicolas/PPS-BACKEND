@@ -38,6 +38,52 @@ namespace Application.Services
             var shifts = _shiftRepository.Get();
             return shifts.Select(ShiftDto.Create).ToList();
         }
+        public ShiftMydetailsDto GetMyShiftDetails(int Iduser)
+        {
+            var user = _userRepository.GetById(Iduser);
+            if (user == null)
+            {
+                throw new NotFoundException("Usuario no encontrado");
+            }
+
+            var clientUser = _clientRepository.GetClientByUserId(Iduser);
+            if (clientUser == null)
+            {
+                throw new NotFoundException("No se encontró al cliente.");
+            }
+
+            // Obtener los turnos del cliente para el día de hoy
+            var shifts = _shiftClientRepository.GetShiftsByClientDniForToday(clientUser.Dniclient);
+            
+   
+            var shift = shifts.FirstOrDefault()?.IdshiftNavigation;
+            var trainer = _trainerRepository.GetByDni(shift.Dnitrainer);
+            var location = _locationRepository.GetById(shift.Idlocation);
+            if (shift == null)
+            {
+                throw new NotFoundException("No se encontraron turnos para el cliente en el día de hoy.");
+            }
+
+        
+            return new ShiftMydetailsDto
+            {
+                Idshift = shift.Idshift,
+                Dateday = shift.Dateday,
+                Hour = shift.Hour,
+                Idlocation = shift.Idlocation,
+                Peoplelimit = shift.Peoplelimit,
+                Actualpeople = shift.Actualpeople,
+                Isactive = shift.IsActive,
+                Dnitrainer = shift.Dnitrainer,
+                Firstname = trainer.Firstname,
+                Lastname = trainer.Lastname,
+                Adress = location.Adress,
+                Namelocation = location.Name,
+            };
+        }
+
+
+
 
         public ShiftDto CreateShift(ShiftRequest shiftRequest)
         {
@@ -165,8 +211,13 @@ namespace Application.Services
                 Dniclient = client.Dniclient,
                 Idshift = shiftId
             };
-
+            var location = _locationRepository.GetById(shift.Idlocation);
             _shiftClientRepository.Add(shiftClient);
+            _mailService.Send(
+                  $"Nuevo turno reservado en Training Center!",
+                  $"Hola {client.Firstname}, usted ha reservado un turno para hoy a las {shift.Hour}hs.\n Lo esperamos en la {location.Name} ubicada en {location.Adress}!",
+                  user.Email ?? throw new Exception("Trainer email not found")
+              );
         }
 
         public List<ShiftDto> AssignTrainerToShifts(AssignTrainerRequest request)

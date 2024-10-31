@@ -12,5 +12,6 @@ namespace Domain.Interfaces
         Shiftclient GetByClientAndDate(string dniClient);
         void Add(Shiftclient shiftsClient);
         void DeleteAll();
+        IEnumerable<Shiftclient> GetShiftsByClientDniForToday(string dniClient);
     }
 }
