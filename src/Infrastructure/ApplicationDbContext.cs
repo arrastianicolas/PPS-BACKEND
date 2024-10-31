@@ -39,6 +39,7 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+ 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -177,15 +178,21 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Dnitrainer)
                 .HasMaxLength(8)
                 .HasColumnName("dnitrainer");
-            entity.Property(e => e.IsActive)
-                .HasDefaultValueSql("'1'")
-                .HasColumnName("isActive");
+            entity.Property(e => e.Height)
+                .HasMaxLength(6)
+                .HasColumnName("height");
             entity.Property(e => e.Lunch)
                 .HasMaxLength(200)
                 .HasColumnName("lunch");
             entity.Property(e => e.Snack)
                 .HasMaxLength(200)
                 .HasColumnName("snack");
+            entity.Property(e => e.Status)
+                .HasMaxLength(15)
+                .HasColumnName("status");
+            entity.Property(e => e.Weight)
+                .HasMaxLength(6)
+                .HasColumnName("weight");
 
             entity.HasOne(d => d.DniclientNavigation).WithMany(p => p.Nutritionalplans)
                 .HasForeignKey(d => d.Dniclient)

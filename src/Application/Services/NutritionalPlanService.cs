@@ -84,7 +84,7 @@ namespace Application.Services
         public void Delete(int id)
         {
             var plan = _nutritionalPlanRepository.GetById(id) ?? throw new Exception("Plan not found.");
-            plan.IsActive = 0;            
+            plan.Status = "Inable";            
             _nutritionalPlanRepository.Update(plan);
         }
     }
