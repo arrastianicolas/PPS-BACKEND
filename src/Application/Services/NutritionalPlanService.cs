@@ -21,14 +21,18 @@ namespace Application.Services
         private readonly ITrainerRepository _trainerRepository;
         private readonly IClientRepository _clientRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IShiftRepository _shiftRepository;
+        private readonly IShiftClientRepository _shiftClientRepository;
 
-        public NutritionalPlanService(INutritionalPlanRepository nutritionalPlanRepository, IMailService mailService, ITrainerRepository trainerRepository, IClientRepository clientRepository, IUserRepository userRepository)
+        public NutritionalPlanService(INutritionalPlanRepository nutritionalPlanRepository, IMailService mailService, ITrainerRepository trainerRepository, IClientRepository clientRepository, IUserRepository userRepository, IShiftClientRepository shiftClientRepository, IShiftRepository shiftRepository )
         {
             _nutritionalPlanRepository = nutritionalPlanRepository;
             _mailService = mailService;
             _trainerRepository = trainerRepository;
             _clientRepository = clientRepository;
             _userRepository = userRepository;
+            _shiftClientRepository = shiftClientRepository;
+            _shiftRepository = shiftRepository;
         }
 
         public List<NutritionalPlanDto> GetAll()
@@ -56,8 +60,15 @@ namespace Application.Services
         {
             var client = _clientRepository.GetClientByUserId(clientId) ?? throw new NotFoundException("Client not found");
             
-            string trainerDni = "45656111"; // obtener trainer
-            var trainer = _trainerRepository.GetByDni(trainerDni) ?? throw new NotFoundException("Trainer not found");
+            // Obtener trainer
+            var lastShiftId = _shiftClientRepository.Get() // Recupera todos los turnos
+                          .Where(sc => sc.Dniclient == client.Dniclient) // Filtra por cliente
+                          .OrderByDescending(sc => sc.Idshift) // Ordena por Idshift
+                          .FirstOrDefault()?.Idshift; // Obtiene el último
+            var lastShift = _shiftRepository.GetById(lastShiftId);
+            Console.WriteLine($"Last shift found: Idshift = {lastShiftId} | DniTrainer = {lastShift?.Idshift}");
+            if (lastShift == null) throw new NotFoundException("No shifts found for the client");
+            var trainer = _trainerRepository.GetByDni(lastShift.Dnitrainer) ?? throw new NotFoundException("Trainer not found");
             var trainerEmail = _userRepository.GetById(trainer.Iduser)?.Email;
 
             var nutritionalPlan = new Nutritionalplan

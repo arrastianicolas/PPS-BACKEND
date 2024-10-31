@@ -67,7 +67,7 @@ namespace Web.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Trainer")]
+        [Authorize(Roles = "trainer")]
         public IActionResult Update(int id, NutritionalPlanTrainerRequest request)
         {
             try
@@ -82,7 +82,7 @@ namespace Web.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Trainer")]
+        [Authorize(Roles = "trainer")]
         public IActionResult Delete(int id)
         {
             try
