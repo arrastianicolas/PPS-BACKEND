@@ -12,7 +12,7 @@ namespace Application.Interfaces
     public interface INutritionalPlanService
     {
         List<NutritionalPlanDto> GetAll();
-        List<NutritionalPlanDto> GetByClientDni(int clientId);
+        List<NutritionalPlanDto> GetByDni(int usertId);
         NutritionalPlanDto Create(int clientId, NutritionalPlanClientRequest request);
         void Update(int id, NutritionalPlanTrainerRequest request);
         void Delete(int id);
