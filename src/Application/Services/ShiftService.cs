@@ -2,6 +2,7 @@
 using Application.Models;
 using Application.Models.Requests;
 using Domain.Entities;
+using Domain.Exceptions;
 using Domain.Interfaces;
 
 using System;
@@ -17,12 +18,19 @@ namespace Application.Services
         private readonly IShiftRepository _shiftRepository;
         private readonly ITrainerRepository _trainerRepository;
         private readonly ILocationRepository _locationRepository;
-
-        public ShiftService(IShiftRepository shiftRepository, ITrainerRepository trainerRepository, ILocationRepository locationRepository)
+        private readonly IShiftClientRepository _shiftClientRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IClientRepository _clientRepository;
+        private readonly IMailService _mailService;
+        public ShiftService(IShiftRepository shiftRepository, ITrainerRepository trainerRepository, ILocationRepository locationRepository, IShiftClientRepository shiftClientRepository, IUserRepository userRepository, IClientRepository clientRepository, IMailService mailService)
         {
             _shiftRepository = shiftRepository;
             _trainerRepository = trainerRepository;
             _locationRepository = locationRepository;
+            _shiftClientRepository = shiftClientRepository;
+            _userRepository = userRepository;
+            _clientRepository = clientRepository;
+            _mailService = mailService; 
         }
 
         public List<ShiftDto> GetAll()
@@ -30,6 +38,52 @@ namespace Application.Services
             var shifts = _shiftRepository.Get();
             return shifts.Select(ShiftDto.Create).ToList();
         }
+        public ShiftMydetailsDto GetMyShiftDetails(int Iduser)
+        {
+            var user = _userRepository.GetById(Iduser);
+            if (user == null)
+            {
+                throw new NotFoundException("Usuario no encontrado");
+            }
+
+            var clientUser = _clientRepository.GetClientByUserId(Iduser);
+            if (clientUser == null)
+            {
+                throw new NotFoundException("No se encontró al cliente.");
+            }
+
+            // Obtener los turnos del cliente para el día de hoy
+            var shifts = _shiftClientRepository.GetShiftsByClientDniForToday(clientUser.Dniclient);
+            
+   
+            var shift = shifts.FirstOrDefault()?.IdshiftNavigation;
+            var trainer = _trainerRepository.GetByDni(shift.Dnitrainer);
+            var location = _locationRepository.GetById(shift.Idlocation);
+            if (shift == null)
+            {
+                throw new NotFoundException("No se encontraron turnos para el cliente en el día de hoy.");
+            }
+
+        
+            return new ShiftMydetailsDto
+            {
+                Idshift = shift.Idshift,
+                Dateday = shift.Dateday,
+                Hour = shift.Hour,
+                Idlocation = shift.Idlocation,
+                Peoplelimit = shift.Peoplelimit,
+                Actualpeople = shift.Actualpeople,
+                Isactive = shift.IsActive,
+                Dnitrainer = shift.Dnitrainer,
+                Firstname = trainer.Firstname,
+                Lastname = trainer.Lastname,
+                Adress = location.Adress,
+                Namelocation = location.Name,
+            };
+        }
+
+
+
 
         public ShiftDto CreateShift(ShiftRequest shiftRequest)
         {
@@ -52,7 +106,8 @@ namespace Application.Services
                 Idlocation = shiftRequest.Idlocation,
                 Dnitrainer = shiftRequest.Dnitrainer,
                 Peoplelimit = shiftRequest.Peoplelimit,
-                Totaldays = shiftRequest.Totaldays,
+                Actualpeople = 0,
+                IsActive = 1,
             };
 
             _shiftRepository.Add(shift);
@@ -81,7 +136,8 @@ namespace Application.Services
             shift.Idlocation = shiftRequest.Idlocation;
             shift.Dnitrainer = shiftRequest.Dnitrainer;
             shift.Peoplelimit = shiftRequest.Peoplelimit;
-            shift.Totaldays = shiftRequest.Totaldays;
+            shift.Actualpeople = shiftRequest.Actualpeople;
+            shift.IsActive = shiftRequest.isActive;
 
             _shiftRepository.Update(shift);
         }
@@ -108,7 +164,127 @@ namespace Application.Services
         //    location.Shifts.Remove(shift);
         //    _locationRepository.Update(location);
         //}
+        public void ReserveShift(int shiftId, int Iduser)
+        {
+            //Para sacar de las claims al client
+            var user = _userRepository.GetById(Iduser);
+            if (user == null)
+            {
+                throw new NotFoundException("Usuario no encontrado");
+            }
 
+            var client = _clientRepository.GetClientByUserId(Iduser);
+            // Obtener el turno por ID
+            var shift = _shiftRepository.GetById(shiftId);
+            if (shift == null)
+            {
+                throw new Exception("No se encontró el turno.");
+            }
+
+
+
+            // Obtiene la hora actual como un TimeOnly
+            var now = TimeOnly.FromDateTime(DateTime.Now);
+
+            // Validar que la fecha del turno no sea en el pasado
+            if (shift.Hour < now)
+            {
+                throw new Exception("No se puede reservar un turno en el pasado.");
+            }
+
+
+            // Validar que el cliente no haya reservado otro turno en el mismo día
+            var existingReservation = _shiftClientRepository
+                .GetByClientAndDate(client.Dniclient);
+            if (existingReservation != null)
+            {
+                throw new Exception("Ya has reservado un turno para este día.");
+            }
+
+            // Registrar la reserva
+            shift.Actualpeople = shift.Actualpeople ?? 0;
+            shift.Actualpeople++;
+            _shiftRepository.Update(shift);
+
+            var shiftClient = new Shiftclient
+            {
+                Dniclient = client.Dniclient,
+                Idshift = shiftId
+            };
+            var location = _locationRepository.GetById(shift.Idlocation);
+            _shiftClientRepository.Add(shiftClient);
+            _mailService.Send(
+                  $"Nuevo turno reservado en Training Center!",
+                  $"Hola {client.Firstname}, usted ha reservado un turno para hoy a las {shift.Hour}hs.\n Lo esperamos en la {location.Name} ubicada en {location.Adress}!",
+                  user.Email ?? throw new Exception("Trainer email not found")
+              );
+        }
+
+        public List<ShiftDto> AssignTrainerToShifts(AssignTrainerRequest request)
+        {
+            var assignedShifts = new List<ShiftDto>();
+            var trainer = _trainerRepository.GetByDni(request.Dnitrainer);
+
+            foreach (var shiftId in request.ShiftIds)
+            {
+                // Buscar el turno por su ID
+                var shift = _shiftRepository.GetById(shiftId);
+                if (shift == null)
+                {
+                    throw new Exception($"Shift with ID {shiftId} not found.");
+                }
+
+                // Verificar si ya tiene un dnitrainer asignado
+                if (shift.Dnitrainer != null)
+                {
+                    throw new Exception($"Shift with ID {shiftId} already has a trainer assigned.");
+                }
+
+                // Validar que el dnitrainer no esté asignado a otro turno en el mismo horario
+                //var overlappingShift = _shiftRepository.GetShiftsByTrainerAndDate(trainer.Dnitrainer, shift.Hour);
+                //if (overlappingShift != null)
+                //{
+                //    throw new Exception($"Trainer {request.Dnitrainer} is already assigned to another shift at {shift.Hour}.");
+                //}
+
+                // Asignar el nuevo trainer
+                shift.Dnitrainer = request.Dnitrainer;
+                _shiftRepository.Update(shift);  // Actualizar el turno con el nuevo trainer
+                assignedShifts.Add(ShiftDto.Create(shift));
+            }
+            var user = _userRepository.GetById(trainer.Iduser);
+            // Consolidar los turnos asignados en un solo correo
+            if (assignedShifts.Any())
+            {
+                var shiftsInfo = string.Join(", ", assignedShifts.Select(s => $"{s.Dateday} a las {s.Hour}"));
+                _mailService.Send(
+                    $"Usted Tiene una nueva asignacion {trainer.Firstname} {trainer.Lastname} del Training Center",
+                    $"Hola {trainer.Firstname}, usted fue asignado a los turnos en las siguientes fechas y horarios: {shiftsInfo}.",
+                    user.Email ?? throw new Exception("Trainer email not found")
+                );
+            }
+
+            return assignedShifts;  // Devolver los turnos asignados actualizados
+        }
+
+        public List<ShiftDto> GetShiftsByLocationAndDate(ShiftLocationDayRequest request)
+        {
+            // Obtener todos los turnos
+            var shifts = _shiftRepository.Get();
+
+            // Filtrar los turnos por la ubicación y la fecha
+            var filteredShifts = shifts
+                .Where(s => s.Idlocation == request.locationId && s.Dateday == request.day)
+                .Select(ShiftDto.Create)
+                .ToList();
+
+            if (!filteredShifts.Any())
+            {
+                throw new NotFoundException("No shifts found for the specified location and date.");
+            }
+
+            return filteredShifts;
+        }
     }
 }
 

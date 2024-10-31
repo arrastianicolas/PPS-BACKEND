@@ -119,14 +119,16 @@ builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<ITrainerRepository, TrainerRepository>();
 builder.Services.AddScoped<IMembershipRepository, MembershipRepository>();
 builder.Services.AddScoped<IShiftRepository, ShiftRepository>();
+builder.Services.AddScoped<IShiftClientRepository, ShiftClientRepository>();
 builder.Services.AddScoped<IRoutineRepository, RoutineRepository >();
 builder.Services.AddScoped<ILocationRepository, LocationRepository>();
+builder.Services.AddScoped<INutritionalPlanRepository, NutritionalPlanRepository>();
 #endregion
 
 #region Services
 builder.Services.AddScoped<ICustomAuthenticationService, AuthenticationService>();
 builder.Services.Configure<AuthenticacionServiceOptions>(
-    builder.Configuration.GetSection(AuthenticacionServiceOptions.AutenticacionService));
+builder.Configuration.GetSection(AuthenticacionServiceOptions.AutenticacionService));
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IShiftService, ShiftService>();
@@ -135,8 +137,11 @@ builder.Services.AddTransient<IMailService, MailService>();
 builder.Services.AddTransient<IMembershipService, MembershipService>();
 builder.Services.AddTransient<IRoutineService, RoutineService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
+builder.Services.AddScoped<INutritionalPlanService, NutritionalPlanService>();
+
 #endregion
 builder.Services.AddHostedService<MembershipCheckService>();
+builder.Services.AddHostedService<ShiftResetService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "Policy1",

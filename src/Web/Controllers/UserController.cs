@@ -66,20 +66,33 @@ namespace Web.Controllers
                 return NotFound(ex.Message);
             }
         }
+        [HttpPost("[action]")]
+        public IActionResult VerifyResetPasswordCode([FromBody] VerifyCodeRequest request)
+        {
+            var cachedCode = _memoryCache.Get<string>(request.Email);
+            Console.WriteLine($"Cached: {cachedCode}");
+            Console.WriteLine($"Request: {request.Code}");
+
+            if (cachedCode == null || cachedCode != request.Code)
+                return BadRequest("Código inválido o expirado.");
+
+            return Ok("Código verificado correctamente.");
+        }
+
 
         [HttpPut("[action]")]
         public IActionResult ResetPassword([FromBody] ResetPasswordRequest request)
         {
             var cachedCode = _memoryCache.Get<string>(request.Email);
-            Console.WriteLine($"Cached: {cachedCode}");
-            Console.WriteLine($"Request: {request.Code}");
-            if (cachedCode == null || cachedCode != request.Code)
-                return BadRequest("Código inválido o expirado.");
+
+            if (cachedCode == null)
+                return BadRequest("La sesión de verificación ha expirado. Por favor, solicita un nuevo código.");
 
             try
             {
                 _UserService.ResetPassword(request);
                 _memoryCache.Remove(request.Email);
+
                 return NoContent();
             }
             catch (NotFoundException ex)
@@ -87,5 +100,6 @@ namespace Web.Controllers
                 return NotFound(ex.Message);
             }
         }
+
     }
 }

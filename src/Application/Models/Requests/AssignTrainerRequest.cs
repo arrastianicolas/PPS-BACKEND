@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Application.Models.Requests
 {
-    public class ResetPasswordRequest
+    public class AssignTrainerRequest
     {
-        public string Email { get; set; }
-        public string NewPassword { get; set; }
+        public List<int> ShiftIds { get; set; } = new List<int>();
+        public string Dnitrainer { get; set; } = string.Empty;
+
     }
 }

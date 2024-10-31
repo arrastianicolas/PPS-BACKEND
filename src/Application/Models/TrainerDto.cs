@@ -16,6 +16,8 @@ namespace Application.Models
         public DateOnly BirthDate { get; set; }
         public string PhoneNumber { get; set; } = null!;
 
+        public int Isactive { get; set; }
+
         // Método estático para mapear de Trainer a TrainerDto
         public static TrainerDto Create(Trainer trainer)
         {
@@ -25,7 +27,8 @@ namespace Application.Models
                 FirstName = trainer.Firstname,
                 LastName = trainer.Lastname,
                 BirthDate = trainer.Birthdate,
-                PhoneNumber = trainer.Phonenumber
+                PhoneNumber = trainer.Phonenumber,
+                Isactive = trainer.Isactive,
             };
         }
     }

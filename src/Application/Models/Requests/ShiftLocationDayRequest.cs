@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Application.Models.Requests
 {
-    public class ResetPasswordRequest
+    public class ShiftLocationDayRequest
     {
-        public string Email { get; set; }
-        public string NewPassword { get; set; }
+        public int locationId { get;  set; }
+        public string day { get; set; }
     }
 }
