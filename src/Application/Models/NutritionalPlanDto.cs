@@ -18,10 +18,9 @@ namespace Application.Models
         public string? Dinner { get; set; }
         public string? Brunch { get; set; }
         public string? Snack { get; set; }
-        public int IsPending { get; set; }
+        public string Status { get; set; }
         public string Weight { get; set; }
         public string Height { get; set; }
-        public int IsActive { get; set; }
 
         public static NutritionalPlanDto Create(Nutritionalplan nutritionalPlan)
         {
@@ -36,8 +35,7 @@ namespace Application.Models
                 Dinner = nutritionalPlan.Dinner,
                 Brunch = nutritionalPlan.Brunch,
                 Snack = nutritionalPlan.Snack,
-                IsActive = nutritionalPlan.IsActive,
-                IsPending = nutritionalPlan.IsPending,
+                Status = nutritionalPlan.Status,
                 Weight = nutritionalPlan.Weight,
                 Height = nutritionalPlan.Height
             };

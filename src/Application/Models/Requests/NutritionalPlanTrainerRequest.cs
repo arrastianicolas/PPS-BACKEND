@@ -15,8 +15,8 @@ namespace Application.Models.Requests
         public string? Snack { get; set; }
 
 
-        // Si el entrenador quiere rechazar el plan, puede hacerlo enviando isActive como 0 y un mensaje aclarando el porque fue rechazado
-        public int? isActive { get; set; } = 1;
+        // Si el entrenador quiere rechazar el plan, puede hacerlo enviando status como Denied y un mensaje aclarando el porque fue rechazado
+        public string? Status { get; set; } = "Enabled";
         public string? Message { get; set; }
     }
 }
