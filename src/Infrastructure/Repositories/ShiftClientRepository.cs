@@ -37,5 +37,15 @@ namespace Infrastructure.Repositories
             _context.Set<Shiftclient>().RemoveRange(allShiftClients); // Eliminar todos
             _context.SaveChanges(); // Guardar cambios
         }
+        public IEnumerable<Shiftclient> GetShiftsByClientDniForToday(string dniClient)
+        {
+            var todayDayOfWeek = DateTime.Now.ToString("dddd", new System.Globalization.CultureInfo("es-ES"));
+
+            return _context.Shiftclients
+                           .Where(sc => sc.Dniclient == dniClient
+                                        && sc.IdshiftNavigation.Dateday == todayDayOfWeek) // Filtrar por día actual
+                           .Include(sc => sc.IdshiftNavigation) // Incluye los detalles del turno (Shift)
+                           .ToList();
+        }
     }
 }
