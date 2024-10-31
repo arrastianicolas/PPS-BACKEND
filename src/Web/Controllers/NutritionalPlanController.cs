@@ -1,8 +1,10 @@
 ﻿using Application.Interfaces;
 using Application.Models.Requests;
+using Application.Services;
 using Domain.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel;
 using System.Security.Claims;
 
 
@@ -22,34 +24,51 @@ namespace Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult GetAll()
         {
             var plans = _nutritionalPlanService.GetAll();
             return Ok(plans);
         }
 
-        [HttpPost]
-        public IActionResult Create()
+        [HttpGet("[action]")]
+        public IActionResult GetMyPlans()
         {
             try
             {
-                string trainerDni = "12345678"; // obtener trainer
-
-                string clientDni = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "";
                 var userType = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-                if (userType != "Client") return Forbid();
+                int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+                return Ok(_nutritionalPlanService.GetByDni(userId));
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }        
 
-                var createdPlan = _nutritionalPlanService.Create(clientDni, trainerDni);
-                return CreatedAtAction(nameof(GetAll), new { id = createdPlan.Id }, createdPlan);
+        [HttpPost]
+        [Authorize(Roles = "Client")]
+        public IActionResult Create([FromBody] NutritionalPlanClientRequest request )
+        {
+            try
+            {
+                int clientId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+                var createdPlan = _nutritionalPlanService.Create(clientId, request);
+                return Ok(createdPlan);
             }            
             catch (NotFoundException ex)
             {
                 return NotFound(ex.Message);
             }
+            catch (NotAllowedException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, NutritionalPlanRequest request)
+        [Authorize(Roles = "trainer")]
+        public IActionResult Update(int id, NutritionalPlanTrainerRequest request)
         {
             try
             {
@@ -63,6 +82,7 @@ namespace Web.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "trainer")]
         public IActionResult Delete(int id)
         {
             try

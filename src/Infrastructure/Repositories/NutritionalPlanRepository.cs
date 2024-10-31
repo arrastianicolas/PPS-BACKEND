@@ -19,28 +19,20 @@ namespace Infrastructure.Repositories
 
         public override List<Nutritionalplan> Get()
         {
-            return _context.Nutritionalplans
+            return _context.Set<Nutritionalplan>()
                             .Include(np => np.DniclientNavigation)
                             .Include(np => np.DnitrainerNavigation)
                             .ToList();
         }
 
-        public Nutritionalplan? GetById(int id)
+        public List<Nutritionalplan> GetByDni(string dni)
         {
             return _context.Set<Nutritionalplan>()
                            .Include(np => np.DniclientNavigation)
                            .Include(np => np.DnitrainerNavigation)
-                           .FirstOrDefault(np => np.Idnutritionalplan == id);
+                           .Where(np => np.Dniclient == dni || np.Dnitrainer == dni)
+                           .ToList();
         }
 
-        public void Delete(int id)
-        {
-            var nutritionalPlan = GetById(id);
-            if (nutritionalPlan != null)
-            {
-                _context.Set<Nutritionalplan>().Remove(nutritionalPlan);
-                _context.SaveChanges();
-            }
-        }
     }
 }

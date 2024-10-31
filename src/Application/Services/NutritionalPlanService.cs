@@ -4,6 +4,7 @@ using Application.Models.Requests;
 using Domain.Entities;
 using Domain.Exceptions;
 using Domain.Interfaces;
+using MercadoPago.Resource.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,14 +21,18 @@ namespace Application.Services
         private readonly ITrainerRepository _trainerRepository;
         private readonly IClientRepository _clientRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IShiftRepository _shiftRepository;
+        private readonly IShiftClientRepository _shiftClientRepository;
 
-        public NutritionalPlanService(INutritionalPlanRepository nutritionalPlanRepository, IMailService mailService, ITrainerRepository trainerRepository, IClientRepository clientRepository, IUserRepository userRepository)
+        public NutritionalPlanService(INutritionalPlanRepository nutritionalPlanRepository, IMailService mailService, ITrainerRepository trainerRepository, IClientRepository clientRepository, IUserRepository userRepository, IShiftClientRepository shiftClientRepository, IShiftRepository shiftRepository )
         {
             _nutritionalPlanRepository = nutritionalPlanRepository;
             _mailService = mailService;
             _trainerRepository = trainerRepository;
             _clientRepository = clientRepository;
             _userRepository = userRepository;
+            _shiftClientRepository = shiftClientRepository;
+            _shiftRepository = shiftRepository;
         }
 
         public List<NutritionalPlanDto> GetAll()
@@ -36,55 +41,96 @@ namespace Application.Services
             return plans.Select(NutritionalPlanDto.Create).ToList();
         }
 
-        public NutritionalPlanDto Create(string clientDni, string trainerDni)
+        public List<NutritionalPlanDto> GetByDni(int userId)
         {
-            var trainer = _trainerRepository.GetByDni(trainerDni) ?? throw new NotFoundException("Trainer not found");
-            var client = _clientRepository.GetByDni(clientDni) ?? throw new NotFoundException("Trainer not found"); ;
+
+            var client = _clientRepository.GetClientByUserId(userId);
+            var trainer = client == null ? _trainerRepository.GetTrainerByUserId(userId) : null;
+            var plans = new List<Nutritionalplan>();
+
+            if (trainer != null)            
+                plans = _nutritionalPlanRepository.GetByDni(trainer.Dnitrainer);            
+            else            
+                plans = _nutritionalPlanRepository.GetByDni(client.Dniclient);
+                   
+            return plans.Select(NutritionalPlanDto.Create).ToList();
+        }
+
+        public NutritionalPlanDto Create(int clientId, NutritionalPlanClientRequest request)
+        {
+            var client = _clientRepository.GetClientByUserId(clientId) ?? throw new NotFoundException("Client not found");
+            
+            // Obtener trainer
+            var lastShiftId = _shiftClientRepository.Get() // Recupera todos los turnos
+                          .Where(sc => sc.Dniclient == client.Dniclient) // Filtra por cliente
+                          .OrderByDescending(sc => sc.Idshift) // Ordena por Idshift
+                          .FirstOrDefault()?.Idshift; // Obtiene el último
+            var lastShift = _shiftRepository.GetById(lastShiftId);        
+            if (lastShift == null) throw new NotFoundException("No shifts found for the client");
+            var trainer = _trainerRepository.GetByDni(lastShift.Dnitrainer) ?? throw new NotFoundException("Trainer not found");
             var trainerEmail = _userRepository.GetById(trainer.Iduser)?.Email;
 
             var nutritionalPlan = new Nutritionalplan
             {
                 Dniclient = client.Dniclient,
-                Dnitrainer = trainer.Dnitrainer,
-                //IsPending = 1
-
-                //Description = request.Description,
-                //Breakfast = request.Breakfast,
-                //Lunch = request.Lunch,
-                //Dinner = request.Dinner,
-                //Brunch = request.Brunch,
-                //Snack = request.Snack
+                Dnitrainer = trainer.Dnitrainer,                
+                Description = request.Description,
+                Weight = request.Weight,
+                Height = request.Height,
+                Status = "Pending"
+                
             };
 
             _nutritionalPlanRepository.Add(nutritionalPlan);
 
             _mailService.Send($"Nueva solicitud de plan nutricional disponible",
-                              $"Hola {trainer.Firstname}, tiene una nueva petición de plan nutricional disponible en su panel. Por favor, inicie sesión para revisar y completar la solicitud.",
+                              $"Hola {trainer.Firstname},\n\nTienes una nueva petición de plan nutricional disponible en su panel\n\nPor favor, ingrese al sistema para revisar y completar la solicitud.",
                               trainerEmail);
 
 
             return NutritionalPlanDto.Create(nutritionalPlan);
         }
 
-        public void Update(int id, NutritionalPlanRequest request)
+        public void Update(int id, NutritionalPlanTrainerRequest request)
         {
-            var plan = _nutritionalPlanRepository.GetById(id) ?? throw new Exception("Plan not found.");
-
-            plan.Description = request.Description;
+            var plan = _nutritionalPlanRepository.GetById(id) ?? throw new NotFoundException("Plan not found.");
+            var client = _clientRepository.GetByDni(plan.Dniclient);
+            string clientEmail = _userRepository.GetById(_clientRepository.GetByDni(plan.Dniclient).Iduser).Email;
             plan.Breakfast = request.Breakfast;
             plan.Lunch = request.Lunch;
             plan.Dinner = request.Dinner;
             plan.Brunch = request.Brunch;
             plan.Snack = request.Snack;
-            //plan.IsPending = 0
+            
+            if (request.Status.Equals("Denied", StringComparison.OrdinalIgnoreCase))
+            {
+                plan.Status = "Denied";
+                string message = $"Hola {client.Firstname},\n\nLamentamos informarte que tu solicitud de plan nutricional ha sido rechazada." + (request.Message != null ? $"\n\nMotivo del rechazo:\n{request.Message}" : "") + "\n\nSi tienes alguna pregunta o necesitas más detalles, por favor, contacta a tu entrenador.";
+               _mailService.Send($"Plan nutricional rechazado", message, clientEmail);
+            } else
+            {                
+               // Si hay otro plan activo se desactiva para solo dejar activo el nuevo
+               var clientPlans = _nutritionalPlanRepository.GetByDni(plan.Dniclient);
+               var clientPlanActive = clientPlans.FirstOrDefault(p => p.Status == "Enabled");
+               if(clientPlanActive != null)
+                {
+                    clientPlanActive.Status = "Disabled";
+                    _nutritionalPlanRepository.Update(clientPlanActive);
+                }
 
+                plan.Status = "Enabled";
+
+                _mailService.Send($"Plan nutricional aceptado",
+                  $"Hola {client.Firstname},\n\nTu plan nutricional ha sido aceptado y está disponible en tu panel.\n\nPor favor, ingresa al sistema para revisarlo y comenzar a seguirlo.",
+                  clientEmail);
+            }
             _nutritionalPlanRepository.Update(plan);
         }
 
         public void Delete(int id)
         {
-            var plan = _nutritionalPlanRepository.GetById(id) ?? throw new Exception("Plan not found.");
-            plan.Status = "Inable";            
+            var plan = _nutritionalPlanRepository.GetById(id) ?? throw new NotFoundException("Plan not found.");
+            plan.Status = "Disabled";            
             _nutritionalPlanRepository.Update(plan);
         }
     }

@@ -10,6 +10,6 @@ namespace Domain.Interfaces
 {
     public interface INutritionalPlanRepository : IBaseRepository<Nutritionalplan>
     {
-       
+        List<Nutritionalplan> GetByDni(string dni);
     }
 }
