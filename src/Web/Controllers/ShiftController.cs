@@ -120,7 +120,6 @@ namespace Web.Controllers
         }
 
         [HttpGet("[action]")]
-        [Authorize(Roles = "Admin")]
         public ActionResult<List<ShiftDto>> GetShiftsByLocationAndDate([FromQuery] ShiftLocationDayRequest request)
         {
             try
