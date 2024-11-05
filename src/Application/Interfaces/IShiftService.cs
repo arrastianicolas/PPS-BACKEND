@@ -20,5 +20,6 @@ namespace Application.Interfaces
         ShiftMydetailsDto GetMyShiftDetails(int Iduser);
         List<ShiftDto> AssignTrainerToShifts(AssignTrainerRequest request);
         List<ShiftDto> GetShiftsByLocationAndDate(ShiftLocationDayRequest request);
+        ShiftMydetailsDto GetNextTrainerShift(int idUser);
     }
 }
