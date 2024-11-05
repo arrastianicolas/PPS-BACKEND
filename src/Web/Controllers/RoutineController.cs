@@ -30,13 +30,13 @@ namespace Web.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Client")]
-        public ActionResult<RoutineDto> Add([FromBody] RoutineClientRequest routineClientRequest)
+        public ActionResult<RoutineDto> Create([FromBody] RoutineClientRequest routineClientRequest)
 
         {
             try
             {
                 int clientId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
-                var routineDto = _routineService.Add(routineClientRequest, clientId);
+                var routineDto = _routineService.Create(routineClientRequest, clientId);
             return Ok(routineDto);
             }
             catch (NotFoundException ex)
@@ -49,7 +49,7 @@ namespace Web.Controllers
             }
         }
         [HttpPut("{id}")]
-        [Authorize(Roles = "trainer")]
+        [Authorize(Roles = "Trainer")]
         public IActionResult Update(int id, List<RoutineTrainerRequest> routineTrainerRequest)
         {
             try
@@ -61,6 +61,46 @@ namespace Web.Controllers
             {
                 return NotFound(ex.Message);
             }
+        }
+        
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public IActionResult GetAll()
+        {
+            var routines = _routineService.GetAll();
+            return Ok(routines);
+        }
+
+        [HttpGet("[action]")]
+        public IActionResult GetMyRoutines()
+        {
+            try
+            {
+                var userType = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+                return Ok(_routineService.GetByDni(userId));
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "trainer")]
+        public IActionResult Delete(int id)
+        {
+            try
+            {
+                _routineService.Delete(id);
+                return NoContent();
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+
         }
 
     }
