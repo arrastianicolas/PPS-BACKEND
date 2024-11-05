@@ -21,8 +21,10 @@ namespace Application.Models
         public string Status { get; set; }
         public string Weight { get; set; }
         public string Height { get; set; }
+        public string? ClientName { get; set; }
+        public string? ClientBirthdate { get; set; }
 
-        public static NutritionalPlanDto Create(Nutritionalplan nutritionalPlan)
+        public static NutritionalPlanDto Create(Nutritionalplan nutritionalPlan, string? clientName = null, string? clientBirthdate = null)
         {
             return new NutritionalPlanDto
             {
@@ -37,7 +39,9 @@ namespace Application.Models
                 Snack = nutritionalPlan.Snack,
                 Status = nutritionalPlan.Status,
                 Weight = nutritionalPlan.Weight,
-                Height = nutritionalPlan.Height
+                Height = nutritionalPlan.Height,
+                ClientName = clientName,
+                ClientBirthdate = clientBirthdate
             };
         }
     }
