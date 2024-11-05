@@ -58,6 +58,10 @@ namespace Application.Services
    
             var shift = shifts.FirstOrDefault()?.IdshiftNavigation;
             var trainer = _trainerRepository.GetByDni(shift.Dnitrainer);
+            if (trainer == null)
+            {
+                throw new NotFoundException("No se encontraron trainers.");
+            }
             var location = _locationRepository.GetById(shift.Idlocation);
             if (shift == null)
             {

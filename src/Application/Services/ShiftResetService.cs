@@ -26,7 +26,7 @@ namespace Application.Services
                 var currentTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZone);
                 Console.WriteLine($"Current Local Time: {currentTime}");
 
-                if (currentTime.Hour == 16 && currentTime.Minute == 34)
+                if (currentTime.Hour == 14 && currentTime.Minute == 57)
                 {
                     using (var scope = _serviceProvider.CreateScope())
                     {
