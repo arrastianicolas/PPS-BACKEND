@@ -11,5 +11,6 @@ namespace Domain.Interfaces
     public interface IShiftRepository : IBaseRepository<Shift>
     {
         Shift? GetShiftsByTrainerAndDate(string dnitrainer, TimeOnly date);
+        List<Shift> GetShiftsByTrainerDni(string trainerDni);
     }
 }

@@ -7,6 +7,7 @@ using Application.Services;
 using Domain.Entities;
 using System.Security.Claims;
 using Application.Models;
+using Domain.Exceptions;
 
 namespace Web.Controllers
 {
@@ -141,5 +142,35 @@ namespace Web.Controllers
             var shift = _shiftService.GetMyShiftDetails(clientId);
             return Ok(shift);
         }
+
+        [HttpGet("[action]")]
+        public IActionResult GetNextTrainerShift()
+        {
+            try
+            {
+                string idUserClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(idUserClaim) || !int.TryParse(idUserClaim, out int userId))
+                {
+                    return Unauthorized("Usuario no autorizado.");
+                }
+
+                var shiftDetails = _shiftService.GetNextTrainerShift(userId);
+
+                // Devolver la respuesta con los detalles del turno
+                return Ok(shiftDetails);
+            }
+            catch (NotFoundException ex)
+            {
+                // Manejar casos donde no se encontró el turno o cualquier otro recurso
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // Manejar cualquier otro error
+                return StatusCode(500, "Error interno del servidor: " + ex.Message);
+            }
+        }
+
     }
 }

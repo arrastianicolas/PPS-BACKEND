@@ -289,6 +289,111 @@ namespace Application.Services
 
             return filteredShifts;
         }
+        public ShiftMydetailsDto GetNextTrainerShift(int idUser)
+        {
+            var user = _userRepository.GetById(idUser);
+            if (user == null)
+            {
+                throw new NotFoundException("Usuario no encontrado.");
+            }
+
+            // Obtener el entrenador asociado al ID del usuario
+            var trainer = _trainerRepository.GetTrainerByUserId(idUser);
+            if (trainer == null)
+            {
+                throw new NotFoundException("No se encontró al entrenador.");
+            }
+
+            // Obtener todos los turnos del entrenador
+            var shifts = _shiftRepository.GetShiftsByTrainerDni(trainer.Dnitrainer);
+
+            // Obtener la fecha y hora actual
+            DateTime currentDateTime = DateTime.Now;
+
+            // Filtrar y encontrar el siguiente turno válido
+            var nextShift = shifts
+                .Select(shift => new
+                {
+                    Shift = shift,
+                    // Convertir Dateday y Hour a DateTime
+                    ShiftDateTime = TryGetNextDateTime(shift.Dateday, shift.Hour)
+                })
+                .Where(s => s.ShiftDateTime.HasValue && s.ShiftDateTime.Value >= currentDateTime) // Asegurarse que sea un futuro
+                .OrderBy(s => s.ShiftDateTime)
+                .Select(s => s.Shift)
+                .FirstOrDefault();
+
+            if (nextShift == null)
+            {
+                throw new NotFoundException("No se encontraron turnos futuros.");
+            }
+
+            var location = _locationRepository.GetById(nextShift.Idlocation);
+            if (location == null)
+            {
+                throw new NotFoundException("No se encontró la ubicación del turno.");
+            }
+
+            return new ShiftMydetailsDto
+            {
+                Idshift = nextShift.Idshift,
+                Dateday = nextShift.Dateday,
+                Hour = nextShift.Hour, // Asegúrate de convertir TimeOnly a string si es necesario
+                Idlocation = nextShift.Idlocation,
+                Peoplelimit = nextShift.Peoplelimit,
+                Actualpeople = nextShift.Actualpeople,
+                Isactive = nextShift.IsActive,
+                Dnitrainer = nextShift.Dnitrainer,
+                Firstname = trainer.Firstname,
+                Lastname = trainer.Lastname,
+                Adress = location.Adress,
+                Namelocation = location.Name,
+            };
+        }
+
+        private DateTime? TryGetNextDateTime(string dayName, TimeOnly time)
+        {
+            // Convertir el nombre del día a DayOfWeek
+            DayOfWeek targetDay;
+            switch (dayName.ToLower())
+            {
+                case "lunes":
+                    targetDay = DayOfWeek.Monday;
+                    break;
+                case "martes":
+                    targetDay = DayOfWeek.Tuesday;
+                    break;
+                case "miércoles":
+                    targetDay = DayOfWeek.Wednesday;
+                    break;
+                case "jueves":
+                    targetDay = DayOfWeek.Thursday;
+                    break;
+                case "viernes":
+                    targetDay = DayOfWeek.Friday;
+                    break;
+                case "sábado":
+                    targetDay = DayOfWeek.Saturday;
+                    break;
+                case "domingo":
+                    targetDay = DayOfWeek.Sunday;
+                    break;
+                default:
+                    return null; // Día no válido
+            }
+
+            // Calcular la fecha del próximo día
+            DateTime today = DateTime.Today;
+            int daysUntilNext = ((int)targetDay - (int)today.DayOfWeek + 7) % 7;
+            if (daysUntilNext == 0 && DateTime.Now.TimeOfDay >= time.ToTimeSpan()) // Si es hoy y ya pasó la hora, buscar para el próximo
+            {
+                daysUntilNext = 7; // Ir a la próxima semana
+            }
+
+            DateTime nextDate = today.AddDays(daysUntilNext);
+            return nextDate.Add(time.ToTimeSpan()); // Combina fecha y hora
+        }
+
     }
 }
 
