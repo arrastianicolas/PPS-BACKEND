@@ -123,6 +123,9 @@ builder.Services.AddScoped<IShiftClientRepository, ShiftClientRepository>();
 builder.Services.AddScoped<IRoutineRepository, RoutineRepository >();
 builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 builder.Services.AddScoped<INutritionalPlanRepository, NutritionalPlanRepository>();
+builder.Services.AddScoped<IRoutineExerciseRepository, RoutineExerciseRepository>();
+builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
+
 #endregion
 
 #region Services

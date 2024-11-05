@@ -1,11 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
@@ -23,6 +18,15 @@ namespace Infrastructure.Repositories
                 .Include(sc => sc.IdshiftNavigation) 
                 .Where(sc => sc.Dniclient == dniClient)
                 .FirstOrDefault();
+        }
+
+        public int GetLastShiftId(string dniClient)
+        {
+            return _context.Set<Shiftclient>()
+                           .Where(sc => sc.Dniclient == dniClient)
+                           .OrderByDescending(sc => sc.Idshift)
+                           .Select(sc => sc.Idshift)
+                           .FirstOrDefault();
         }
 
         public void Add(Shiftclient shiftsClient)

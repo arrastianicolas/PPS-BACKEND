@@ -6,6 +6,8 @@ using Application.Interfaces;
 
 using System.Security.Claims;
 using Application.Models;
+using Domain.Exceptions;
+using Application.Services;
 
 namespace Web.Controllers
 {
@@ -31,11 +33,35 @@ namespace Web.Controllers
         public ActionResult<RoutineDto> Add([FromBody] RoutineClientRequest routineClientRequest)
 
         {
-            int clientId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
-            
-
-            var routineDto = _routineService.Add(routineClientRequest, clientId);
+            try
+            {
+                int clientId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+                var routineDto = _routineService.Add(routineClientRequest, clientId);
             return Ok(routineDto);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (NotAllowedException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
+        [HttpPut("{id}")]
+        [Authorize(Roles = "trainer")]
+        public IActionResult Update(int id, List<RoutineTrainerRequest> routineTrainerRequest)
+        {
+            try
+            {
+                _routineService.Update(id, routineTrainerRequest);
+                return NoContent();
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
     }
 }

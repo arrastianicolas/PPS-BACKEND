@@ -39,7 +39,7 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
- 
+   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -157,9 +157,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.HasIndex(e => e.Dnitrainer, "dnitrainer_fk_np_idx");
 
-            entity.Property(e => e.Idnutritionalplan)
-                .ValueGeneratedNever()
-                .HasColumnName("idnutritionalplan");
+            entity.Property(e => e.Idnutritionalplan).HasColumnName("idnutritionalplan");
             entity.Property(e => e.Breakfast)
                 .HasMaxLength(200)
                 .HasColumnName("breakfast");
@@ -287,9 +285,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.HasIndex(e => e.Idlocation, "idlocation_fk_shift_idx");
 
-            entity.Property(e => e.Idshift)
-                .ValueGeneratedNever()
-                .HasColumnName("idshift");
+            entity.Property(e => e.Idshift).HasColumnName("idshift");
             entity.Property(e => e.Actualpeople).HasColumnName("actualpeople");
             entity.Property(e => e.Dateday)
                 .HasMaxLength(12)
@@ -340,6 +336,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.HasOne(d => d.IdshiftNavigation).WithOne(p => p.Shiftclient)
                 .HasForeignKey<Shiftclient>(d => d.Idshift)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("idshift_fk_shiftclient");
         });
 

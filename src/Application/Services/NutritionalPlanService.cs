@@ -59,12 +59,9 @@ namespace Application.Services
         public NutritionalPlanDto Create(int clientId, NutritionalPlanClientRequest request)
         {
             var client = _clientRepository.GetClientByUserId(clientId) ?? throw new NotFoundException("Client not found");
-            
+
             // Obtener trainer
-            var lastShiftId = _shiftClientRepository.Get() // Recupera todos los turnos
-                          .Where(sc => sc.Dniclient == client.Dniclient) // Filtra por cliente
-                          .OrderByDescending(sc => sc.Idshift) // Ordena por Idshift
-                          .FirstOrDefault()?.Idshift; // Obtiene el último
+            var lastShiftId = _shiftClientRepository.GetLastShiftId(client.Dniclient);
             var lastShift = _shiftRepository.GetById(lastShiftId);        
             if (lastShift == null) throw new NotFoundException("No shifts found for the client");
             var trainer = _trainerRepository.GetByDni(lastShift.Dnitrainer) ?? throw new NotFoundException("Trainer not found");
@@ -77,14 +74,14 @@ namespace Application.Services
                 Description = request.Description,
                 Weight = request.Weight,
                 Height = request.Height,
-                Status = "Pending"
+                Status = "In Progress"
                 
             };
 
             _nutritionalPlanRepository.Add(nutritionalPlan);
 
             _mailService.Send($"Nueva solicitud de plan nutricional disponible",
-                              $"Hola {trainer.Firstname},\n\nTienes una nueva petición de plan nutricional disponible en su panel\n\nPor favor, ingrese al sistema para revisar y completar la solicitud.",
+                              $"Hola {trainer.Firstname},\n\nTienes una nueva petición de plan nutricional disponible en su panel\n\n.",
                               trainerEmail);
 
 
