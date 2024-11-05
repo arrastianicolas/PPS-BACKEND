@@ -38,13 +38,24 @@ namespace Application.Services
         public List<NutritionalPlanDto> GetAll()
         {
             var plans = _nutritionalPlanRepository.Get();
-            return plans.Select(NutritionalPlanDto.Create).ToList();
+
+
+            return plans.Select(plan =>
+            {
+                var client = _clientRepository.GetByDni(plan.Dniclient);
+
+                string clientName = $"{client.Firstname} {client.Lastname}";
+                string clientBirthdate = $"{client.Birthdate}";
+
+                return NutritionalPlanDto.Create(plan, clientName, clientBirthdate);
+            }).ToList();
         }
 
         public List<NutritionalPlanDto> GetByDni(int userId)
         {
 
             var client = _clientRepository.GetClientByUserId(userId);
+            
             var trainer = client == null ? _trainerRepository.GetTrainerByUserId(userId) : null;
             var plans = new List<Nutritionalplan>();
 
@@ -52,8 +63,16 @@ namespace Application.Services
                 plans = _nutritionalPlanRepository.GetByDni(trainer.Dnitrainer);            
             else            
                 plans = _nutritionalPlanRepository.GetByDni(client.Dniclient);
-                   
-            return plans.Select(NutritionalPlanDto.Create).ToList();
+
+            return plans.Select(plan =>
+            {
+                var clientPlan = _clientRepository.GetByDni(plan.Dniclient);
+              
+                string clientName = $"{clientPlan.Firstname} {clientPlan.Lastname}";
+                string clientBirthdate = clientPlan.Birthdate.ToString("dd/MM/yyyy");
+
+                return NutritionalPlanDto.Create(plan, clientName, clientBirthdate);
+            }).ToList();
         }
 
         public NutritionalPlanDto Create(int clientId, NutritionalPlanClientRequest request)
