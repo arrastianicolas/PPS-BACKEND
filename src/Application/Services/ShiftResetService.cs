@@ -26,7 +26,7 @@ namespace Application.Services
                 var currentTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZone);
                 Console.WriteLine($"Current Local Time: {currentTime}");
 
-                if (currentTime.Hour == 16 && currentTime.Minute == 34)
+                if (currentTime.Hour == 14 && currentTime.Minute == 57)
                 {
                     using (var scope = _serviceProvider.CreateScope())
                     {
@@ -37,17 +37,17 @@ namespace Application.Services
                         var shifts = shiftRepository.Get();
                         foreach (var shift in shifts)
                         {
-                            if(shift.Actualpeople != 0) 
+                            if (shift.Actualpeople != 0)
                             {
-                                
+
                                 shift.Actualpeople = 0;
                                 shiftRepository.Update(shift);
-                                
+
                             }
 
-                           
+
                         }
-                            
+
                         // Eliminar todos los registros de ShiftClient
                         shiftClientRepository.DeleteAll(); // Asegúrate de tener este método en tu repositorio
                     }

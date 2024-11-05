@@ -15,7 +15,7 @@ namespace Application.Services
 {
     public class NutritionalPlanService : INutritionalPlanService
     {
-       
+
         private readonly INutritionalPlanRepository _nutritionalPlanRepository;
         private readonly IMailService _mailService;
         private readonly ITrainerRepository _trainerRepository;
@@ -24,7 +24,7 @@ namespace Application.Services
         private readonly IShiftRepository _shiftRepository;
         private readonly IShiftClientRepository _shiftClientRepository;
 
-        public NutritionalPlanService(INutritionalPlanRepository nutritionalPlanRepository, IMailService mailService, ITrainerRepository trainerRepository, IClientRepository clientRepository, IUserRepository userRepository, IShiftClientRepository shiftClientRepository, IShiftRepository shiftRepository )
+        public NutritionalPlanService(INutritionalPlanRepository nutritionalPlanRepository, IMailService mailService, ITrainerRepository trainerRepository, IClientRepository clientRepository, IUserRepository userRepository, IShiftClientRepository shiftClientRepository, IShiftRepository shiftRepository)
         {
             _nutritionalPlanRepository = nutritionalPlanRepository;
             _mailService = mailService;
@@ -38,22 +38,41 @@ namespace Application.Services
         public List<NutritionalPlanDto> GetAll()
         {
             var plans = _nutritionalPlanRepository.Get();
-            return plans.Select(NutritionalPlanDto.Create).ToList();
+
+
+            return plans.Select(plan =>
+            {
+                var client = _clientRepository.GetByDni(plan.Dniclient);
+
+                string clientName = $"{client.Firstname} {client.Lastname}";
+                string clientBirthdate = $"{client.Birthdate}";
+
+                return NutritionalPlanDto.Create(plan, clientName, clientBirthdate);
+            }).ToList();
         }
 
         public List<NutritionalPlanDto> GetByDni(int userId)
         {
 
             var client = _clientRepository.GetClientByUserId(userId);
+
             var trainer = client == null ? _trainerRepository.GetTrainerByUserId(userId) : null;
             var plans = new List<Nutritionalplan>();
 
-            if (trainer != null)            
-                plans = _nutritionalPlanRepository.GetByDni(trainer.Dnitrainer);            
-            else            
+            if (trainer != null)
+                plans = _nutritionalPlanRepository.GetByDni(trainer.Dnitrainer);
+            else
                 plans = _nutritionalPlanRepository.GetByDni(client.Dniclient);
-                   
-            return plans.Select(NutritionalPlanDto.Create).ToList();
+
+            return plans.Select(plan =>
+            {
+                var clientPlan = _clientRepository.GetByDni(plan.Dniclient);
+
+                string clientName = $"{clientPlan.Firstname} {clientPlan.Lastname}";
+                string clientBirthdate = clientPlan.Birthdate.ToString("dd/MM/yyyy");
+
+                return NutritionalPlanDto.Create(plan, clientName, clientBirthdate);
+            }).ToList();
         }
 
         public NutritionalPlanDto Create(int clientId, NutritionalPlanClientRequest request)
@@ -62,7 +81,7 @@ namespace Application.Services
 
             // Obtener trainer
             var lastShiftId = _shiftClientRepository.GetLastShiftId(client.Dniclient);
-            var lastShift = _shiftRepository.GetById(lastShiftId);        
+            var lastShift = _shiftRepository.GetById(lastShiftId);
             if (lastShift == null) throw new NotFoundException("No shifts found for the client");
             var trainer = _trainerRepository.GetByDni(lastShift.Dnitrainer) ?? throw new NotFoundException("Trainer not found");
             var trainerEmail = _userRepository.GetById(trainer.Iduser)?.Email;
@@ -70,12 +89,12 @@ namespace Application.Services
             var nutritionalPlan = new Nutritionalplan
             {
                 Dniclient = client.Dniclient,
-                Dnitrainer = trainer.Dnitrainer,                
+                Dnitrainer = trainer.Dnitrainer,
                 Description = request.Description,
                 Weight = request.Weight,
                 Height = request.Height,
                 Status = "In Progress"
-                
+
             };
 
             _nutritionalPlanRepository.Add(nutritionalPlan);
@@ -98,18 +117,19 @@ namespace Application.Services
             plan.Dinner = request.Dinner;
             plan.Brunch = request.Brunch;
             plan.Snack = request.Snack;
-            
+
             if (request.Status.Equals("Denied", StringComparison.OrdinalIgnoreCase))
             {
                 plan.Status = "Denied";
                 string message = $"Hola {client.Firstname},\n\nLamentamos informarte que tu solicitud de plan nutricional ha sido rechazada." + (request.Message != null ? $"\n\nMotivo del rechazo:\n{request.Message}" : "") + "\n\nSi tienes alguna pregunta o necesitas más detalles, por favor, contacta a tu entrenador.";
-               _mailService.Send($"Plan nutricional rechazado", message, clientEmail);
-            } else
-            {                
-               // Si hay otro plan activo se desactiva para solo dejar activo el nuevo
-               var clientPlans = _nutritionalPlanRepository.GetByDni(plan.Dniclient);
-               var clientPlanActive = clientPlans.FirstOrDefault(p => p.Status == "Enabled");
-               if(clientPlanActive != null)
+                _mailService.Send($"Plan nutricional rechazado", message, clientEmail);
+            }
+            else
+            {
+                // Si hay otro plan activo se desactiva para solo dejar activo el nuevo
+                var clientPlans = _nutritionalPlanRepository.GetByDni(plan.Dniclient);
+                var clientPlanActive = clientPlans.FirstOrDefault(p => p.Status == "Enabled");
+                if (clientPlanActive != null)
                 {
                     clientPlanActive.Status = "Disabled";
                     _nutritionalPlanRepository.Update(clientPlanActive);
@@ -127,13 +147,9 @@ namespace Application.Services
         public void Delete(int id)
         {
             var plan = _nutritionalPlanRepository.GetById(id) ?? throw new NotFoundException("Plan not found.");
-            plan.Status = "Disabled";            
+            plan.Status = "Disabled";
             _nutritionalPlanRepository.Update(plan);
         }
     }
 }
-
-        
-
-
 

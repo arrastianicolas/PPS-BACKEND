@@ -30,7 +30,7 @@ namespace Application.Services
             _shiftClientRepository = shiftClientRepository;
             _userRepository = userRepository;
             _clientRepository = clientRepository;
-            _mailService = mailService; 
+            _mailService = mailService;
         }
 
         public List<ShiftDto> GetAll()
@@ -54,17 +54,21 @@ namespace Application.Services
 
             // Obtener los turnos del cliente para el día de hoy
             var shifts = _shiftClientRepository.GetShiftsByClientDniForToday(clientUser.Dniclient);
-            
-   
+
+
             var shift = shifts.FirstOrDefault()?.IdshiftNavigation;
             var trainer = _trainerRepository.GetByDni(shift.Dnitrainer);
+            if (trainer == null)
+            {
+                throw new NotFoundException("No se encontraron trainers.");
+            }
             var location = _locationRepository.GetById(shift.Idlocation);
             if (shift == null)
             {
                 throw new NotFoundException("No se encontraron turnos para el cliente en el día de hoy.");
             }
 
-        
+
             return new ShiftMydetailsDto
             {
                 Idshift = shift.Idshift,
@@ -287,4 +291,3 @@ namespace Application.Services
         }
     }
 }
-
