@@ -89,7 +89,7 @@ namespace Web.Controllers
         //}
         [HttpPost("[action]")]
         [Authorize(Roles = "Client")]
-        public ActionResult ReserveShift([FromBody] int shiftId) 
+        public ActionResult ReserveShift([FromBody] int shiftId)
         {
             int clientId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
 
@@ -98,7 +98,7 @@ namespace Web.Controllers
                 _shiftService.ReserveShift(shiftId, clientId);
                 return Ok("Turno Reservado Correctamente");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -111,15 +111,16 @@ namespace Web.Controllers
             try
             {
                 var updatedShift = _shiftService.AssignTrainerToShifts(request);
-                return Ok(updatedShift); 
+                return Ok(updatedShift);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);  
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpGet("[action]")]
+        [Authorize]
         public ActionResult<List<ShiftDto>> GetShiftsByLocationAndDate([FromQuery] ShiftLocationDayRequest request)
         {
             try

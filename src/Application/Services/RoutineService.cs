@@ -15,8 +15,8 @@ namespace Application.Services
 {
     public class RoutineService : IRoutineService
     {
-        private readonly IClientRepository _clientRepository;
         private readonly IRoutineRepository _routineRepository;
+        private readonly IClientRepository _clientRepository;
         private readonly IShiftClientRepository _shiftClientRepository;
         private readonly IShiftRepository _shiftRepository;
         private readonly ITrainerRepository _trainerRepository;
@@ -35,8 +35,26 @@ namespace Application.Services
             _routineExerciseRepository = routineExerciseRepository;
 
         }
+        public List<RoutineDto> GetAll()
+        {
+            var routines = _routineRepository.Get();
+            return routines.Select(RoutineDto.Create).ToList();
+        }
+        public List<RoutineDto> GetByDni(int userId)
+        {
 
-        public RoutineDto Add(RoutineClientRequest routineClientRequest, int userId)
+            var client = _clientRepository.GetClientByUserId(userId);
+            var trainer = client == null ? _trainerRepository.GetTrainerByUserId(userId) : null;
+            var routines = new List<Routine>();
+
+            if (trainer != null)
+                routines = _routineRepository.GetByDni(trainer.Dnitrainer);
+            else
+                routines = _routineRepository.GetByDni(client.Dniclient);
+
+            return routines.Select(RoutineDto.Create).ToList();
+        }
+        public RoutineDto Create(RoutineClientRequest routineClientRequest, int userId)
         {
             var client = _clientRepository.GetClientByUserId(userId);
             var lastShiftId = _shiftClientRepository.GetLastShiftId(client.Dniclient);
@@ -96,6 +114,13 @@ namespace Application.Services
             }
 
         }
+        public void Delete(int id)
+        {
+            var routine = _routineRepository.GetById(id) ?? throw new NotFoundException("routine not found.");
+            routine.Status = "Disabled";
+            _routineRepository.Update(routine);
+        }
+
     }
 }
 

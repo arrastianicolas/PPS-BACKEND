@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,7 @@ namespace Infrastructure.Repositories
                 .Where(exercise => idExercise.Contains(exercise.Idexercise))
                 .ToList(); // Ejecuta la consulta y devuelve la lista de ejercicios
         }
+        
 
     }
 }

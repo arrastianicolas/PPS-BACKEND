@@ -37,17 +37,17 @@ namespace Application.Services
                         var shifts = shiftRepository.Get();
                         foreach (var shift in shifts)
                         {
-                            if(shift.Actualpeople != 0) 
+                            if (shift.Actualpeople != 0)
                             {
-                                
+
                                 shift.Actualpeople = 0;
                                 shiftRepository.Update(shift);
-                                
+
                             }
 
-                           
+
                         }
-                            
+
                         // Eliminar todos los registros de ShiftClient
                         shiftClientRepository.DeleteAll(); // Asegúrate de tener este método en tu repositorio
                     }

@@ -141,6 +141,7 @@ builder.Services.AddTransient<IMembershipService, MembershipService>();
 builder.Services.AddTransient<IRoutineService, RoutineService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<INutritionalPlanService, NutritionalPlanService>();
+builder.Services.AddScoped<IExerciseService, ExerciseService>();
 
 #endregion
 builder.Services.AddHostedService<MembershipCheckService>();
