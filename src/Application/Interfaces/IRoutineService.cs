@@ -11,5 +11,6 @@ namespace Application.Interfaces
     public interface IRoutineService
     {
         RoutineDto Add(RoutineClientRequest routineClientRequest, int userId);
+        void Update(int idRoutina, List<RoutineTrainerRequest> request);
     }
 }
