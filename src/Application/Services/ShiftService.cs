@@ -244,12 +244,13 @@ namespace Application.Services
                     throw new Exception($"Shift with ID {shiftId} already has a trainer assigned.");
                 }
 
-                // Validar que el dnitrainer no esté asignado a otro turno en el mismo horario
-                //var overlappingShift = _shiftRepository.GetShiftsByTrainerAndDate(trainer.Dnitrainer, shift.Hour);
-                //if (overlappingShift != null)
-                //{
-                //    throw new Exception($"Trainer {request.Dnitrainer} is already assigned to another shift at {shift.Hour}.");
-                //}
+                // Validar que el dnitrainer no esté asignado a otro turno en el mismo día y a la misma hora
+                var overlappingShift = _shiftRepository.GetShiftByTrainerDayAndHour(trainer.Dnitrainer, shift.Hour, shift.Dateday);
+                if (overlappingShift != null)
+                {
+                    throw new Exception($"Trainer {trainer.Dnitrainer} is already assigned to another shift at {shift.Hour} on {shift.Dateday}.");
+                }
+
 
                 // Asignar el nuevo trainer
                 shift.Dnitrainer = request.Dnitrainer;
@@ -349,6 +350,39 @@ namespace Application.Services
                 Adress = location.Adress,
                 Namelocation = location.Name,
             };
+        }
+
+        public void UnassignTrainerFromShift(int shiftId)
+        {
+            var shift = _shiftRepository.GetById(shiftId);
+            if (shift == null)
+            {
+                throw new Exception($"Shift with ID {shiftId} not found.");
+            }
+
+            if (shift.Dnitrainer == null)
+            {
+                throw new Exception($"Shift with ID {shiftId} does not have a trainer assigned.");
+            }
+
+            var trainerDni = shift.Dnitrainer;  
+            shift.Dnitrainer = null;
+            _shiftRepository.Update(shift); 
+
+            var trainer = _trainerRepository.GetByDni(trainerDni);
+            if (trainer != null)
+            {
+                var user = _userRepository.GetById(trainer.Iduser);
+                if (user?.Email != null)
+                {
+                    _mailService.Send(
+                        "Has sido desasignado de un turno",
+                        $"Hola {trainer.Firstname}, has sido desasignado del turno el {shift.Dateday} a las {shift.Hour}.",
+                        user.Email
+                    );
+
+                }
+            }
         }
 
         private DateTime? TryGetNextDateTime(string dayName, TimeOnly time)

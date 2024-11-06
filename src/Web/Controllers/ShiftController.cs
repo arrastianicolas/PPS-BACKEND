@@ -173,5 +173,19 @@ namespace Web.Controllers
             }
         }
 
+        [HttpDelete("[action]/{shiftId}")]
+        public IActionResult UnassignTrainerFromShift(int shiftId)
+        {
+            try
+            {
+                _shiftService.UnassignTrainerFromShift(shiftId);
+                return Ok($"El trainer ha sido desasignado correctamente del turno {shiftId}.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
+
     }
 }

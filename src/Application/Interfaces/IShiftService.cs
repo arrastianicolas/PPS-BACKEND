@@ -21,5 +21,6 @@ namespace Application.Interfaces
         List<ShiftDto> AssignTrainerToShifts(AssignTrainerRequest request);
         List<ShiftDto> GetShiftsByLocationAndDate(ShiftLocationDayRequest request);
         ShiftMydetailsDto GetNextTrainerShift(int idUser);
+        void UnassignTrainerFromShift(int shiftId);
     }
 }
