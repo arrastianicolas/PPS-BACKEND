@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 namespace Domain.Entities;
+
 public partial class Trainer
 {
     public string Dnitrainer { get; set; } = null!;

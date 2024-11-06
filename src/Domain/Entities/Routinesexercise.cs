@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace Domain.Entities;
 
@@ -10,11 +9,12 @@ public partial class Routinesexercise
 
     public int Idexercise { get; set; }
 
+    public string Day { get; set; } = null!;
+
     public TimeOnly Breaktime { get; set; }
 
     public int Series { get; set; }
 
-    public string Day { get; set; } = null!;
     public virtual Exercise IdexerciseNavigation { get; set; } = null!;
 
     public virtual Routine IdroutineNavigation { get; set; } = null!;
