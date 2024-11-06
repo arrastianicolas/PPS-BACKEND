@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 namespace Domain.Entities;
-
 public partial class Routine
 {
     public int Idroutine { get; set; }
@@ -24,6 +23,6 @@ public partial class Routine
     public virtual Client DniclientNavigation { get; set; } = null!;
 
     public virtual Trainer DnitrainerNavigation { get; set; } = null!;
-    
+
     public virtual ICollection<Routinesexercise> Routinesexercises { get; set; } = new List<Routinesexercise>();
 }
