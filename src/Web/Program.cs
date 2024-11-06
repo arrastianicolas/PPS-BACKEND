@@ -125,7 +125,8 @@ builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 builder.Services.AddScoped<INutritionalPlanRepository, NutritionalPlanRepository>();
 builder.Services.AddScoped<IRoutineExerciseRepository, RoutineExerciseRepository>();
 builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
-
+builder.Services.AddScoped<IRoutineExerciseRepository, RoutineExerciseRepository>();
+        
 #endregion
 
 #region Services
@@ -142,6 +143,7 @@ builder.Services.AddTransient<IRoutineService, RoutineService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<INutritionalPlanService, NutritionalPlanService>();
 builder.Services.AddScoped<IExerciseService, ExerciseService>();
+builder.Services.AddScoped<IRoutinesexerciseService, RoutinesexerciseService>();
 
 #endregion
 builder.Services.AddHostedService<MembershipCheckService>();

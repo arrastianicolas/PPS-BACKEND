@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Application.Interfaces;
 using Domain.Entities;
 using Domain.Exceptions;
+using System.Numerics;
 
 namespace Application.Services
 {
@@ -38,7 +39,17 @@ namespace Application.Services
         public List<RoutineDto> GetAll()
         {
             var routines = _routineRepository.Get();
-            return routines.Select(RoutineDto.Create).ToList();
+
+
+            return routines.Select(routine =>
+            {
+                var client = _clientRepository.GetByDni(routine.Dniclient);
+
+                string clientName = $"{client.Firstname} {client.Lastname}";
+                string clientBirthdate = $"{client.Birthdate}";
+
+                return RoutineDto.Create(routine, clientName, clientBirthdate);
+            }).ToList();
         }
         public List<RoutineDto> GetByDni(int userId)
         {
@@ -52,7 +63,15 @@ namespace Application.Services
             else
                 routines = _routineRepository.GetByDni(client.Dniclient);
 
-            return routines.Select(RoutineDto.Create).ToList();
+            return routines.Select(routine =>
+            {
+                var client = _clientRepository.GetByDni(routine.Dniclient);
+
+                string clientName = $"{client.Firstname} {client.Lastname}";
+                string clientBirthdate = $"{client.Birthdate}";
+
+                return RoutineDto.Create(routine, clientName, clientBirthdate);
+            }).ToList();
         }
         public RoutineDto Create(RoutineClientRequest routineClientRequest, int userId)
         {

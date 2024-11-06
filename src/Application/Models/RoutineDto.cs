@@ -18,8 +18,10 @@ namespace Application.Models
 
         public string Description { get; set; }
         public int Days {  get; set; }
+        public string? ClientName { get; set; }
+        public string? ClientBirthdate { get; set; }
 
-        public static RoutineDto Create(Routine routine)
+        public static RoutineDto Create(Routine routine, string? clientName = null, string? clientBirthdate = null)
         {
             return new RoutineDto
             {
@@ -28,7 +30,8 @@ namespace Application.Models
                 Status = routine.Status,
                 Description = routine.Description,
                 Days = routine.Days,
-
+                ClientName = clientName,
+                ClientBirthdate = clientBirthdate
             };
         }
     }

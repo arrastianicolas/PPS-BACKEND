@@ -10,6 +10,6 @@ namespace Domain.Interfaces
 {
     public interface IRoutineRepository : IBaseRepository<Routine>
     {
-        public List<Routine> GetByDni(string dni);
+         List<Routine> GetByDni(string dni);
     }
 }
