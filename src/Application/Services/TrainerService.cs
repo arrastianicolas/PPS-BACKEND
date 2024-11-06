@@ -85,6 +85,11 @@ namespace Application.Services
                 throw new Exception("Ya existe un trainer con el mismo DNI.");
             }
 
+            if (trainerRequest.Birthdate > DateOnly.FromDateTime(DateTime.Now))
+            {
+                throw new Exception("La fecha de nacimiento no puede ser en el futuro.");
+            }
+
             var user = new User
             {
                 Email = userRequest.Email!,

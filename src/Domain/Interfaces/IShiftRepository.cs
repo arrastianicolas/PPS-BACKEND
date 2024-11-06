@@ -12,5 +12,7 @@ namespace Domain.Interfaces
     {
         Shift? GetShiftsByTrainerAndDate(string dnitrainer, TimeOnly date);
         List<Shift> GetShiftsByTrainerDni(string trainerDni);
+
+        Shift? GetShiftByTrainerDayAndHour(string dnitrainer, TimeOnly hour, string dateDay);
     }
 }

@@ -21,6 +21,15 @@ namespace Infrastructure.Repositories
             return _context.Shifts
                 .FirstOrDefault(s => s.Dnitrainer == dnitrainer && s.Hour == date);
         }
+
+        public Shift? GetShiftByTrainerDayAndHour(string dnitrainer, TimeOnly hour, string dateDay)
+        {
+            return _context.Shifts
+                .FirstOrDefault(s => s.Dnitrainer == dnitrainer
+                                     && s.Hour == hour
+                                     && s.Dateday == dateDay);
+        }
+
         public List<Shift> GetShiftsByTrainerDni(string trainerDni)
         {
             return _context.Shifts
