@@ -75,13 +75,25 @@ namespace Web.Controllers
 
 
         [HttpPut("[action]")]
-        public ActionResult UpdateClient([FromBody] ClientUserRequest request) 
+        public ActionResult UpdateClient([FromBody] UpdateClientRequest request)
         {
-            int clientId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+            int clientId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "0");
 
-            _clientService.UpdateClient(clientId, request.ClientRequest, request.UserRequest);
-            
-            return NoContent();
+            if (clientId == 0)
+            {
+                return BadRequest("Client ID is missing or invalid.");
+            }
+
+            try
+            {
+                _clientService.UpdateClient(clientId, request);
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpGet("[action]")]
        

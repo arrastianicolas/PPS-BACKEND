@@ -82,39 +82,50 @@ namespace Application.Services
             return ClientDto.Create(client);
         }
 
-        public void UpdateClient(int Iduser, ClientRequest clientRequest, UserRequest userRequest)
+        public void UpdateClient(int clientId, UpdateClientRequest request)
         {
-            var user = _userRepository.GetById(Iduser);
+            // Obtener el cliente por Iduser
+            var client = _clientRepository.GetClientByUserId(clientId);
+            if (client == null)
+            {
+                throw new Exception("Client not found.");
+            }
+
+            // Obtener el usuario asociado
+            var user = _userRepository.GetById(clientId);
             if (user == null)
             {
-                throw new NotFoundException($"No se encontró un usuario con el ID: {Iduser}");
+                throw new Exception("User not found.");
             }
-            var existingUserWithSameEmail = _userRepository.GetByUserEmail(userRequest.Email);
 
-            if (existingUserWithSameEmail != null)
+            // Validar que el valor no sea una cadena de texto predeterminada ("string" o similar)
+            if (!string.IsNullOrEmpty(request.Email) && request.Email != "string")
             {
-                throw new Exception("Ya existe un usuario con el mismo correo electrónico.");
+                user.Email = request.Email;
             }
 
-            user.Password = userRequest.Password;
-            user.Email = userRequest.Email;
-
-            var client = _clientRepository.GetClientByUserId(user.Id);
-            if (client != null)
+            // Verificar que el valor no sea una cadena de texto predeterminada (como "string")
+            if (!string.IsNullOrEmpty(request.Firstname) && request.Firstname != "string")
             {
-                client.Firstname = clientRequest.Firstname;
-                client.Lastname = clientRequest.Lastname;
-                client.Phonenumber = clientRequest.Phonenumber;
-                client.Birthdate = clientRequest.Birthdate;
+                client.Firstname = request.Firstname;
             }
 
-            _userRepository.Update(user);
-            if (client != null)
+            if (!string.IsNullOrEmpty(request.Lastname) && request.Lastname != "string")
             {
-                _clientRepository.Update(client);
+                client.Lastname = request.Lastname;
             }
 
+            if (!string.IsNullOrEmpty(request.Genre) && request.Genre != "string")
+            {
+                client.Genre = request.Genre;
+            }
+
+            // Guardamos los cambios en el cliente y el usuario
+            _userRepository.Update(user);  // Actualizamos el usuario
+            _clientRepository.Update(client);  // Actualizamos el cliente
         }
+
+
         public ClientUserDto GetUserById(int Iduser)
         {
             
