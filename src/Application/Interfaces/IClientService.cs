@@ -13,7 +13,7 @@ namespace Application.Interfaces
     {
         ClientDto CreateClient(ClientRequest clientRequest, UserRequest userRequest);
 
-        void UpdateClient(int Iduser, ClientRequest clientRequest, UserRequest userRequest);
+        void UpdateClient(int Iduser, UpdateClientRequest request);
         ClientUserDto GetUserById(int Iduser);
         void Delete(string clientDni);
         ClientDto GetClientByDni(string dniClient);
