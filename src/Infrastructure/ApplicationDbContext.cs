@@ -39,7 +39,6 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -85,7 +84,6 @@ public partial class ApplicationDbContext : DbContext
                 .HasColumnName("startdatemembership");
             entity.Property(e => e.Typememberships)
                 .HasMaxLength(20)
-                .HasDefaultValueSql("'Standar'")
                 .HasColumnName("typememberships");
 
             entity.HasOne(d => d.IduserNavigation).WithMany(p => p.Clients)
@@ -95,7 +93,6 @@ public partial class ApplicationDbContext : DbContext
 
             entity.HasOne(d => d.TypemembershipsNavigation).WithMany(p => p.Clients)
                 .HasForeignKey(d => d.Typememberships)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("typememberships");
         });
 
@@ -246,9 +243,9 @@ public partial class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Routinesexercise>(entity =>
         {
-            entity.HasKey(e => new { e.Idroutine, e.Idexercise })
+            entity.HasKey(e => new { e.Idroutine, e.Idexercise, e.Day })
                 .HasName("PRIMARY")
-                .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+                .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
 
             entity.ToTable("routinesexercise");
 
@@ -256,12 +253,12 @@ public partial class ApplicationDbContext : DbContext
 
             entity.Property(e => e.Idroutine).HasColumnName("idroutine");
             entity.Property(e => e.Idexercise).HasColumnName("idexercise");
-            entity.Property(e => e.Breaktime)
-                .HasColumnType("time")
-                .HasColumnName("breaktime");
             entity.Property(e => e.Day)
                 .HasMaxLength(12)
                 .HasColumnName("day");
+            entity.Property(e => e.Breaktime)
+                .HasColumnType("time")
+                .HasColumnName("breaktime");
             entity.Property(e => e.Series).HasColumnName("series");
 
             entity.HasOne(d => d.IdexerciseNavigation).WithMany(p => p.Routinesexercises)

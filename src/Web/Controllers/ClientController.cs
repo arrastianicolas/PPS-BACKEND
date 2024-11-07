@@ -162,5 +162,21 @@ namespace Web.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        [HttpPut("[action]")]
+        [Authorize]
+        public IActionResult UpdatePago([FromBody] string membership)
+        {
+            // Obtiene el clientId desde las claims del usuario autenticado
+            int clientId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+            if (clientId == null)
+            {
+                return Unauthorized("No se pudo encontrar al cliente");
+            }
+
+            _clientService.UpdatePago(clientId, membership);
+
+            return NoContent();
+        }
     }
 }
