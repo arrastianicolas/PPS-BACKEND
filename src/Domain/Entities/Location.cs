@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 namespace Domain.Entities;
 
-
 public partial class Location
 {
     public int Idlocation { get; set; }
