@@ -93,5 +93,6 @@ namespace Web.Controllers
             var updatedPreference = await _mercadoPagoService.CrearPreferenciaPago(preferenceRequest);
             return Ok(new { init_point = updatedPreference.InitPoint });
         }
+
     }
 }

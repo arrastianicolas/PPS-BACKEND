@@ -17,7 +17,7 @@ namespace Application.Interfaces
         ClientUserDto GetUserById(int Iduser);
         void Delete(string clientDni);
         ClientDto GetClientByDni(string dniClient);
-        void UpdatePago(string dniClient);
+        void UpdatePago(int clientId, string membership);
         IEnumerable<object> GetNewClientsCountPerMonth();
 
         IEnumerable<ClientUserDto> GetAllClients();

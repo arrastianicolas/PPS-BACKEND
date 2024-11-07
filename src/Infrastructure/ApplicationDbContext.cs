@@ -39,7 +39,7 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -85,7 +85,6 @@ public partial class ApplicationDbContext : DbContext
                 .HasColumnName("startdatemembership");
             entity.Property(e => e.Typememberships)
                 .HasMaxLength(20)
-                .HasDefaultValueSql("'Standar'")
                 .HasColumnName("typememberships");
 
             entity.HasOne(d => d.IduserNavigation).WithMany(p => p.Clients)
@@ -95,7 +94,6 @@ public partial class ApplicationDbContext : DbContext
 
             entity.HasOne(d => d.TypemembershipsNavigation).WithMany(p => p.Clients)
                 .HasForeignKey(d => d.Typememberships)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("typememberships");
         });
 

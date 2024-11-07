@@ -7,7 +7,7 @@ public partial class Client
 {
     public string Dniclient { get; set; } = null!;
 
-    public string Typememberships { get; set; } = null!;
+    public string? Typememberships { get; set; }
 
     public DateTime Startdatemembership { get; set; }
 
@@ -35,5 +35,5 @@ public partial class Client
 
     public virtual ICollection<Shiftclient> Shiftclients { get; set; } = new List<Shiftclient>();
 
-    public virtual Membership TypemembershipsNavigation { get; set; } = null!;
+    public virtual Membership? TypemembershipsNavigation { get; set; }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Domain.Entities;
 
+
 public partial class Exercise
 {
     public int Idexercise { get; set; }
