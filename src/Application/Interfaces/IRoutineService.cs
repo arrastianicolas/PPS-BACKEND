@@ -12,6 +12,7 @@ namespace Application.Interfaces
     {
         RoutineDto Create(RoutineClientRequest routineClientRequest, int userId);
         void Update(int idRoutina, List<RoutineTrainerRequest> request);
+        void ChangeStatusToDone(string dniClient);
         public List<RoutineDto> GetAll();
         public List<RoutineDto> GetByDni(int userId);
         public void Delete(int id);

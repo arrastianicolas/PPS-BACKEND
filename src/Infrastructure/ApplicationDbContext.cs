@@ -85,7 +85,6 @@ public partial class ApplicationDbContext : DbContext
                 .HasColumnName("startdatemembership");
             entity.Property(e => e.Typememberships)
                 .HasMaxLength(20)
-                .HasDefaultValueSql("'Standar'")
                 .HasColumnName("typememberships");
 
             entity.HasOne(d => d.IduserNavigation).WithMany(p => p.Clients)
@@ -95,7 +94,6 @@ public partial class ApplicationDbContext : DbContext
 
             entity.HasOne(d => d.TypemembershipsNavigation).WithMany(p => p.Clients)
                 .HasForeignKey(d => d.Typememberships)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("typememberships");
         });
 
@@ -262,7 +260,9 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Breaktime)
                 .HasColumnType("time")
                 .HasColumnName("breaktime");
-            entity.Property(e => e.Series).HasColumnName("series");
+            entity.Property(e => e.Series)
+                .HasMaxLength(5)
+                .HasColumnName("series");
 
             entity.HasOne(d => d.IdexerciseNavigation).WithMany(p => p.Routinesexercises)
                 .HasForeignKey(d => d.Idexercise)

@@ -15,7 +15,7 @@ namespace Application.Models
 
         public TimeOnly Breaktime { get; set; }
 
-        public int Series { get; set; }
+        public string Series { get; set; }
 
         public string Day { get; set; } = null!;
         
