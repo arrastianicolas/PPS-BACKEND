@@ -260,7 +260,9 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Breaktime)
                 .HasColumnType("time")
                 .HasColumnName("breaktime");
-            entity.Property(e => e.Series).HasColumnName("series");
+            entity.Property(e => e.Series)
+                .HasMaxLength(5)
+                .HasColumnName("series");
 
             entity.HasOne(d => d.IdexerciseNavigation).WithMany(p => p.Routinesexercises)
                 .HasForeignKey(d => d.Idexercise)

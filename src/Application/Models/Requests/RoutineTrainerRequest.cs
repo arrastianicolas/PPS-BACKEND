@@ -12,7 +12,7 @@ namespace Application.Models.Requests
         public int idExercise {  get; set; }
         public TimeOnly Breaktime { get; set; }
 
-        public int Series { get; set; }
+        public string Series { get; set; }
 
         public string Day { get; set; } = null!;
     }

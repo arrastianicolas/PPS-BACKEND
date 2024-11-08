@@ -10,6 +10,7 @@ namespace Application.Models
 {
     public class RoutineDto
     {
+        public int Id { get; set; }
         public string Weight { get; set; }
 
         public string Height { get; set; }
@@ -24,7 +25,8 @@ namespace Application.Models
         public static RoutineDto Create(Routine routine, string? clientName = null, string? clientBirthdate = null)
         {
             return new RoutineDto
-            {
+            {   
+                Id = routine.Idroutine,
                 Weight = routine.Weight,
                 Height = routine.Height,
                 Status = routine.Status,

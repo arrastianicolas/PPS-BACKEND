@@ -11,6 +11,7 @@ using Application.Interfaces;
 using Domain.Entities;
 using Domain.Exceptions;
 using System.Numerics;
+using MercadoPago.Resource.User;
 
 namespace Application.Services
 {
@@ -132,6 +133,17 @@ namespace Application.Services
                 throw new Exception(ex.Message);
             }
 
+        }
+        public void ChangeStatusToDone(string dniClient)
+        {
+            try
+            {
+                _routineRepository.ChangeStatusToDone(dniClient);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         public void Delete(int id)
         {

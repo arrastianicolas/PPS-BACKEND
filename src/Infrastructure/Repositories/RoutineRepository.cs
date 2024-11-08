@@ -32,6 +32,17 @@ namespace Infrastructure.Repositories
                            .Where(np => np.Dniclient == dni || np.Dnitrainer == dni)
                            .ToList();
         }
+        public Routine ChangeStatusToDone(string dniClient)
+        {
+            var routine = _context.Routines.FirstOrDefault(r => r.Dniclient == dniClient);
 
+            if (routine != null)
+            {
+                routine.Status = "Done";
+                _context.SaveChanges(); // Guarda los cambios en la base de datos
+            }
+
+            return routine;
+        }
     }
 }

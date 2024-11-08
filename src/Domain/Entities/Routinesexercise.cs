@@ -13,7 +13,7 @@ public partial class Routinesexercise
 
     public TimeOnly Breaktime { get; set; }
 
-    public int Series { get; set; }
+    public string Series { get; set; } = null!;
 
     public virtual Exercise IdexerciseNavigation { get; set; } = null!;
 

@@ -50,7 +50,7 @@ namespace Web.Controllers
         }
         [HttpPut("{id}")]
         [Authorize(Roles = "Trainer")]
-        public IActionResult Update(int id, List<RoutineTrainerRequest> routineTrainerRequest)
+        public IActionResult Update([FromRoute] int id, [FromBody] List<RoutineTrainerRequest> routineTrainerRequest)
         {
             try
             {
@@ -62,7 +62,21 @@ namespace Web.Controllers
                 return NotFound(ex.Message);
             }
         }
-        
+
+        [HttpPatch]
+        [Authorize(Roles = "Trainer")]
+        public IActionResult ChangeStatusToDone([FromBody] string dniClient)
+        {
+            try
+            {
+                _routineService.ChangeStatusToDone(dniClient);
+                return NoContent();
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
 
         [HttpGet]
         [Authorize(Roles = "Admin")]

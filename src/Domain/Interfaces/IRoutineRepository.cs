@@ -11,5 +11,6 @@ namespace Domain.Interfaces
     public interface IRoutineRepository : IBaseRepository<Routine>
     {
          List<Routine> GetByDni(string dni);
+        Routine ChangeStatusToDone(string dniClient);
     }
 }
