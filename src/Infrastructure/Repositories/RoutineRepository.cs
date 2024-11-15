@@ -39,7 +39,7 @@ namespace Infrastructure.Repositories
             if (routine != null)
             {
                 routine.Status = "Done";
-                _context.SaveChanges(); // Guarda los cambios en la base de datos
+                _context.SaveChanges();
             }
 
             return routine;

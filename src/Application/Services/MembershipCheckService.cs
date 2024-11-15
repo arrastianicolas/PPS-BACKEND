@@ -30,11 +30,11 @@ namespace Application.Services
                     {
                         var daysLefts = (client.Actualdatemembership.AddDays(30) - DateTime.Now).Days;
 
-                        // Actualizar el actualdatemembership diariamente
+                        
                         client.Actualdatemembership = DateTime.Now;
                         clientRepository.Update(client);
 
-                        // Verificar si ha pasado un mes desde startdatemembership
+                       
                         if (client.Startdatemembership.AddMonths(1) <= DateTime.Now)
                         {
                             // Cambiar el typemembership a nulo después de un mes
@@ -42,7 +42,7 @@ namespace Application.Services
                             clientRepository.Update(client);
                         }
 
-                        // Enviar correo de aviso cuando quedan 7 días
+                       
                         if (daysLefts == 7 && client.Isactive == 1)
                         {
                             _mailService.Send(
@@ -52,7 +52,7 @@ namespace Application.Services
                             );
                         }
 
-                        // Enviar correo de expiración si la membresía ha expirado
+                       
                         if (daysLefts <= 0 && client.Isactive == 1)
                         {
                             // Enviar correo de expiración

@@ -19,7 +19,7 @@ namespace Application.Services
             _exerciseRepository = exerciseRepository;
         }
 
-        public List<ExerciseDto> GetAll() //Devolver dto 
+        public List<ExerciseDto> GetAll() 
         {
             var exercises = _exerciseRepository.Get();
             return exercises.Select(ExerciseDto.Create).ToList();

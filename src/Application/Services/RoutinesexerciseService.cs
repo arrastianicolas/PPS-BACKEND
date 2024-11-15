@@ -67,14 +67,14 @@ namespace Application.Services
                 throw new NotFoundException("User not found");
             }
 
-            // Asumimos que solo hay una rutina relevante para el usuario
+           
             var routineDto = routines.FirstOrDefault() != null ? RoutineDto.Create(
                 routines.First(),
                 client != null ? $"{client.Firstname} {client.Lastname}" : null,
                 client != null ? client.Birthdate.ToString("yyyy-MM-dd") : null
             ) : null;
 
-            // Agrupar los ejercicios por día y evitar duplicados por exerciseId
+            
             var exercisesDto = routinesexercise
                 .Select(routinese => new RoutinesexerciseDto
                 {
@@ -86,7 +86,7 @@ namespace Application.Services
                 .ToList();
 
 
-            // Estructura la respuesta
+           
             return new
             {
                 Routine = routineDto,

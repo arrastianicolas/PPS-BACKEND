@@ -158,17 +158,17 @@ namespace Web.Controllers
 
                 var shiftDetails = _shiftService.GetNextTrainerShift(userId);
 
-                // Devolver la respuesta con los detalles del turno
+                
                 return Ok(shiftDetails);
             }
             catch (NotFoundException ex)
             {
-                // Manejar casos donde no se encontró el turno o cualquier otro recurso
+               
                 return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
-                // Manejar cualquier otro error
+                
                 return StatusCode(500, "Error interno del servidor: " + ex.Message);
             }
         }

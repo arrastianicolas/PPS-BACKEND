@@ -25,12 +25,12 @@ namespace Infrastructure.Repositories
         {
             return _context.Set<Client>().FirstOrDefault(c => c.Dniclient == dni);
         }
-        // Nuevo método para obtener todos los clientes con membresía activa
+        
         public IEnumerable<Client> GetAllActiveClients()
         {
             return _context.Set<Client>()
-                .Include(c => c.IduserNavigation) // Incluye la relación con User para acceder a sus datos
-                .Where(c => c.Isactive == 1) // Filtra solo los clientes activos
+                .Include(c => c.IduserNavigation) 
+                .Where(c => c.Isactive == 1) 
                 .ToList();
         }
         public IEnumerable<object> GetNewClientsCountPerMonth()

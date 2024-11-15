@@ -25,13 +25,13 @@ namespace Infrastructure.Repositories
         public List<object> GetClientCountByMembership()
         {
             var clientCounts = _context.Clients
-                .GroupBy(c => c.Typememberships)  // Agrupa por el tipo de membresía
+                .GroupBy(c => c.Typememberships)  
                 .Select(g => new
                 {
-                    Type = g.Key,            // El tipo de membresía
-                    ClientCount = g.Count()   // El número de clientes en ese tipo
+                    Type = g.Key,            
+                    ClientCount = g.Count()   
                 })
-                .ToList<object>();  // Convierte a una lista de objetos anónimos
+                .ToList<object>();  
 
             return clientCounts;
         }

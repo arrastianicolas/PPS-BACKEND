@@ -33,13 +33,13 @@ namespace Infrastructure.Repositories
         {
 
             _context.Set<Shiftclient>().Add(shiftsClient);
-            _context.SaveChanges(); // Guardar los cambios en la base de datos
+            _context.SaveChanges(); 
         }
         public void DeleteAll()
         {
-            var allShiftClients = _context.Set<Shiftclient>().ToList(); // Obtener todos los registros
-            _context.Set<Shiftclient>().RemoveRange(allShiftClients); // Eliminar todos
-            _context.SaveChanges(); // Guardar cambios
+            var allShiftClients = _context.Set<Shiftclient>().ToList(); 
+            _context.Set<Shiftclient>().RemoveRange(allShiftClients); 
+            _context.SaveChanges(); 
         }
         public IEnumerable<Shiftclient> GetShiftsByClientDniForToday(string dniClient)
         {
@@ -47,8 +47,8 @@ namespace Infrastructure.Repositories
 
             return _context.Shiftclients
                            .Where(sc => sc.Dniclient == dniClient
-                                        && sc.IdshiftNavigation.Dateday == todayDayOfWeek) // Filtrar por día actual
-                           .Include(sc => sc.IdshiftNavigation) // Incluye los detalles del turno (Shift)
+                                        && sc.IdshiftNavigation.Dateday == todayDayOfWeek) 
+                           .Include(sc => sc.IdshiftNavigation) 
                            .ToList();
         }
     }
