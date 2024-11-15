@@ -41,7 +41,7 @@ namespace Application.Services
                 throw new NotFoundException("No se encontro al entrenador.");
             }
 
-            // Retorna el DTO combinado de usuario y trainer
+            
             return TrainerUserDtoMapper.Create(trainerUser, user);
         }
 

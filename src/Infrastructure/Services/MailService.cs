@@ -41,9 +41,7 @@ namespace Infrastructure.Services
             };
 
            
-            //Console.WriteLine($"Simulando el envío de correo desde {_mailFrom} a {mailTo}");
-            //Console.WriteLine($"Asunto: {subject}");
-            //Console.WriteLine($"Cuerpo del mensaje:\n{message}");
+          
 
             try
             {

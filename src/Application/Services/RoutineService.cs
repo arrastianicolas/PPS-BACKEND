@@ -105,7 +105,7 @@ namespace Application.Services
         {
             var routine = _routineRepository.GetById(idRoutina) ?? throw new NotFoundException("Routine not found.");
             
-            //string clientEmail = _userRepository.GetById(_clientRepository.GetByDni(routine.Dniclient).Iduser).Email;
+            
 
             try
             {
@@ -122,7 +122,7 @@ namespace Application.Services
                 };
 
                     
-                // Guarda routineExercise en la base de datos
+                
                 _routineExerciseRepository.Add(routineExercise);
                     routine.Status = "Done";
                     _routineRepository.Update(routine);

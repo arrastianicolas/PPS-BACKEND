@@ -30,7 +30,6 @@ namespace Application.Services
                 return preference;
          }
 
-        // Método para verificar el estado de un pago en MercadoPago
         public async Task<Payment> ObtenerPagoPorId(string paymentId)
         {
             var response = await _httpClient.GetAsync($"https://api.mercadopago.com/v1/payments/{paymentId}");

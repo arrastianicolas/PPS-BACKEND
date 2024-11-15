@@ -205,7 +205,7 @@ namespace Application.Services
                 throw new Exception("Ya has reservado un turno para este día.");
             }
 
-            // Registrar la reserva
+           
             shift.Actualpeople = shift.Actualpeople ?? 0;
             shift.Actualpeople++;
             _shiftRepository.Update(shift);
@@ -258,7 +258,7 @@ namespace Application.Services
                 assignedShifts.Add(ShiftDto.Create(shift));
             }
             var user = _userRepository.GetById(trainer.Iduser);
-            // Consolidar los turnos asignados en un solo correo
+          
             if (assignedShifts.Any())
             {
                 var shiftsInfo = string.Join(", ", assignedShifts.Select(s => $"{s.Dateday} a las {s.Hour}"));
@@ -269,7 +269,7 @@ namespace Application.Services
                 );
             }
 
-            return assignedShifts;  // Devolver los turnos asignados actualizados
+            return assignedShifts; 
         }
 
         public List<ShiftDto> GetShiftsByLocationAndDate(ShiftLocationDayRequest request)
@@ -316,10 +316,10 @@ namespace Application.Services
                 .Select(shift => new
                 {
                     Shift = shift,
-                    // Convertir Dateday y Hour a DateTime
+                   
                     ShiftDateTime = TryGetNextDateTime(shift.Dateday, shift.Hour)
                 })
-                .Where(s => s.ShiftDateTime.HasValue && s.ShiftDateTime.Value >= currentDateTime) // Asegurarse que sea un futuro
+                .Where(s => s.ShiftDateTime.HasValue && s.ShiftDateTime.Value >= currentDateTime)
                 .OrderBy(s => s.ShiftDateTime)
                 .Select(s => s.Shift)
                 .FirstOrDefault();
@@ -339,7 +339,7 @@ namespace Application.Services
             {
                 Idshift = nextShift.Idshift,
                 Dateday = nextShift.Dateday,
-                Hour = nextShift.Hour, // Asegúrate de convertir TimeOnly a string si es necesario
+                Hour = nextShift.Hour, 
                 Idlocation = nextShift.Idlocation,
                 Peoplelimit = nextShift.Peoplelimit,
                 Actualpeople = nextShift.Actualpeople,
@@ -419,13 +419,13 @@ namespace Application.Services
             // Calcular la fecha del próximo día
             DateTime today = DateTime.Today;
             int daysUntilNext = ((int)targetDay - (int)today.DayOfWeek + 7) % 7;
-            if (daysUntilNext == 0 && DateTime.Now.TimeOfDay >= time.ToTimeSpan()) // Si es hoy y ya pasó la hora, buscar para el próximo
+            if (daysUntilNext == 0 && DateTime.Now.TimeOfDay >= time.ToTimeSpan()) 
             {
-                daysUntilNext = 7; // Ir a la próxima semana
+                daysUntilNext = 7; 
             }
 
             DateTime nextDate = today.AddDays(daysUntilNext);
-            return nextDate.Add(time.ToTimeSpan()); // Combina fecha y hora
+            return nextDate.Add(time.ToTimeSpan()); 
         }
 
     }

@@ -20,13 +20,13 @@ namespace Infrastructure.Repositories
         {
             if (idExercise == null || !idExercise.Any())
             {
-                return new List<Exercise>(); // Retorna una lista vacía si la entrada es nula o vacía
+                return new List<Exercise>();
             }
 
-            // Consulta los ejercicios que coinciden con los IDs proporcionados
+            
             return _context.Exercises
                 .Where(exercise => idExercise.Contains(exercise.Idexercise))
-                .ToList(); // Ejecuta la consulta y devuelve la lista de ejercicios
+                .ToList(); 
         }
         
 

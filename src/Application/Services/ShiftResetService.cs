@@ -49,7 +49,7 @@ namespace Application.Services
                         }
 
                         // Eliminar todos los registros de ShiftClient
-                        shiftClientRepository.DeleteAll(); // Asegúrate de tener este método en tu repositorio
+                        shiftClientRepository.DeleteAll();
                     }
 
                     // Esperar un minuto para evitar múltiples ejecuciones dentro del mismo minuto

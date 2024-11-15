@@ -79,7 +79,7 @@ namespace Application.Services
         {
             var client = _clientRepository.GetClientByUserId(clientId) ?? throw new NotFoundException("Client not found");
 
-            // Obtener trainer
+            
             var lastShiftId = _shiftClientRepository.GetLastShiftId(client.Dniclient);
             var lastShift = _shiftRepository.GetById(lastShiftId);
             if (lastShift == null) throw new NotFoundException("No shifts found for the client");
@@ -126,7 +126,7 @@ namespace Application.Services
             }
             else
             {
-                // Si hay otro plan activo se desactiva para solo dejar activo el nuevo
+                
                 var clientPlans = _nutritionalPlanRepository.GetByDni(plan.Dniclient);
                 var clientPlanActive = clientPlans.FirstOrDefault(p => p.Status == "Enabled");
                 if (clientPlanActive != null)

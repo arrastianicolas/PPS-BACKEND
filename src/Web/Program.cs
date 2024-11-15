@@ -53,7 +53,7 @@ builder.Services.AddSwaggerGen(setupAction =>
                 Reference = new OpenApiReference
                 {
                     Type = ReferenceType.SecurityScheme,
-                    Id = "TrainingCenterBearer" } //Tiene que coincidir con el id seteado arriba en la definición
+                    Id = "TrainingCenterBearer" } 
                 }, new List<string>() }
     });
 

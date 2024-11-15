@@ -37,16 +37,16 @@ namespace Infrastructure.Repositories
         public async Task<List<object>> GetClientsCountByLocationAsync()
         {
             var clientsCountByLocation = await _context.Locations
-                .Where(l => l.Isactive == 1) // Solo locations activas
+                .Where(l => l.Isactive == 1) 
                 .Select(l => new
                 {
                     LocationName = l.Name,
                     ClientsCount = l.Shifts
-                        .Count(s => s.Shiftclient != null) // Contamos solo si Shiftclient no es nulo
+                        .Count(s => s.Shiftclient != null)
                 })
                 .ToListAsync();
 
-            // Devolver como lista de objetos anónimos
+            
             return clientsCountByLocation.Cast<object>().ToList();
         }
     }
